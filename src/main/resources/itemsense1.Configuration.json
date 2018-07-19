@@ -1,0 +1,22 @@
+{
+  "active": false,
+  "name": "Impinj Test Store 1",
+  "utcOffset": "-7",
+  "url": "http://sandbox.solutions.impinj.net/itemsense",
+  "username": "connectorUser",
+  "password": "Impinj2016",
+  "token": "",
+  "jobList": [
+	    {
+	      "active": false,
+	      "facility": "Training",
+	      "name": "Deep Inventory Night M-F",
+	      "recipe": "Deep Scan Inventory",
+	      "jobType": "Inventory",
+	      "schedule": "0 0 13 ? * MON-FRI *",
+	      "startDelay": "PT0S",
+	      "duration": 43200,
+	      "stopRunningJobs": true
+	    }
+    ]
+}

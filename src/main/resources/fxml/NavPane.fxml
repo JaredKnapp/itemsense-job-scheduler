@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
+<ToolBar xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.NavPaneController">
+  <items>
+    <Button fx:id="showDashboard" accessibleText="Dashboar" mnemonicParsing="false" onAction="#switchToDashboard">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/home_house_3526.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <tooltip>
+            <Tooltip text="Dashboard" />
+         </tooltip>
+      </Button>
+      <Button fx:id="showConfiguration" accessibleText="Configuration" mnemonicParsing="false" onAction="#switchToConfiguration">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/integration.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <tooltip>
+            <Tooltip text="Configuration" />
+         </tooltip>
+      </Button>
+      <Button fx:id="exitApplication" accessibleText="Exit" mnemonicParsing="false" onAction="#exitApplication">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/primary-exit.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <tooltip>
+            <Tooltip text="Exit" />
+         </tooltip>
+      </Button>
+  </items>
+</ToolBar>

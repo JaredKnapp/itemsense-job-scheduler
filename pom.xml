@@ -10,6 +10,11 @@
 	<name>itemsense-job-scheduler</name>
 	<description>Job Scheduler for Impinj ItemSense</description>
 
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
 	<dependencies>
 
 		<!-- https://mvnrepository.com/artifact/com.impinj/itemsense-client -->

@@ -99,11 +99,7 @@
 								<TableColumn prefWidth="98.40001678466797"
 									text="Facility" />
 								<TableColumn prefWidth="75.0" text="Name" />
-								<TableColumn prefWidth="75.0" text="Recipe">
-									<cellValueFactory>
-										<PropertyValueFactory property="recipe" />
-									</cellValueFactory>
-								</TableColumn>
+								<TableColumn prefWidth="75.0" text="Recipe" />
 								<TableColumn prefWidth="75.0" text="Schedule" />
 								<TableColumn prefWidth="75.0" text="Start Delay" />
 								<TableColumn prefWidth="75.0" text="Duration" />

@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.impinj.itemsense.scheduler.config.SystemConfiguration;
-import com.impinj.itemsense.scheduler.model.ItemSense;
+import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
+import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.util.JsonMapper;
+import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 public class DataService {
 	private static final Logger logger = LoggerFactory.getLogger(JsonMapper.class);
@@ -19,16 +21,15 @@ public class DataService {
 	private final String jobConfigMasterfileJson = "SystemConfiguration.json";
 	private final Boolean filesFromClasspath = false;
 
-	private SystemConfiguration config;
+	private SystemConfiguration systemConfig;
 
-	public static ArrayList<ItemSense> load() throws IOException {
+	public static ArrayList<ItemSenseConfig> load() throws IOException {
 		DataService service = new DataService();
-		return service.config.getItemSenseConfigs();
+		return service.systemConfig.getItemSenseConfigs();
 	}
 
 	private DataService() throws IOException {
 		loadSystemConfig();
-//		loadItemsenseConfigs();
 	}
 
 	private void loadSystemConfig() {
@@ -36,10 +37,21 @@ public class DataService {
 		try (JsonMapper<SystemConfiguration> mapper = new JsonMapper<SystemConfiguration>(jobConfigDir,
 				jobConfigMasterfileJson, new TypeReference<SystemConfiguration>() {
 				}, filesFromClasspath)) {
-			config = mapper.read();
+			systemConfig = mapper.read();
 			logger.info("Successfully loaded " + mapper.getResourceFile());
+			systemConfig.getItemSenseConfigs().forEach(configData -> {
+				configData.setOid(OIDGenerator.next());
+				if (configData.getJobList() != null) {
+					logger.debug("itemSenseConfig.getJobList().size(): " + configData.getJobList().size());
+					configData.getJobList().forEach(jobConfig -> {
+						jobConfig.setOid(OIDGenerator.next());
+						jobConfig.setName(configData.getName());
+						jobConfig.setItemSenseOid(configData.getOid());
+					});
+				}
+			});
 		} catch (FileNotFoundException fnfe) {
-			config = new SystemConfiguration();
+			systemConfig = new SystemConfiguration();
 			logger.warn(
 					"Master Config file not found (ok for initial configuration.  From application.properties: job.config.dir"
 							+ jobConfigDir + " job.config.masterfile.json: " + jobConfigMasterfileJson
@@ -47,54 +59,67 @@ public class DataService {
 		}
 	}
 
-//	private void loadItemsenseConfigs() {
-//		List<String> isFiles = config.getConfigFiles();
-//		itemSenseConfigs = new ArrayList<>();
-//		logger.debug("itemSense Files to load:" + isFiles);
-//		isFiles.stream().forEach(isFile -> {
-//			ItemSense isConfig = loadItemsenseConfig(isFile);
-//
-//			String isOid = OIDGenerator.next();
-//			isConfig.setOid(isOid);
-//			isConfig.setFileName(isFile);
-//
-//			logger.debug("itemsenseConfig loaded: " + isConfig);
-//			itemSenseConfigs.add(isConfig);
-//
-//			// now process the jobs
-//			if (isConfig.getJobList() != null) {
-//				logger.debug("itemSenseConfig.getJobList().size(): " + isConfig.getJobList().size());
-//				for (Job jobConfig : isConfig.getJobList()) {
-//					jobConfig.setOid(OIDGenerator.next());
-//					jobConfig.setName(isConfig.getName());
-//					jobConfig.setItemSenseOid(isConfig.getOid());
-//				}
-//			}
-//			// if (isconfig.getidcloudjoblist()!=null) {
-//			// logger.debug("storeconfig.getidcloudjoblist().size(): " +
-//			// isconfig.getidcloudjoblist().size());
-//			// isconfig.getidcloudjoblist().stream().foreach( idcloudjob -> {
-//			// idcloudjob.setoid(oidgenerator.next());
-//			// idcloudjob.setstorename(storeconfig.getstorename());
-//			// idcloudjob.setstoreoid(storeconfig.getoid());
-//			// });
-//			// }
-//		});
-//
-//	}
+	// private void loadItemsenseConfigs() {
+	// List<String> isFiles = config.getConfigFiles();
+	// itemSenseConfigs = new ArrayList<>();
+	// logger.debug("itemSense Files to load:" + isFiles);
+	// isFiles.stream().forEach(isFile -> {
+	// ItemSense isConfig = loadItemsenseConfig(isFile);
+	//
+	// String isOid = OIDGenerator.next();
+	// isConfig.setOid(isOid);
+	// isConfig.setFileName(isFile);
+	//
+	// logger.debug("itemsenseConfig loaded: " + isConfig);
+	// itemSenseConfigs.add(isConfig);
+	//
+	// // now process the jobs
+	// if (isConfig.getJobList() != null) {
+	// logger.debug("itemSenseConfig.getJobList().size(): " +
+	// isConfig.getJobList().size());
+	// for (Job jobConfig : isConfig.getJobList()) {
+	// jobConfig.setOid(OIDGenerator.next());
+	// jobConfig.setName(isConfig.getName());
+	// jobConfig.setItemSenseOid(isConfig.getOid());
+	// }
+	// }
+	// // if (isconfig.getidcloudjoblist()!=null) {
+	// // logger.debug("storeconfig.getidcloudjoblist().size(): " +
+	// // isconfig.getidcloudjoblist().size());
+	// // isconfig.getidcloudjoblist().stream().foreach( idcloudjob -> {
+	// // idcloudjob.setoid(oidgenerator.next());
+	// // idcloudjob.setstorename(storeconfig.getstorename());
+	// // idcloudjob.setstoreoid(storeconfig.getoid());
+	// // });
+	// // }
+	// });
+	//
+	// }
 
-	private ItemSense loadItemsenseConfig(String isFile) {
+	private ItemSenseConfig loadItemsenseConfig(String isFile) {
+		ItemSenseConfig config = null;
 		logger.debug("Loading itemsense: " + isFile + " from " + jobConfigDir);
-		try (JsonMapper<ItemSense> mapper = new JsonMapper<ItemSense>(jobConfigDir, isFile,
-				new TypeReference<ItemSense>() {
+		try (JsonMapper<ItemSenseConfig> mapper = new JsonMapper<ItemSenseConfig>(jobConfigDir, isFile,
+				new TypeReference<ItemSenseConfig>() {
 				}, filesFromClasspath)) {
-			return mapper.read();
+			config = mapper.read();
+			config.setOid(OIDGenerator.next());
+			// now process the jobs
+			if (config.getJobList() != null) {
+				logger.debug("itemSenseConfig.getJobList().size(): " + config.getJobList().size());
+				for (ItemSenseConfigJob jobConfig : config.getJobList()) {
+					jobConfig.setOid(OIDGenerator.next());
+					jobConfig.setName(config.getName());
+					jobConfig.setItemSenseOid(config.getOid());
+				}
+			}
 		} catch (FileNotFoundException fnfe) {
 			logger.error("ItemSense Config file not found: " + isFile + "(From application.properties: job.config.dir"
 					+ jobConfigDir + " job.config.masterfile.json: " + jobConfigMasterfileJson
 					+ " job.config.fromClasspath: " + filesFromClasspath + ")");
 			return null;
 		}
+		return config;
 	}
 
 }

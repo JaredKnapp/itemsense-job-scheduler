@@ -3,7 +3,7 @@ package com.impinj.itemsense.scheduler.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.impinj.itemsense.scheduler.model.ItemSense;
+import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,7 +14,7 @@ import javafx.scene.control.TextField;
 
 public class EditServerController implements Initializable  {
 
-	private ItemSense serverData;
+	private ItemSenseConfig configData;
 	private ConfigurationController parent;
 
     @FXML
@@ -53,17 +53,17 @@ public class EditServerController implements Initializable  {
 
     @FXML
     void btnSave_OnAction(ActionEvent event) {
-		serverData.setName(txtName.getText());
-		serverData.setUrl(txtHostUrl.getText());
-		serverData.setUsername(txtUserName.getText());
-		serverData.setPassword(txtPassword.getText());
-		serverData.setUtcOffset(txtUtcOffset.getText());
+		configData.setName(txtName.getText());
+		configData.setUrl(txtHostUrl.getText());
+		configData.setUsername(txtUserName.getText());
+		configData.setPassword(txtPassword.getText());
+		configData.setUtcOffset(txtUtcOffset.getText());
 		
-		parent.onSaveData(serverData);
+		parent.onSaveData(configData);
 	}
 
-	public void setData(ItemSense serverData) {
-		this.serverData = serverData;
+	public void setData(ItemSenseConfig serverData) {
+		this.configData = serverData;
 
 		if (serverData != null) {
 			txtName.setText(serverData.getName());

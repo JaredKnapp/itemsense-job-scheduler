@@ -1,7 +1,7 @@
 {
   "itemSenseConfigs" : [
 	  {
-		  "active": false,
+		  "active": true,
 		  "name": "Impinj Test Store 1",
 		  "utcOffset": "-7",
 		  "url": "http://sandbox.solutions.impinj.net/itemsense",
@@ -10,7 +10,7 @@
 		  "token": "",
 		  "jobList": [
 			    {
-			      "active": false,
+			      "active": true,
 			      "facility": "Training",
 			      "name": "Deep Inventory Night M-F",
 			      "recipe": "Deep Scan Inventory",
@@ -23,7 +23,7 @@
 	    ]
 	},
 	{
-	  "active": false,
+	  "active": true,
 	  "name": "Impinj Test Store 2",
 	  "utcOffset": "-7",
 	  "url": "http://sandbox2.solutions.impinj.net/itemsense",
@@ -32,7 +32,7 @@
 	  "token": "",
 	  "jobList": [
 		    {
-		      "active": false,
+		      "active": true,
 		      "facility": "Training",
 		      "name": "Deep Inventory Night M-F",
 		      "recipe": "Deep Scan Inventory",

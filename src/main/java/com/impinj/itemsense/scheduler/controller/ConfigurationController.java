@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.impinj.itemsense.scheduler.App;
-import com.impinj.itemsense.scheduler.model.ItemSense;
+import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import javafx.collections.FXCollections;
@@ -24,10 +24,10 @@ import javafx.util.Callback;
 
 public class ConfigurationController implements Initializable {
 
-	ObservableSet<ItemSense> observableSet;
+	ObservableSet<ItemSenseConfig> observableSet;
 
 	@FXML
-	private ListView<ItemSense> lvItemSense = new ListView<>();
+	private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
 
 	@FXML
 	private AnchorPane editPane;
@@ -38,14 +38,14 @@ public class ConfigurationController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		lvItemSense.setItems(FXCollections.observableArrayList(App.getConfig()));
-		lvItemSense.setCellFactory(new Callback<ListView<ItemSense>, ListCell<ItemSense>>() {
+		lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
 
 			@Override
-			public ListCell<ItemSense> call(ListView<ItemSense> param) {
-				ListCell<ItemSense> cell = new ListCell<ItemSense>() {
+			public ListCell<ItemSenseConfig> call(ListView<ItemSenseConfig> param) {
+				ListCell<ItemSenseConfig> cell = new ListCell<ItemSenseConfig>() {
 
 					@Override
-					protected void updateItem(ItemSense item, boolean isEmpty) {
+					protected void updateItem(ItemSenseConfig item, boolean isEmpty) {
 						super.updateItem(item, isEmpty);
 						if (item != null) {
 							setText(item.getName());
@@ -60,13 +60,13 @@ public class ConfigurationController implements Initializable {
 
 	@FXML
 	public void lvItemSense_OnMouseClicked(MouseEvent event) {
-		ItemSense serverData = lvItemSense.getSelectionModel().getSelectedItem();
-		editItemSense(serverData);
+		ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
+		editItemSense(configData);
 	}
 
 	@FXML
 	public void btnNew_OnAction(ActionEvent event) {
-		editItemSense(new ItemSense());
+		editItemSense(new ItemSenseConfig());
 	}
 
 	// @FXML
@@ -82,7 +82,7 @@ public class ConfigurationController implements Initializable {
 	// }
 	// }
 
-	private void editItemSense(ItemSense serverData) {
+	private void editItemSense(ItemSenseConfig serverData) {
 		try {
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditServer.fxml"));
@@ -105,10 +105,10 @@ public class ConfigurationController implements Initializable {
 		}
 	}
 
-	public void onSaveData(ItemSense serverData) {
-		if(serverData.getOid()==null) {
-			lvItemSense.getItems().add(serverData);
-			serverData.setOid(OIDGenerator.next());
+	public void onSaveData(ItemSenseConfig configData) {
+		if(configData.getOid()==null) {
+			lvItemSense.getItems().add(configData);
+			configData.setOid(OIDGenerator.next());
 		}
 		lvItemSense.refresh();
 	}

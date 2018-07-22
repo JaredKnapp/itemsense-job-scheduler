@@ -8,6 +8,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -54,7 +56,14 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Button mnemonicParsing="false" text="Dequeue All Scheduled Jobs" GridPane.columnIndex="1" />
+                              <Button fx:id="btnStart" mnemonicParsing="false" onAction="#btnStart_OnAction" text="Queue Scheduled Jobs" GridPane.columnIndex="1">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/play-button.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
                            </children>
                         </GridPane>
                         <TableView VBox.vgrow="ALWAYS">

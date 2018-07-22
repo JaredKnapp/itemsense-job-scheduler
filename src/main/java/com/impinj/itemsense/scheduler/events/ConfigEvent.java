@@ -1,6 +1,6 @@
 package com.impinj.itemsense.scheduler.events;
 
-import com.impinj.itemsense.scheduler.model.ItemSense;
+import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 
 import javafx.event.Event;
 import javafx.event.EventType;
@@ -9,9 +9,9 @@ public class ConfigEvent extends Event{
 	
 	private static final long serialVersionUID = 20180715L;
 
-	private ItemSense data;
+	private ItemSenseConfig data;
 	
-	public ItemSense getData() {
+	public ItemSenseConfig getData() {
 		return data;
 	}
 
@@ -20,10 +20,10 @@ public class ConfigEvent extends Event{
     public static final EventType<ConfigEvent> CANCEL = new EventType<>(Event.ANY, "CANCEL");
 	
 	
-	public ConfigEvent(ItemSense data, EventType<? extends Event> eventType) {
+	public ConfigEvent(ItemSenseConfig configData, EventType<? extends Event> eventType) {
 		super(eventType);
 		
-		this.data = data;
+		this.data = configData;
 	}
 
 }

@@ -2,7 +2,7 @@ package com.impinj.itemsense.scheduler.service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +24,27 @@ public class DataService {
 
 	private SystemConfiguration systemConfig;
 
-	public static ArrayList<ItemSenseConfig> load() throws IOException {
-		service = new DataService();
-		return service.systemConfig.getItemSenseConfigs();
+	public static DataService getService(boolean createIfNull) throws IOException {
+		if (service == null && createIfNull)
+			service = new DataService();
+		return service;
 	}
 
 	private DataService() throws IOException {
 		loadSystemConfig();
+	}
+
+	public ItemSenseConfig getItemSenseConfigByOID(String oid) throws Exception {
+		try {
+			return this.systemConfig.getItemSenseConfigs().stream().filter(itemsense -> itemsense.getOid().equals(oid))
+					.collect(Collectors.toList()).get(0);
+		} catch (Exception e) {
+			throw new Exception("OID Does not exist");
+		}
+	}
+
+	public SystemConfiguration getSystemConfig() {
+		return this.systemConfig;
 	}
 
 	private void loadSystemConfig() {

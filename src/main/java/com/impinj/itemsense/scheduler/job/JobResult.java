@@ -1,12 +1,8 @@
 package com.impinj.itemsense.scheduler.job;
 
-import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.TimeZone;
 
-import lombok.Data;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -15,6 +11,8 @@ import com.impinj.itemsense.client.coordinator.job.JobResponse;
 import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+
+import lombok.Data;
 
 /**
  * All the creation of Job Results happens here, so we can coordinate the use of all the JobResult fields.  Sure that makes this class

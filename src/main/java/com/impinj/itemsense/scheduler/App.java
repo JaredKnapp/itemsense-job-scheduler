@@ -2,13 +2,10 @@ package com.impinj.itemsense.scheduler;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.quartz.SchedulerException;
 
-import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.service.JobService;
 
@@ -24,9 +21,7 @@ public class App extends Application {
 
 	// Creating a static root to pass to the controller
 	private static BorderPane root = new BorderPane();
-
-	// Application Data
-	private static ArrayList<ItemSenseConfig> config;
+	private static String appId = UUID.randomUUID().toString();
 
 	/**
 	 * Just a root getter for the controller to use
@@ -35,20 +30,12 @@ public class App extends Application {
 		return root;
 	}
 
-	public static ArrayList<ItemSenseConfig> getConfig() {
-		return config;
-	}
-
-	public static ItemSenseConfig getConfigByOID(String oid) throws Exception {
-		try {
-			return config.stream().filter(itemsense -> itemsense.getOid().equals(oid)).collect(Collectors.toList()).get(0);
-		} catch (Exception e) {
-			throw new Exception("OID Does not exist");
-		}
-	}
-
 	public static String getApplicationId() {
-		return UUID.randomUUID().toString();
+		return appId;
+	}
+	
+	public static void main(String[] args) {
+		launch(args);
 	}
 
 	@Override
@@ -72,20 +59,21 @@ public class App extends Application {
 			Scene scene = new Scene(root, 1500, 600);
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
-			primaryStage.getIcons().add(new Image("/images/quartz_icon.png"));
-			
 			primaryStage.setOnCloseRequest(event -> {
-			    System.out.println("Stage is closing");
-			    try {
-					JobService.getService().shutdown();
+				System.out.println("Stage is closing");
+				try {
+					JobService service = JobService.getService(false);
+					if (service != null)
+						service.shutdown();
 				} catch (SchedulerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			});
-	        
+
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("ItemSense Job Scheduler");
+			primaryStage.getIcons().add(new Image("/images/quartz_icon.png"));
 			primaryStage.show();
 
 		} catch (Exception e) {
@@ -93,21 +81,15 @@ public class App extends Application {
 		}
 	}
 
-	public static void main(String[] args) {
-
-		launch(args);
-	}
-
 	private void loadData() {
 		try {
-			config = DataService.load();
+			DataService.getService(true);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public static void startJobs() {
-		JobService.getService().queueAllQuartzJobs();
+	public static void startJobs() throws IOException {
+		JobService.getService(true).queueAllJobs();
 	}
 }

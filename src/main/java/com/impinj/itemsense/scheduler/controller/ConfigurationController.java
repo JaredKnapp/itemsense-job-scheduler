@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.impinj.itemsense.scheduler.App;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
+import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import javafx.collections.FXCollections;
@@ -37,25 +37,31 @@ public class ConfigurationController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		lvItemSense.setItems(FXCollections.observableArrayList(App.getConfig()));
-		lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
+		try {
+			lvItemSense.setItems(FXCollections
+					.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs()));
+			lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
 
-			@Override
-			public ListCell<ItemSenseConfig> call(ListView<ItemSenseConfig> param) {
-				ListCell<ItemSenseConfig> cell = new ListCell<ItemSenseConfig>() {
+				@Override
+				public ListCell<ItemSenseConfig> call(ListView<ItemSenseConfig> param) {
+					ListCell<ItemSenseConfig> cell = new ListCell<ItemSenseConfig>() {
 
-					@Override
-					protected void updateItem(ItemSenseConfig item, boolean isEmpty) {
-						super.updateItem(item, isEmpty);
-						if (item != null) {
-							setText(item.getName());
+						@Override
+						protected void updateItem(ItemSenseConfig item, boolean isEmpty) {
+							super.updateItem(item, isEmpty);
+							if (item != null) {
+								setText(item.getName());
+							}
 						}
-					}
 
-				};
-				return cell;
-			}
-		});
+					};
+					return cell;
+				}
+			});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
@@ -106,21 +112,19 @@ public class ConfigurationController implements Initializable {
 	}
 
 	public void onSaveData(ItemSenseConfig configData) {
-		if(configData.getOid()==null) {
+		if (configData.getOid() == null) {
 			lvItemSense.getItems().add(configData);
 			configData.setOid(OIDGenerator.next());
 		}
 		lvItemSense.refresh();
 	}
-	
+
 	public void onCancel() {
 		lvItemSense.refresh();
 	}
-	
+
 	public void onDelete() {
 		lvItemSense.refresh();
 	}
-	
-	
 
 }

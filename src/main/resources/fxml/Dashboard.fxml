@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -56,14 +57,20 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="btnStart" mnemonicParsing="false" onAction="#btnStart_OnAction" text="Queue Scheduled Jobs" GridPane.columnIndex="1">
-                                 <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/play-button.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic></Button>
+                              <StackPane alignment="TOP_RIGHT" GridPane.columnIndex="1">
+                                 <children>
+                                    <Button fx:id="btnStop" disable="true" mnemonicParsing="false" onAction="#btnStop_OnAction" prefWidth="150.0" text="Stop Scheduled Jobs" />
+                                    <Button fx:id="btnStart" mnemonicParsing="false" onAction="#btnStart_OnAction" prefWidth="150.0" text="Start Scheduled Jobs">
+                                       <graphic>
+                                          <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/play-button.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </StackPane>
                            </children>
                         </GridPane>
                         <TableView VBox.vgrow="ALWAYS">

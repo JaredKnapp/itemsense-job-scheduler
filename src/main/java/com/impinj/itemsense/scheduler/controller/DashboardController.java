@@ -1,9 +1,11 @@
 package com.impinj.itemsense.scheduler.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.impinj.itemsense.scheduler.App;
+import com.impinj.itemsense.scheduler.service.JobService;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,9 +21,31 @@ public class DashboardController{
     @FXML // fx:id="btnStart"
     private Button btnStart; // Value injected by FXMLLoader
 
+    @FXML // fx:id="btnStop"
+    private Button btnStop; // Value injected by FXMLLoader
+
     @FXML
     void btnStart_OnAction(ActionEvent event) {
-    	App.startJobs();
+    	try {
+    		JobService.getService(true).queueAllJobs();
+    		btnStart.setDisable(true);
+    		btnStart.setVisible(false);
+    		btnStop.setDisable(false);
+    		btnStop.setVisible(true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    @FXML
+    void btnStop_OnAction(ActionEvent event) {
+    	JobService service = JobService.getService(false);
+		if(service != null) service.dequeueAllJobs();
+		btnStart.setDisable(false);
+		btnStart.setVisible(true);
+		btnStop.setDisable(true);
+		btnStop.setVisible(false);
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

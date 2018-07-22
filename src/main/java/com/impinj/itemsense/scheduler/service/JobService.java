@@ -3,6 +3,7 @@ package com.impinj.itemsense.scheduler.service;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
@@ -50,8 +51,8 @@ public class JobService {
 	 */
 	private List<JobResult> jobResults = Collections.synchronizedList(new LinkedList<JobResult>());
 	
-	public static JobService getService() {
-		if(service == null) service = new JobService();
+	public static JobService getService(boolean createIfNull) {
+		if(service == null && createIfNull) service = new JobService();
 		return service;
 	}
 	
@@ -116,7 +117,7 @@ public class JobService {
 		// TODO: TEST TO SEE IF CHANGES TO CONFIG SHARED IN PARTICULAR, impact the job.
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(ConnectorConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG,
-				App.getConfigByOID(itemSenseConfigJob.getItemSenseOid()));
+				DataService.getService(true).getItemSenseConfigByOID(itemSenseConfigJob.getItemSenseOid()));
 		jobDataMap.put(ConnectorConstants.JOB_DATA_MAP_JOB_CONFIG, itemSenseConfigJob);
 
 		JobDetail job = JobBuilder.newJob(jobClass).withIdentity(jobKeyFromConf(itemSenseConfigJob))
@@ -136,12 +137,12 @@ public class JobService {
 	}
 
 	/**
-	 * This method will queue all active jobs if the store is active. If the store
+	 * This method will queue all active jobs if ItemSense is active. If ItemSense
 	 * is not active, no jobs will be queued.
 	 *
 	 * @param store
 	 */
-	public void queueStoreJobs(ItemSenseConfig configData) {
+	public void queueJobs(ItemSenseConfig configData) {
 		if (configData.isActive()) {
 			configData.getActiveJobs().stream().forEach(jobConfig -> {
 				try {
@@ -153,21 +154,22 @@ public class JobService {
 		}
 	}
 
-	public void queueAllQuartzJobs() {
+	public void queueAllJobs() throws IOException {
 		logger.info("Reloading all Quartz Jobs");
-		App.getConfig().forEach(config -> queueStoreJobs(config));
+		DataService.getService(true).getSystemConfig().getItemSenseConfigs().forEach(config -> queueJobs(config));
 	}
 
 	/**
 	 * Delete from the Quartz Queue
 	 */
-	public void dequeueAllQuartzJobs() {
+	public void dequeueAllJobs() {
 		try {
 			scheduler.getJobGroupNames().stream().forEach(groupName -> {
 				try {
 					scheduler.getJobKeys(GroupMatcher.groupEquals(groupName)).forEach(jobKey -> {
 						try {
 							scheduler.deleteJob(jobKey);
+							logger.info("Removed Job " + jobKey);
 						} catch (SchedulerException e) {
 							logger.error("Unable to delete Job " + jobKey);
 						}
@@ -193,7 +195,7 @@ public class JobService {
 	}
 	
 	public void shutdown() throws SchedulerException {
-		this.dequeueAllQuartzJobs();
+		this.dequeueAllJobs();
 		scheduler.shutdown(false);
 	}
 

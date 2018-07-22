@@ -1,28 +1,20 @@
 package com.impinj.itemsense.scheduler.service;
 
-import java.util.TimeZone;
-
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 import org.quartz.CronExpression;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
@@ -31,8 +23,6 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.quartz.impl.triggers.CronTriggerImpl;
-import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,40 +35,46 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 public class JobService {
 
 	private static final Logger logger = LoggerFactory.getLogger(JobService.class);
+	private static final int JOB_RESULTS_STACK_SIZE = 1000;
+	private static JobService service;
+
+	/**
+	 * The place non-Spring (the Quartz jobs when they wake up) get the
+	 * configuration information.
+	 */
+	private Scheduler scheduler;
+
+	/**
+	 * Quartz Jobs and the UIs both access this table to find results of jobs, so we
+	 * use an old sync'ed vector which is a vector!
+	 */
+	private List<JobResult> jobResults = Collections.synchronizedList(new LinkedList<JobResult>());
 	
-    /**
-     * The place non-Spring (the Quartz jobs when they wake up) get the
-     * configuration information.
-     */
-    private Scheduler scheduler;
-
-    
-    public JobService() {
-        logger.info("Creating Quartz Job Scheduler");
-        try {
-            scheduler = StdSchedulerFactory.getDefaultScheduler();
-            ListenerManager listenerManager = scheduler.getListenerManager();
-            //listenerManager.addJobListener(new JobServiceJobListener());
-            scheduler.start();
-        } catch (SchedulerException e) {
-            throw new RuntimeException("Unable to configure Quartz Scheduler Factory.", e);
-        }
-    }
-    
-    /**
-     * Quartz Jobs and the UIs both access this table to find results of jobs,
-     * so we use and old sync'ed vector which is a vector!
-     */
-    private List<JobResult> jobResults = Collections.synchronizedList(new LinkedList<JobResult>());
-
+	public static JobService getService() {
+		if(service == null) service = new JobService();
+		return service;
+	}
 	
-    private JobKey jobKeyFromConf(ItemSenseConfigJob config) {
-        return JobKey.jobKey(config.getOid(), App.getApplicationId());
-    }
+	private JobService() {
+		logger.info("Creating Quartz Job Scheduler");
+		try {
+			scheduler = StdSchedulerFactory.getDefaultScheduler();
+			ListenerManager listenerManager = scheduler.getListenerManager();
+			listenerManager.addJobListener(new JobListener(this));
+			scheduler.start();
+		} catch (SchedulerException e) {
+			throw new RuntimeException("Unable to configure Quartz Scheduler Factory.", e);
+		}
+	}
 
-    private TriggerKey triggerKeyFromConf(ItemSenseConfigJob config) {
-        return TriggerKey.triggerKey(config.getOid(), App.getApplicationId());
-    }
+
+	private JobKey jobKeyFromConf(ItemSenseConfigJob config) {
+		return JobKey.jobKey(config.getOid(), App.getApplicationId());
+	}
+
+	private TriggerKey triggerKeyFromConf(ItemSenseConfigJob config) {
+		return TriggerKey.triggerKey(config.getOid(), App.getApplicationId());
+	}
 
 	/**
 	 * Builds the quartz Job and Trigger then submits the job to the quartz
@@ -90,7 +86,7 @@ public class JobService {
 	 *
 	 * @param itemSenseConfigJob
 	 * @param jobClass
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void scheduleJob(ItemSenseConfigJob itemSenseConfigJob, Class<? extends Job> jobClass) throws Exception {
 
@@ -111,32 +107,31 @@ public class JobService {
 			return;
 		}
 
-		logger.info("Scheduling Quartz Job " + jobClass.getSimpleName() + " " + itemSenseConfigJob.getJobKey() + "(Key " + itemSenseConfigJob.getOid() + ", Group "
-				+ App.getApplicationId() + ")");
+		logger.info("Scheduling Quartz Job " + jobClass.getSimpleName() + " " + itemSenseConfigJob.getJobKey() + "(Key "
+				+ itemSenseConfigJob.getOid() + ", Group " + App.getApplicationId() + ")");
 
 		// build the job data map and hand it to job builder, otherwise
 		// jobdata contents are restricted to Standard serializable data types
 		// (String, Long, etc)
 		// TODO: TEST TO SEE IF CHANGES TO CONFIG SHARED IN PARTICULAR, impact the job.
 		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put(ConnectorConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG, App.getConfigByOID(itemSenseConfigJob.getItemSenseOid()));
+		jobDataMap.put(ConnectorConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG,
+				App.getConfigByOID(itemSenseConfigJob.getItemSenseOid()));
 		jobDataMap.put(ConnectorConstants.JOB_DATA_MAP_JOB_CONFIG, itemSenseConfigJob);
 
-		JobDetail job = JobBuilder
-				.newJob(jobClass)
-				.withIdentity(jobKeyFromConf(itemSenseConfigJob))
-				.usingJobData(jobDataMap)
-				.build();
+		JobDetail job = JobBuilder.newJob(jobClass).withIdentity(jobKeyFromConf(itemSenseConfigJob))
+				.usingJobData(jobDataMap).build();
 
-		Trigger trigger = newTrigger()
-				.withIdentity(triggerKeyFromConf(itemSenseConfigJob))
+		Trigger trigger = newTrigger().withIdentity(triggerKeyFromConf(itemSenseConfigJob))
 				.withSchedule(cronSchedule(itemSenseConfigJob.getSchedule()).inTimeZone(TimeZone.getTimeZone("UTC")))
 				.build();
 		try {
 			Date jobDate = scheduler.scheduleJob(job, trigger);
-			logger.info("Scheduled job " + jobDate.toLocaleString());
+			logger.info("Scheduled job " + jobDate);
 		} catch (SchedulerException e) {
-			throw new RuntimeException("Unable to Schedule Quartz Job " + jobClass.getSimpleName() + " " + itemSenseConfigJob.getJobKey(), e);
+			throw new RuntimeException(
+					"Unable to Schedule Quartz Job " + jobClass.getSimpleName() + " " + itemSenseConfigJob.getJobKey(),
+					e);
 		}
 	}
 
@@ -161,6 +156,45 @@ public class JobService {
 	public void queueAllQuartzJobs() {
 		logger.info("Reloading all Quartz Jobs");
 		App.getConfig().forEach(config -> queueStoreJobs(config));
+	}
+
+	/**
+	 * Delete from the Quartz Queue
+	 */
+	public void dequeueAllQuartzJobs() {
+		try {
+			scheduler.getJobGroupNames().stream().forEach(groupName -> {
+				try {
+					scheduler.getJobKeys(GroupMatcher.groupEquals(groupName)).forEach(jobKey -> {
+						try {
+							scheduler.deleteJob(jobKey);
+						} catch (SchedulerException e) {
+							logger.error("Unable to delete Job " + jobKey);
+						}
+					});
+				} catch (Exception e) {
+					logger.error("Unable to obtains jobs to delete ");
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Unable to obtain job group name(s) to delete ");
+		}
+	}
+
+	//TODO: Replace with Event Processing
+	protected void saveJobResult(JobResult jobResult) {
+		// if the stack is full, remove the last item to make room for the jobResult
+		// just heard...
+		if (jobResults.size() == JOB_RESULTS_STACK_SIZE) {
+			((LinkedList<JobResult>) jobResults).removeLast();
+		}
+		// add the result at "0" - the beginning of the list
+		jobResults.add(0, jobResult);
+	}
+	
+	public void shutdown() throws SchedulerException {
+		this.dequeueAllQuartzJobs();
+		scheduler.shutdown(false);
 	}
 
 }

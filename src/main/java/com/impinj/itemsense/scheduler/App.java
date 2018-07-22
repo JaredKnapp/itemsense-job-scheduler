@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.quartz.SchedulerException;
+
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.service.JobService;
@@ -19,8 +21,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class App extends Application {
-	
-	private static JobService jobService;
 
 	// Creating a static root to pass to the controller
 	private static BorderPane root = new BorderPane();
@@ -73,6 +73,16 @@ public class App extends Application {
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 			primaryStage.getIcons().add(new Image("/images/quartz_icon.png"));
+			
+			primaryStage.setOnCloseRequest(event -> {
+			    System.out.println("Stage is closing");
+			    try {
+					JobService.getService().shutdown();
+				} catch (SchedulerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
 	        
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("ItemSense Job Scheduler");
@@ -98,7 +108,6 @@ public class App extends Application {
 	}
 
 	public static void startJobs() {
-		if(jobService == null) jobService = new JobService();
-		jobService.queueAllQuartzJobs();
+		JobService.getService().queueAllQuartzJobs();
 	}
 }

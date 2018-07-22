@@ -16,6 +16,7 @@ import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 public class DataService {
 	private static final Logger logger = LoggerFactory.getLogger(JsonMapper.class);
+	private static DataService service;
 
 	private final String jobConfigDir = "target/classes";
 	private final String jobConfigMasterfileJson = "SystemConfiguration.json";
@@ -24,7 +25,7 @@ public class DataService {
 	private SystemConfiguration systemConfig;
 
 	public static ArrayList<ItemSenseConfig> load() throws IOException {
-		DataService service = new DataService();
+		service = new DataService();
 		return service.systemConfig.getItemSenseConfigs();
 	}
 
@@ -121,5 +122,4 @@ public class DataService {
 		}
 		return config;
 	}
-
 }

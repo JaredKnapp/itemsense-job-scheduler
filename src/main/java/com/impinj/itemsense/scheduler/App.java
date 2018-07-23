@@ -33,7 +33,7 @@ public class App extends Application {
 	public static String getApplicationId() {
 		return appId;
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -60,7 +60,6 @@ public class App extends Application {
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 			primaryStage.setOnCloseRequest(event -> {
-				System.out.println("Stage is closing");
 				try {
 					JobService service = JobService.getService(false);
 					if (service != null)

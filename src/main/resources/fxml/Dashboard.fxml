@@ -19,8 +19,6 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.DashboardController">
-	<center>
-	</center>
    <center>
       <VBox spacing="10.0" BorderPane.alignment="CENTER">
          <children>
@@ -59,8 +57,16 @@
                               </Label>
                               <StackPane alignment="TOP_RIGHT" GridPane.columnIndex="1">
                                  <children>
-                                    <Button fx:id="btnStop" disable="true" mnemonicParsing="false" onAction="#btnStop_OnAction" prefWidth="150.0" text="Stop Scheduled Jobs" />
-                                    <Button fx:id="btnStart" mnemonicParsing="false" onAction="#btnStart_OnAction" prefWidth="150.0" text="Start Scheduled Jobs">
+                                    <Button fx:id="btnStop" disable="true" mnemonicParsing="false" onAction="#btnStop_OnAction" prefWidth="200.0" text="Stop Scheduled Jobs" visible="false">
+                                       <graphic>
+                                          <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/stop-button.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button fx:id="btnStart" mnemonicParsing="false" onAction="#btnStart_OnAction" prefWidth="200.0" text="Start Scheduled Jobs">
                                        <graphic>
                                           <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
                                              <image>
@@ -73,15 +79,17 @@
                               </StackPane>
                            </children>
                         </GridPane>
-                        <TableView VBox.vgrow="ALWAYS">
-                          <columns>
-                            <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" text="Server" />
-                            <TableColumn prefWidth="75.0" text="Facility" />
+                        <TableView prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn prefWidth="75.0" text="Server" />
+                              <TableColumn prefWidth="75.0" text="Facility" />
                               <TableColumn prefWidth="75.0" text="Recipe" />
                               <TableColumn prefWidth="75.0" text="Schedule" />
-                              <TableColumn prefWidth="75.0" text="Last Run" />
-                              <TableColumn prefWidth="75.0" text="Next Run" />
-                          </columns>
+                              <TableColumn editable="false" prefWidth="75.0" text="Next Run" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
                         </TableView>
                         <Accordion>
                           <panes>
@@ -120,6 +128,6 @@
 
    </top>
    <bottom>
-      <Label text="Label" BorderPane.alignment="CENTER" />
+      <Label text="Copyright 2018" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>

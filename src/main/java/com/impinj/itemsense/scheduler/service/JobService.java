@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.scheduler.App;
 import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
+import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import com.impinj.itemsense.scheduler.job.JobResult;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
@@ -146,7 +147,7 @@ public class JobService {
 		if (configData.isActive()) {
 			configData.getActiveJobs().stream().forEach(jobConfig -> {
 				try {
-					scheduleJob(jobConfig, Job.class);
+					scheduleJob(jobConfig, ItemSenseJob.class);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

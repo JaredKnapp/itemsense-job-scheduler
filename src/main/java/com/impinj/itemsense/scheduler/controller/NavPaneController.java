@@ -13,14 +13,14 @@ import javafx.scene.layout.BorderPane;
 
 public class NavPaneController {
 	  @FXML // fx:id="showDashboard"
-	  private Button showDashboard;
+	  private Button btnShowDashboard;
 
 	  @FXML // fx:id="showConfiguration"
-	  private Button showConfiguration;
+	  private Button btnShowConfiguration;
 	  
-/*	  @FXML // fx:id="exitApplication"
-	  private Button exitApplication; 
-*/
+	  @FXML // fx:id="exitApplication"
+	  private Button btnExitApplication; 
+
 	  /**
 	   * Event handler for Dashboard
 	   */
@@ -69,4 +69,11 @@ public class NavPaneController {
 	  void exitApplication(ActionEvent event) {
 		  System.exit(0);
 	  }
+	  
+		@FXML // This method is called by the FXMLLoader when initialization is complete
+		void initialize() {
+			assert btnShowDashboard != null : "fx:id=\"btnShowDashboard\" was not injected: check your FXML file 'NavPane.fxml'.";
+			assert btnShowConfiguration != null : "fx:id=\"btnShowConfiguration\" was not injected: check your FXML file 'NavPane.fxml'.";
+			assert btnExitApplication != null : "fx:id=\"btnExitApplication\" was not injected: check your FXML file 'NavPane.fxml'.";
+		}
 }

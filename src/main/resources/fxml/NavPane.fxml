@@ -8,7 +8,7 @@
 
 <ToolBar xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.NavPaneController">
   <items>
-    <Button fx:id="showDashboard" accessibleText="Dashboar" mnemonicParsing="false" onAction="#switchToDashboard">
+    <Button fx:id="btnShowDashboard" accessibleText="Dashboar" mnemonicParsing="false" onAction="#switchToDashboard">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -20,7 +20,7 @@
             <Tooltip text="Dashboard" />
          </tooltip>
       </Button>
-      <Button fx:id="showConfiguration" accessibleText="Configuration" mnemonicParsing="false" onAction="#switchToConfiguration">
+      <Button fx:id="btnShowConfiguration" accessibleText="Configuration" mnemonicParsing="false" onAction="#switchToConfiguration">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -32,7 +32,7 @@
             <Tooltip text="Configuration" />
          </tooltip>
       </Button>
-      <Button fx:id="exitApplication" accessibleText="Exit" mnemonicParsing="false" onAction="#exitApplication">
+      <Button fx:id="btnExitApplication" accessibleText="Exit" mnemonicParsing="false" onAction="#exitApplication">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>

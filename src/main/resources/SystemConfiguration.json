@@ -19,6 +19,17 @@
 			      "startDelay": "PT0S",
 			      "duration": 43200,
 			      "stopRunningJobs": true
+		    },
+		    {
+			      "active": true,
+			      "facility": "Training",
+			      "name": "Deep Inventory Every 5 Minutes",
+			      "recipe": "Deep Scan Inventory",
+			      "jobType": "Inventory",
+			      "schedule": "0 0/5 * * * ?",
+			      "startDelay": "PT0S",
+			      "duration": 300,
+			      "stopRunningJobs": true
 		    }
 	    ]
 	},

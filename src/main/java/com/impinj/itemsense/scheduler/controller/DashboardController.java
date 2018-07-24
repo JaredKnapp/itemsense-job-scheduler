@@ -2,13 +2,22 @@ package com.impinj.itemsense.scheduler.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import com.impinj.itemsense.scheduler.model.TriggeredJob;
 import com.impinj.itemsense.scheduler.service.JobService;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
+import javafx.util.Duration;
 
 public class DashboardController {
 	@FXML // ResourceBundle that was given to the FXMLLoader
@@ -22,11 +31,28 @@ public class DashboardController {
 
 	@FXML // fx:id="btnStop"
 	private Button btnStop; // Value injected by FXMLLoader
+	
+    @FXML
+    private TableView<TriggeredJob> tblTriggeredJobs;
+
+	private Timeline refreshTimer;
 
 	@FXML
 	void btnStart_OnAction(ActionEvent event) {
 		try {
 			JobService.getService(true).queueAllJobs();
+			refreshTriggeredJobs();
+
+			refreshTimer = new Timeline(new KeyFrame(Duration.seconds(10), new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					System.out.println("this is called every 10 seconds on UI thread");
+					refreshTriggeredJobs();
+				}
+			}));
+			refreshTimer.setCycleCount(Timeline.INDEFINITE);
+			refreshTimer.play();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,12 +62,32 @@ public class DashboardController {
 		btnStop.setDisable(false);
 		btnStop.setVisible(true);
 	}
+	
+	private void refreshTriggeredJobs() {
+		List<TriggeredJob> triggeredJobs = JobService.getService(true).getQuartzJobs();
+		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
+
+		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty().multiply(Bindings.size(tblTriggeredJobs.getItems()).add(1.1)));
+		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
+		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
+	}
 
 	@FXML
 	void btnStop_OnAction(ActionEvent event) {
+		if (refreshTimer != null) {
+			refreshTimer.stop();
+		}
+		
 		JobService service = JobService.getService(false);
-		if (service != null)
+		if (service != null) {
 			service.dequeueAllJobs();
+		}
+		
+		tblTriggeredJobs.setItems(FXCollections.observableArrayList());
+		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty().multiply(Bindings.size(tblTriggeredJobs.getItems()).add(3)));
+		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
+		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
+
 		btnStart.setDisable(false);
 		btnStart.setVisible(true);
 		btnStop.setDisable(true);

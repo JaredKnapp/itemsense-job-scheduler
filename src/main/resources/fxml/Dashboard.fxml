@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -19,115 +20,135 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.DashboardController">
-   <center>
-      <VBox spacing="10.0" BorderPane.alignment="CENTER">
-         <children>
-            <GridPane VBox.vgrow="NEVER">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="27.2" minHeight="27.2" prefHeight="27.2" />
-              </rowConstraints>
-               <children>
-                  <Label text="Connector Dashboard">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-               </children>
-            </GridPane>
-            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
-               <content>
-                  <VBox>
-                     <children>
-                        <GridPane>
-                          <columnConstraints>
-            					                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" percentWidth="100.0" />
-            					                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" percentWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints vgrow="SOMETIMES" />
-                          </rowConstraints>
-                           <children>
-                              <Label prefWidth="96.0" text="Scheduled Jobs">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <StackPane alignment="TOP_RIGHT" GridPane.columnIndex="1">
-                                 <children>
-                                    <Button fx:id="btnStop" disable="true" mnemonicParsing="false" onAction="#btnStop_OnAction" prefWidth="200.0" text="Stop Scheduled Jobs" visible="false">
-                                       <graphic>
-                                          <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/stop-button.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
-                                    <Button fx:id="btnStart" mnemonicParsing="false" onAction="#btnStart_OnAction" prefWidth="200.0" text="Start Scheduled Jobs">
-                                       <graphic>
-                                          <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/play-button.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
-                                 </children>
-                              </StackPane>
-                           </children>
-                        </GridPane>
-                        <TableView prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-                           <columns>
-                              <TableColumn prefWidth="75.0" text="Server" />
-                              <TableColumn prefWidth="75.0" text="Facility" />
-                              <TableColumn prefWidth="75.0" text="Recipe" />
-                              <TableColumn prefWidth="75.0" text="Schedule" />
-                              <TableColumn editable="false" prefWidth="75.0" text="Next Run" />
-                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                        <Accordion>
-                          <panes>
-                            <TitledPane animated="false" text="Job Results">
-                                 <content>
-                                    <GridPane>
-                                       <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" percentWidth="100.0" />
-                                       </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints vgrow="SOMETIMES" />
-                                       </rowConstraints>
-                                       <children>
-                                          <Label text="Job Results">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </GridPane>
-                                 </content>
-                            </TitledPane>
-                          </panes>
-                        </Accordion>
-                     </children>
-                  </VBox>
-               </content>
-            </ScrollPane>
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </VBox>
-   </center>
-   <top>
+	<center>
+		<VBox spacing="10.0" BorderPane.alignment="CENTER">
+			<children>
+				<GridPane VBox.vgrow="NEVER">
+					<columnConstraints>
+						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+					</columnConstraints>
+					<rowConstraints>
+						<RowConstraints maxHeight="27.2" minHeight="27.2" prefHeight="27.2" />
+					</rowConstraints>
+					<children>
+						<Label text="Connector Dashboard">
+							<font>
+								<Font name="System Bold" size="18.0" />
+							</font>
+						</Label>
+					</children>
+				</GridPane>
+				<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+					<content>
+						<VBox>
+							<children>
+								<GridPane>
+									<columnConstraints>
+										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" percentWidth="100.0" />
+										<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" percentWidth="100.0" />
+									</columnConstraints>
+									<rowConstraints>
+										<RowConstraints vgrow="SOMETIMES" />
+									</rowConstraints>
+									<children>
+										<Label prefWidth="96.0" text="Scheduled Jobs">
+											<font>
+												<Font size="14.0" />
+											</font>
+										</Label>
+										<StackPane alignment="TOP_RIGHT" GridPane.columnIndex="1">
+											<children>
+												<Button fx:id="btnStop" disable="true" mnemonicParsing="false" onAction="#btnStop_OnAction" prefWidth="200.0" text="Stop Scheduled Jobs" visible="false">
+													<graphic>
+														<ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+															<image>
+																<Image url="@../images/stop-button.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+												<Button fx:id="btnStart" mnemonicParsing="false" onAction="#btnStart_OnAction" prefWidth="200.0" text="Start Scheduled Jobs">
+													<graphic>
+														<ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+															<image>
+																<Image url="@../images/play-button.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+											</children>
+										</StackPane>
+									</children>
+								</GridPane>
+								<TableView fx:id="tblTriggeredJobs" fixedCellSize="30.0" prefHeight="90.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+									<columns>
+										<TableColumn editable="false" prefWidth="75.0" sortable="false" text="Server">
+											<cellValueFactory>
+												<PropertyValueFactory property="itemsense" />
+											</cellValueFactory>
+										</TableColumn>
+										<TableColumn editable="false" prefWidth="75.0" sortable="false" text="Facility">
+											<cellValueFactory>
+												<PropertyValueFactory property="facility" />
+											</cellValueFactory>
+										</TableColumn>
+										<TableColumn editable="false" prefWidth="75.0" sortable="false" text="Job Name">
+											<cellValueFactory>
+												<PropertyValueFactory property="jobName" />
+											</cellValueFactory>
+										</TableColumn>
+										<TableColumn editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Previous Fire">
+											<cellValueFactory>
+												<PropertyValueFactory property="prevFire" />
+											</cellValueFactory>
+										</TableColumn>
+										<TableColumn editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Next Fire">
+											<cellValueFactory>
+												<PropertyValueFactory property="nextFire" />
+											</cellValueFactory>
+										</TableColumn>
+									</columns>
+									<columnResizePolicy>
+										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+									</columnResizePolicy>
+								</TableView>
+								<Accordion>
+									<panes>
+										<TitledPane animated="false" text="Job Results">
+											<content>
+												<GridPane>
+													<columnConstraints>
+														<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" percentWidth="100.0" />
+													</columnConstraints>
+													<rowConstraints>
+														<RowConstraints vgrow="SOMETIMES" />
+													</rowConstraints>
+													<children>
+														<Label text="Job Results">
+															<font>
+																<Font size="14.0" />
+															</font>
+														</Label>
+													</children>
+												</GridPane>
+											</content>
+										</TitledPane>
+									</panes>
+								</Accordion>
+							</children>
+						</VBox>
+					</content>
+				</ScrollPane>
+			</children>
+			<opaqueInsets>
+				<Insets />
+			</opaqueInsets>
+		</VBox>
+	</center>
+	<top>
 
-   </top>
-   <bottom>
-      <Label text="Copyright 2018" BorderPane.alignment="CENTER" />
-   </bottom>
+	</top>
+	<bottom>
+		<Label text="Copyright 2018" BorderPane.alignment="CENTER" />
+	</bottom>
 </BorderPane>

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.quartz.CronExpression;
 import org.quartz.Job;
@@ -24,6 +25,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.quartz.impl.triggers.CronTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,7 @@ import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import com.impinj.itemsense.scheduler.job.JobResult;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.model.TriggeredJob;
 
 public class JobService {
 
@@ -68,7 +71,6 @@ public class JobService {
 			throw new RuntimeException("Unable to configure Quartz Scheduler Factory.", e);
 		}
 	}
-
 
 	private JobKey jobKeyFromConf(ItemSenseConfigJob config) {
 		return JobKey.jobKey(config.getOid(), App.getApplicationId());
@@ -183,7 +185,35 @@ public class JobService {
 			logger.error("Unable to obtain job group name(s) to delete ");
 		}
 	}
-
+	
+	public void shutdown() throws SchedulerException {
+		this.dequeueAllJobs();
+		scheduler.shutdown(false);
+	}
+    
+    private JobKey jobKeyFromTriggerKey(TriggerKey triggerKey) {
+        return JobKey.jobKey(triggerKey.getName(), triggerKey.getGroup());
+    }
+    
+	public List<TriggeredJob> getQuartzJobs() {
+        try {
+            return scheduler.getTriggerKeys(GroupMatcher.groupEquals(App.getApplicationId())).stream().map(triggerKey -> {
+                try {
+                    return new TriggeredJob((CronTriggerImpl) scheduler.getTrigger(triggerKey),
+                            scheduler.getJobDetail(jobKeyFromTriggerKey(triggerKey)));
+                } catch (Exception e) {
+                    throw new RuntimeException("Unable to find Quartz Job and Trigger for Trigger Key " + triggerKey,
+                            e);
+                }
+            }).collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to find Quartz Jobs", e);
+        }
+    }
+	
+	
 	//TODO: Replace with Event Processing
 	protected void saveJobResult(JobResult jobResult) {
 		// if the stack is full, remove the last item to make room for the jobResult
@@ -193,11 +223,6 @@ public class JobService {
 		}
 		// add the result at "0" - the beginning of the list
 		jobResults.add(0, jobResult);
-	}
-	
-	public void shutdown() throws SchedulerException {
-		this.dequeueAllJobs();
-		scheduler.shutdown(false);
 	}
 
 }

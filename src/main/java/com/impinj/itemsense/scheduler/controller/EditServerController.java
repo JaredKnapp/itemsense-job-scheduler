@@ -1,16 +1,23 @@
 package com.impinj.itemsense.scheduler.controller;
 
+import com.impinj.itemsense.client.coordinator.CoordinatorApiController;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
+import java.net.URI;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 public class EditServerController implements Initializable  {
 
@@ -50,7 +57,32 @@ public class EditServerController implements Initializable  {
     void btnCancel_OnAction(ActionEvent event) {
     	//Just Get Out!!
     }
-
+    
+    @FXML
+    void btnTestConnection_OnAction(ActionEvent event) {
+        Client client = ClientBuilder.newClient();
+        client.register(HttpAuthenticationFeature.basic(txtUserName.getText(),
+                                                        txtPassword.getText()));
+        CoordinatorApiController itemsenseCoordinatorController = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
+        boolean success = true;
+        try { 
+            System.out.println("# configs="+ itemsenseCoordinatorController.getUserController().getUsers().size());
+        } catch (Exception e)  {
+            success = false;
+        }
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Test Connection");
+        // Header Text: null
+        alert.setHeaderText(null);
+        System.out.println("Connection to: "+ txtUserName.getText() +"/"+ txtPassword.getText() + " " +
+                                  txtHostUrl.getText());
+        if (success)
+            alert.setContentText("Connection succeeded!");
+        else
+            alert.setContentText("Connection failed!");
+ 
+        alert.showAndWait();
+    }
     @FXML
     void btnSave_OnAction(ActionEvent event) {
 		configData.setName(txtName.getText());

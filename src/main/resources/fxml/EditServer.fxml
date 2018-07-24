@@ -17,9 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
 	<center>
 		<ScrollPane fitToHeight="true" fitToWidth="true">
 			<content>
@@ -27,25 +25,17 @@
 					<children>
 						<GridPane hgap="3.0" vgap="3.0" VBox.vgrow="NEVER">
 							<columnConstraints>
-								<ColumnConstraints hgrow="NEVER"
-									minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES"
-									minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints />
-								<RowConstraints minHeight="10.0"
-									prefHeight="30.0" vgrow="SOMETIMES" />
-								<RowConstraints minHeight="10.0"
-									prefHeight="30.0" vgrow="SOMETIMES" />
-								<RowConstraints minHeight="10.0"
-									prefHeight="30.0" vgrow="SOMETIMES" />
-								<RowConstraints minHeight="10.0"
-									prefHeight="30.0" vgrow="SOMETIMES" />
-								<RowConstraints minHeight="10.0"
-									prefHeight="30.0" vgrow="SOMETIMES" />
-								<RowConstraints minHeight="10.0"
-									prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 							</rowConstraints>
 							<children>
 								<Label text="Name" GridPane.rowIndex="1">
@@ -63,13 +53,9 @@
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<TextField fx:id="txtName" GridPane.columnIndex="1"
-									GridPane.rowIndex="1" />
-								<TextField fx:id="txtHostUrl"
-									promptText="http://is.myserver.com" GridPane.columnIndex="1"
-									GridPane.rowIndex="2" />
-								<TextField fx:id="txtUserName"
-									GridPane.columnIndex="1" GridPane.rowIndex="3" />
+								<TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+								<TextField fx:id="txtHostUrl" promptText="http://is.myserver.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+								<TextField fx:id="txtUserName" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 								<Label text="Password" GridPane.rowIndex="4">
 									<font>
 										<Font name="System Bold" size="12.0" />
@@ -80,31 +66,22 @@
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<PasswordField fx:id="txtPassword"
-									GridPane.columnIndex="1" GridPane.rowIndex="4" />
-								<TextField fx:id="txtUtcOffset"
-									GridPane.columnIndex="1" GridPane.rowIndex="6" />
-								<Button fx:id="btnTestConnection" mnemonicParsing="false"
-									text="Test Connection" GridPane.columnIndex="1"
-									GridPane.rowIndex="5" />
-								<CheckBox mnemonicParsing="false" text="Active"
-									GridPane.columnIndex="1" />
+								<PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+								<TextField fx:id="txtUtcOffset" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+								<CheckBox mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
 							</children>
 						</GridPane>
-						<TableView editable="true" prefHeight="200.0"
-							tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+						<TableView editable="true" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
 							<columns>
-								<TableColumn prefWidth="51.99997103214264"
-									text="Active" />
-								<TableColumn prefWidth="98.40001678466797"
-									text="Facility" />
+								<TableColumn prefWidth="51.99997103214264" text="Active" />
+								<TableColumn prefWidth="98.40001678466797" text="Facility" />
 								<TableColumn prefWidth="75.0" text="Name" />
 								<TableColumn prefWidth="75.0" text="Recipe" />
 								<TableColumn prefWidth="75.0" text="Schedule" />
 								<TableColumn prefWidth="75.0" text="Start Delay" />
 								<TableColumn prefWidth="75.0" text="Duration" />
-								<TableColumn prefWidth="75.0"
-									text="Stop Running Jobs" />
+								<TableColumn prefWidth="75.0" text="Stop Running Jobs" />
 							</columns>
 							<VBox.margin>
 								<Insets top="20.0" />
@@ -119,13 +96,10 @@
 		</ScrollPane>
 	</center>
 	<bottom>
-		<ButtonBar prefHeight="40.0" prefWidth="200.0"
-			BorderPane.alignment="CENTER">
+		<ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<buttons>
-				<Button fx:id="btnSave" mnemonicParsing="false"
-					onAction="#btnSave_OnAction" text="Save" />
-				<Button fx:id="btnCancel" mnemonicParsing="false"
-					onAction="#btnCancel_OnAction" text="Cancel" />
+				<Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnAction" text="Cancel" />
+				<Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save" />
 			</buttons>
 		</ButtonBar>
 	</bottom>

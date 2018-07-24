@@ -31,9 +31,9 @@ public class DashboardController {
 
 	@FXML // fx:id="btnStop"
 	private Button btnStop; // Value injected by FXMLLoader
-	
-    @FXML
-    private TableView<TriggeredJob> tblTriggeredJobs;
+
+	@FXML
+	private TableView<TriggeredJob> tblTriggeredJobs;
 
 	private Timeline refreshTimer;
 
@@ -62,31 +62,20 @@ public class DashboardController {
 		btnStop.setDisable(false);
 		btnStop.setVisible(true);
 	}
-	
-	private void refreshTriggeredJobs() {
-		List<TriggeredJob> triggeredJobs = JobService.getService(true).getQuartzJobs();
-		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
-
-		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty().multiply(Bindings.size(tblTriggeredJobs.getItems()).add(1.1)));
-		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
-		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
-	}
 
 	@FXML
 	void btnStop_OnAction(ActionEvent event) {
 		if (refreshTimer != null) {
 			refreshTimer.stop();
 		}
-		
+
 		JobService service = JobService.getService(false);
 		if (service != null) {
 			service.dequeueAllJobs();
 		}
-		
+
 		tblTriggeredJobs.setItems(FXCollections.observableArrayList());
-		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty().multiply(Bindings.size(tblTriggeredJobs.getItems()).add(3)));
-		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
-		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
+		setTableHeight(3);
 
 		btnStart.setDisable(false);
 		btnStart.setVisible(true);
@@ -99,4 +88,18 @@ public class DashboardController {
 		assert btnStop != null : "fx:id=\"btnStop\" was not injected: check your FXML file 'Dashboard.fxml'.";
 		assert btnStart != null : "fx:id=\"btnStart\" was not injected: check your FXML file 'Dashboard.fxml'.";
 	}
+
+	private void setTableHeight(double rowPadding) {
+		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty().multiply(Bindings.size(tblTriggeredJobs.getItems()).add(rowPadding)));
+		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
+		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
+	}
+
+	private void refreshTriggeredJobs() {
+		List<TriggeredJob> triggeredJobs = JobService.getService(true).getQuartzJobs();
+		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
+
+		setTableHeight(1.1);
+	}
+
 }

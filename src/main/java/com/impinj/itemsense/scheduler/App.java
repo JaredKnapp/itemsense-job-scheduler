@@ -22,7 +22,7 @@ public class App extends Application {
 	// Creating a static root to pass to the controller
 	private static BorderPane root = new BorderPane();
 	private static String appId = UUID.randomUUID().toString();
-
+	
 	/**
 	 * Just a root getter for the controller to use
 	 */

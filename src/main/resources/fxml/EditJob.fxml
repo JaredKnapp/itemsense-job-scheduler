@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
 <BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
    <center>
       <AnchorPane id="AnchorPane" prefHeight="240.0" prefWidth="323.0">
@@ -34,21 +33,18 @@
               </rowConstraints>
                <children>
                   <Label text="Facility" GridPane.rowIndex="1" />
-                  <TextField id="Facility" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                  </TextField>
-                  <Label text="Name" GridPane.rowIndex="2" />
+                  <Label text="Name" GridPane.rowIndex="2" />					
                   <Label text="Receipe" GridPane.rowIndex="3" />
                   <Label text="Schedule" GridPane.rowIndex="4" />
                   <Label text="Start Delay" GridPane.rowIndex="5" />
                   <Label text="Duration" GridPane.rowIndex="6" />
                   <Label text="StopRunning" GridPane.rowIndex="7" />
-                  <CheckBox id="Active" mnemonicParsing="false" GridPane.columnIndex="1" />
-                  <Label text="Active" />
-                  <CheckBox id="StopRunning" mnemonicParsing="false" prefHeight="94.0" prefWidth="16.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                  <TextField id="StartDelay" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  <TextField fx:id="txtFacility" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <padding>
+                        <Insets top="8.0" />
+                     </padding>
+                  </TextField>
+                  <TextField fx:id="txtStartDelay" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -56,7 +52,7 @@
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <TextField fx:id="txtSchedule" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -64,7 +60,7 @@
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField id="Duration" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                  <TextField fx:id="txtDuration" GridPane.columnIndex="1" GridPane.rowIndex="6">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -72,8 +68,8 @@
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField id="Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField id="Reciepe" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="txtReceipe" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
          </children>

@@ -21,7 +21,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -40,11 +42,7 @@ public class EditServerController implements Initializable  {
     @FXML private TextField txtUserName;
     @FXML private PasswordField txtPassword;
     @FXML private TextField txtUtcOffset;
-    @FXML private Button btnTestConnection;
-    @FXML private Button btnSave;
-    @FXML private Button btnCancel; 
     @FXML private TableView jobsTableView;
-    @FXML private TableColumn<ItemSenseConfigJob, Boolean> active;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -81,24 +79,25 @@ public class EditServerController implements Initializable  {
  
         alert.showAndWait();
     }
-    void load_JobsEditor(ItemSenseConfigJob itemSenseConfig) throws Exception {
+    void load_JobsEditor(ItemSenseConfigJob itemSenseConfig)  {
        FXMLLoader loader = new FXMLLoader();
        loader.setLocation(getClass().getResource("/fxml/EditJob.fxml"));
-       BorderPane popup = loader.load();
-       Scene scene = new Scene(popup);
-       EditJobController controller = loader.getController();
-       controller.setItemSenseConfigJob(itemSenseConfig);
-       Stage dialogStage = new Stage();
-       dialogStage.setTitle("Edit Job");
-       dialogStage.initModality(Modality.WINDOW_MODAL);
-       dialogStage.setScene(scene);
-       dialogStage.showAndWait();
+       try {
+            BorderPane popup = loader.load();
+            Scene scene = new Scene(popup);
+            EditJobController controller = loader.getController();
+            controller.setItemSenseConfigJob(itemSenseConfig);
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Job");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.setScene(scene);
+            dialogStage.showAndWait();
+       } catch (Exception e) { e.printStackTrace(); }
     }
     
     @FXML
     void btnAdd_OnAction(ActionEvent event) {
-        try { load_JobsEditor(null);
-        } catch (Exception e) {e.printStackTrace();}
+        load_JobsEditor(null);
     }
     
     @FXML
@@ -114,6 +113,13 @@ public class EditServerController implements Initializable  {
     @FXML
     void TableViewOnMouseClicked(MouseEvent event) {
         if (event.getClickCount() == 2) { // double click
+            if(jobsTableView.getSelectionModel().getSelectedItem() != null) {
+                TableViewSelectionModel selectionModel = jobsTableView.getSelectionModel();
+                ObservableList selectedCells = selectionModel.getSelectedCells();
+                TablePosition tablePosition = (TablePosition) selectedCells.get(0);
+                System.out.println("Selected Value" + tablePosition);
+                load_JobsEditor(configData.getJobList().get(tablePosition.getRow()));
+            }
             System.out.println(jobsTableView.getSelectionModel().getSelectedItem());
         }
     }

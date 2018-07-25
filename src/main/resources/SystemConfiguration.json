@@ -34,7 +34,7 @@
 	    ]
 	},
 	{
-	  "active": true,
+	  "active": false,
 	  "name": "Impinj Test Store 2",
 	  "utcOffset": "-7",
 	  "url": "http://sandbox2.solutions.impinj.net/itemsense",

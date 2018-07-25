@@ -44,5 +44,6 @@
             <Tooltip text="Exit" />
          </tooltip>
       </Button>
+      <Button fx:id="btnPopup" mnemonicParsing="false" onAction="#btnPopup_OnPopup" text="Popup" />
   </items>
 </ToolBar>

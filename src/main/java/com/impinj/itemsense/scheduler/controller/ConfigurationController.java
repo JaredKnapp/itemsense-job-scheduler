@@ -26,14 +26,9 @@ public class ConfigurationController implements Initializable {
 
 	ObservableSet<ItemSenseConfig> observableSet;
 
-	@FXML
-	private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
-
-	@FXML
-	private AnchorPane editPane;
-
-	@FXML
-	private Button btnNew;
+	@FXML private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
+	@FXML private AnchorPane editPane;
+	@FXML private Button btnNew;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

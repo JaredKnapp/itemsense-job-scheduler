@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -72,23 +73,55 @@
 								<CheckBox mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
 							</children>
 						</GridPane>
-						<TableView editable="true" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+						<TableView fx:id="jobsTableView" editable="true" onMouseClicked="#TableViewOnMouseClicked" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
 							<columns>
-								<TableColumn prefWidth="51.99997103214264" text="Active" />
-								<TableColumn prefWidth="98.40001678466797" text="Facility" />
-								<TableColumn prefWidth="75.0" text="Name" />
-								<TableColumn prefWidth="75.0" text="Recipe" />
-								<TableColumn prefWidth="75.0" text="Schedule" />
-								<TableColumn prefWidth="75.0" text="Start Delay" />
-								<TableColumn prefWidth="75.0" text="Duration" />
-								<TableColumn prefWidth="75.0" text="Stop Running Jobs" />
+								<TableColumn prefWidth="51.99997103214264" text="Active">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="active" />
+            											</cellValueFactory>
+            										</TableColumn>
+								<TableColumn prefWidth="77.0" text="Facility">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="facility" />
+            											</cellValueFactory>
+            										</TableColumn>
+								<TableColumn prefWidth="97.0" text="Name">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="name" />
+            											</cellValueFactory>
+            										</TableColumn>
+								<TableColumn prefWidth="118.0" text="Recipe">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="recipe" />
+            											</cellValueFactory>
+            										</TableColumn>
+								<TableColumn prefWidth="92.0" text="Schedule">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="schedule" />
+            											</cellValueFactory>
+            										</TableColumn>
+								<TableColumn prefWidth="48.0" text="Start Delay">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="startDelay" />
+            											</cellValueFactory>
+            										</TableColumn>
+								<TableColumn prefWidth="67.0" text="Duration">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="duration" />
+            											</cellValueFactory>
+            										</TableColumn>
+								<TableColumn prefWidth="77.0" text="Stop Running Jobs">
+            											<cellValueFactory>
+            												<PropertyValueFactory property="stopRunningJobs" />
+            											</cellValueFactory>
+            										</TableColumn>
 							</columns>
 							<VBox.margin>
 								<Insets top="20.0" />
 							</VBox.margin>
-							<columnResizePolicy>
-								<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-							</columnResizePolicy>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
 						</TableView>
 					</children>
 				</VBox>
@@ -98,6 +131,7 @@
 	<bottom>
 		<ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<buttons>
+            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" />
 				<Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnAction" text="Cancel" />
 				<Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save" />
 			</buttons>

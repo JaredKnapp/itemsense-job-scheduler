@@ -97,7 +97,7 @@ public class NavPaneController {
         Scene scene = new Scene(popup);
         
         Stage dialogStage = new Stage();
-        dialogStage.setTitle("Edit Person");
+        dialogStage.setTitle("Edit ItemSense Job");
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();        

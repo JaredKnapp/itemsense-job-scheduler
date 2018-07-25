@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
 	<center>
 		<ScrollPane fitToHeight="true" fitToWidth="true">
 			<content>
@@ -70,7 +70,7 @@
 								<PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 								<TextField fx:id="txtUtcOffset" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-								<CheckBox mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
+								<CheckBox fx:id="chbIsActive" mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
 							</children>
 						</GridPane>
 						<TableView fx:id="jobsTableView" editable="true" onMouseClicked="#TableViewOnMouseClicked" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">

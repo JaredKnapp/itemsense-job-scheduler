@@ -1,11 +1,13 @@
 
 package com.impinj.itemsense.scheduler.controller;
 
+import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 
 public class EditJobController {
+    ItemSenseConfigJob itemSenseConfigJob;
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -15,5 +17,9 @@ public class EditJobController {
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
 
+    }
+    
+    void setItemSenseConfigJob(ItemSenseConfigJob itemSenseConfigJob) {
+        this.itemSenseConfigJob = itemSenseConfigJob;
     }
 }

@@ -2,27 +2,41 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
-   <center>
-      <AnchorPane id="AnchorPane" prefHeight="240.0" prefWidth="323.0">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
+   <bottom>
+      <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="36.0" prefWidth="323.0" BorderPane.alignment="CENTER">
          <children>
-            <GridPane layoutX="27.0" layoutY="23.0" prefHeight="270.0" prefWidth="269.0">
+            <Button mnemonicParsing="false" text="Cancel">
+               <HBox.margin>
+                  <Insets bottom="5.0" right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="btnOk" mnemonicParsing="false" onAction="#btnOk_OnAction" text="OK">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <ScrollPane fitToWidth="true">
+         <content>
+            <GridPane>
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="109.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="169.0" minWidth="10.0" prefWidth="160.0" />
+                <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -32,19 +46,19 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Facility" GridPane.rowIndex="1" />
-                  <Label text="Name" GridPane.rowIndex="2" />					
-                  <Label text="Receipe" GridPane.rowIndex="3" />
-                  <Label text="Schedule" GridPane.rowIndex="4" />
-                  <Label text="Start Delay" GridPane.rowIndex="5" />
-                  <Label text="Duration" GridPane.rowIndex="6" />
-                  <Label text="StopRunning" GridPane.rowIndex="7" />
-                  <TextField fx:id="txtFacility" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Label text="Name" />
+                  <Label text="Facility" GridPane.rowIndex="1" />					
+                  <Label text="Receipe" GridPane.rowIndex="2" />
+                  <Label text="Schedule" GridPane.rowIndex="3" />
+                  <Label text="Start Delay" GridPane.rowIndex="4" />
+                  <Label text="Duration" GridPane.rowIndex="5" />
+                  <Label text="StopRunning" GridPane.rowIndex="6" />
+                  <TextField fx:id="txtFacility" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                      <padding>
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField fx:id="txtStartDelay" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  <TextField fx:id="txtStartDelay" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -52,7 +66,7 @@
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField fx:id="txtSchedule" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <TextField fx:id="txtSchedule" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -60,7 +74,7 @@
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField fx:id="txtDuration" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                  <TextField fx:id="txtDuration" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -68,27 +82,14 @@
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtReceipe" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                  <TextField fx:id="txtReceipe" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                </children>
             </GridPane>
-         </children>
-      </AnchorPane>
+         </content>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </ScrollPane>
    </center>
-   <bottom>
-      <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="36.0" prefWidth="323.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" text="Cancel">
-               <HBox.margin>
-                  <Insets bottom="5.0" right="10.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" text="OK">
-               <HBox.margin>
-                  <Insets right="10.0" />
-               </HBox.margin>
-            </Button>
-         </children>
-      </HBox>
-   </bottom>
 </BorderPane>

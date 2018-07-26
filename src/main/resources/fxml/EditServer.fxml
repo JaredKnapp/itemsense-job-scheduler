@@ -73,7 +73,7 @@
 								<CheckBox fx:id="chbIsActive" mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
 							</children>
 						</GridPane>
-						<TableView fx:id="jobsTableView" editable="true" onMouseClicked="#TableViewOnMouseClicked" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+						<TableView fx:id="tblConfigJobs" editable="true" onMouseClicked="#tblConfigJobs_OnMouseClicked" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
 							<columns>
 								<TableColumn prefWidth="51.99997103214264" text="Active">
             											<cellValueFactory>

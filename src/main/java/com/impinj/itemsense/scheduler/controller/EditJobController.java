@@ -5,6 +5,7 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 
 public class EditJobController {
@@ -12,13 +13,14 @@ public class EditJobController {
     EditServerController parent;
     ItemSenseConfigJob jobData;
     
-    @FXML private boolean togActive;
+    @FXML private CheckBox chkActive;
     @FXML private TextField txtFacility;
     @FXML private TextField txtName;
     @FXML private TextField txtReceipe;
     @FXML private TextField txtSchedule;
     @FXML private TextField txtStartDelay;
     @FXML private TextField txtDuration;
+    @FXML private CheckBox chkStopRunning;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
@@ -31,13 +33,28 @@ public class EditJobController {
 
 	public void setData(ItemSenseConfigJob itemSenseConfig) {
 		jobData = itemSenseConfig;
-		
+                chkActive.setSelected(itemSenseConfig.isActive());
 		txtName.setText(itemSenseConfig.getName());
-		
+                txtFacility.setText(itemSenseConfig.getFacility());
+                txtReceipe.setText(itemSenseConfig.getRecipe());
+                txtSchedule.setText(itemSenseConfig.getSchedule());
+                txtStartDelay.setText(itemSenseConfig.getStartDelay());
+                txtDuration.setText(itemSenseConfig.getDuration().toString());
+                chkStopRunning.setSelected(itemSenseConfig.isStopRunningJobs());
 	}
 	
 	public void btnOk_OnAction(ActionEvent event) {
+                jobData.setActive(chkActive.isSelected());
 		jobData.setName(txtName.getText());
+                jobData.setFacility(txtFacility.getText());
+                jobData.setRecipe(txtFacility.getText());
+                jobData.setSchedule(txtSchedule.getText());
+                jobData.setStartDelay(txtStartDelay.getText());
+                jobData.setDuration(Integer.parseInt(txtDuration.getText()));
+                jobData.setStopRunningJobs(chkStopRunning.isSelected());
 		parent.onSaveData(jobData);
+	}
+        public void btnCancel_OnAction(ActionEvent event) {
+                parent.onCancel();
 	}
 }

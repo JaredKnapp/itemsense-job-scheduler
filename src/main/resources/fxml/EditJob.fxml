@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -11,11 +12,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
    <bottom>
       <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="36.0" prefWidth="323.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Cancel">
+            <Button mnemonicParsing="false" onAction="#btnCancel_OnAction" text="Cancel">
                <HBox.margin>
                   <Insets bottom="5.0" right="10.0" />
                </HBox.margin>
@@ -31,12 +32,13 @@
    <center>
       <ScrollPane fitToWidth="true">
          <content>
-            <GridPane>
+            <GridPane prefHeight="233.0" prefWidth="301.0">
               <columnConstraints>
                 <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -46,44 +48,60 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Name" />
-                  <Label text="Facility" GridPane.rowIndex="1" />					
-                  <Label text="Receipe" GridPane.rowIndex="2" />
-                  <Label text="Schedule" GridPane.rowIndex="3" />
-                  <Label text="Start Delay" GridPane.rowIndex="4" />
-                  <Label text="Duration" GridPane.rowIndex="5" />
-                  <Label text="StopRunning" GridPane.rowIndex="6" />
-                  <TextField fx:id="txtFacility" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                  <Label text="Name" GridPane.rowIndex="1" />
+                  <Label text="Facility" GridPane.rowIndex="2" />					
+                  <Label text="Receipe" GridPane.rowIndex="3" />
+                  <Label text="Schedule" GridPane.rowIndex="4" />
+                  <Label text="Start Delay" GridPane.rowIndex="5" />
+                  <Label text="Duration" GridPane.rowIndex="6" />
+                  <TextField fx:id="txtFacility" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
                      <padding>
                         <Insets top="8.0" />
                      </padding>
-                  </TextField>
-                  <TextField fx:id="txtStartDelay" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
                      <GridPane.margin>
-                        <Insets />
+                        <Insets bottom="6.0" top="6.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <TextField fx:id="txtStartDelay" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets bottom="6.0" top="6.0" />
                      </GridPane.margin>
                      <padding>
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField fx:id="txtSchedule" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
+                  <TextField fx:id="txtSchedule" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
                      <GridPane.margin>
-                        <Insets />
+                        <Insets bottom="6.0" top="6.0" />
                      </GridPane.margin>
                      <padding>
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField fx:id="txtDuration" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5">
+                  <TextField fx:id="txtDuration" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6">
                      <GridPane.margin>
-                        <Insets />
+                        <Insets bottom="6.0" top="6.0" />
                      </GridPane.margin>
                      <padding>
                         <Insets top="8.0" />
                      </padding>
                   </TextField>
-                  <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-                  <TextField fx:id="txtReceipe" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets bottom="6.0" top="6.0" />
+                     </GridPane.margin></TextField>
+                  <TextField fx:id="txtReceipe" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="6.0" top="6.0" />
+                     </GridPane.margin></TextField>
+                  <CheckBox fx:id="chkActive" mnemonicParsing="false" text="Active" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets bottom="6.0" top="6.0" />
+                     </GridPane.margin></CheckBox>
+                  <CheckBox fx:id="chkStopRunning" mnemonicParsing="false" text="Stop Running" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                     <padding>
+                        <Insets bottom="6.0" />
+                     </padding></CheckBox>
                </children>
             </GridPane>
          </content>

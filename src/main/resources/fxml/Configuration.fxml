@@ -38,11 +38,12 @@
               <items>
                   <VBox SplitPane.resizableWithParent="false">
                      <children>
-                        <ListView fx:id="lvItemSense" onMouseClicked="#lvItemSense_OnMouseClicked" scaleShape="false" VBox.vgrow="ALWAYS">
+                        <ListView fx:id="lvItemSense" editable="true" onKeyPressed="#lvItemSense_OnKeyPressed" onMouseClicked="#lvItemSense_OnMouseClicked" scaleShape="false" VBox.vgrow="ALWAYS">
                   </ListView>
                         <ButtonBar minHeight="-Infinity" VBox.vgrow="NEVER">
                           <buttons>
                             <Button fx:id="btnNew" mnemonicParsing="false" onAction="#btnNew_OnAction" text="New" />
+                              <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#btnDelete_OnAction" text="Delete" />
                           </buttons>
                         </ButtonBar>
                      </children>

@@ -9,6 +9,7 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
@@ -43,20 +45,44 @@ public class EditServerController implements Initializable {
 	private ConfigurationController parent;
 	Stage dialogStage;
 
-	@FXML 
-	private Button btnAdd;
-	@FXML 
-	private TextField txtName;
-	@FXML
-	private TextField txtHostUrl;
-	@FXML
-	private TextField txtUserName;
-	@FXML
-	private PasswordField txtPassword;
-	@FXML
-	private TextField txtUtcOffset;
-	@FXML
-	private TableView<ItemSenseConfigJob> tblConfigJobs;
+	@FXML // ResourceBundle that was given to the FXMLLoader
+	private ResourceBundle resources;
+
+	@FXML // URL location of the FXML file that was given to the FXMLLoader
+	private URL location;
+
+	@FXML // fx:id="txtName"
+	private TextField txtName; // Value injected by FXMLLoader
+
+	@FXML // fx:id="txtHostUrl"
+	private TextField txtHostUrl; // Value injected by FXMLLoader
+
+	@FXML // fx:id="txtUserName"
+	private TextField txtUserName; // Value injected by FXMLLoader
+
+	@FXML // fx:id="txtPassword"
+	private PasswordField txtPassword; // Value injected by FXMLLoader
+
+	@FXML // fx:id="txtUtcOffset"
+	private TextField txtUtcOffset; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btnTestConnection"
+	private Button btnTestConnection; // Value injected by FXMLLoader
+
+	@FXML // fx:id="chbIsActive"
+	private CheckBox chbIsActive; // Value injected by FXMLLoader
+
+	@FXML // fx:id="tblConfigJobs"
+	private TableView<ItemSenseConfigJob> tblConfigJobs; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btnAdd"
+	private Button btnAdd; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btnCancel"
+	private Button btnCancel; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btnSave"
+	private Button btnSave; // Value injected by FXMLLoader
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -64,28 +90,20 @@ public class EditServerController implements Initializable {
 	}
 
 	@FXML
-	void btnCancel_OnAction(ActionEvent event) {
-		// Just Get Out!!
-	}
-
-	@FXML
 	void btnTestConnection_OnAction(ActionEvent event) {
 		Client client = ClientBuilder.newClient();
 		client.register(HttpAuthenticationFeature.basic(txtUserName.getText(), txtPassword.getText()));
-		CoordinatorApiController itemsenseCoordinatorController = new CoordinatorApiController(client,
-				URI.create(txtHostUrl.getText()));
+		CoordinatorApiController controller = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
 		boolean success = true;
 		try {
-			System.out.println("# configs=" + itemsenseCoordinatorController.getUserController().getUsers().size());
+			controller.getRecipeController();
 		} catch (Exception e) {
 			success = false;
 		}
+
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Test Connection");
-		// Header Text: null
 		alert.setHeaderText(null);
-		System.out.println(
-				"Connection to: " + txtUserName.getText() + "/" + txtPassword.getText() + " " + txtHostUrl.getText());
 		if (success)
 			alert.setContentText("Connection succeeded!");
 		else
@@ -101,6 +119,7 @@ public class EditServerController implements Initializable {
 
 	@FXML
 	void btnSave_OnAction(ActionEvent event) {
+		configData.setActive(chbIsActive.isSelected());
 		configData.setName(txtName.getText());
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
@@ -111,12 +130,17 @@ public class EditServerController implements Initializable {
 	}
 
 	@FXML
+	void btnCancel_OnAction(ActionEvent event) {
+		parent.onCancel();
+	}
+
+	@FXML
 	void tblConfigJobs_OnMouseClicked(MouseEvent event) {
 		// double click
 		if (event.getClickCount() == 2) {
 			if (tblConfigJobs.getSelectionModel().getSelectedItem() != null) {
-				TableViewSelectionModel<ItemSenseConfigJob> selectionModel = tblConfigJobs.getSelectionModel();
-				ItemSenseConfigJob selectedItem = selectionModel.getSelectedItem();
+				ItemSenseConfigJob selectedItem = (ItemSenseConfigJob) tblConfigJobs.getSelectionModel()
+						.getSelectedItem();
 				loadJobEditor(selectedItem);
 			}
 		}
@@ -146,23 +170,24 @@ public class EditServerController implements Initializable {
 		this.configData = serverData;
 
 		if (serverData != null) {
+			chbIsActive.setSelected(serverData.isActive());
 			txtName.setText(serverData.getName());
 			txtHostUrl.setText(serverData.getUrl());
 			txtUserName.setText(serverData.getUsername());
 			txtPassword.setText(serverData.getPassword());
 			txtUtcOffset.setText(serverData.getUtcOffset());
+
 			List<ItemSenseConfigJob> jobs = serverData.getJobList();
-			System.out.println("class" + FXCollections.observableArrayList(serverData.getJobList()).getClass());
-			tblConfigJobs.setItems(FXCollections.observableArrayList(serverData.getJobList()));
+			if(jobs == null) jobs = new ArrayList<ItemSenseConfigJob>();
+			
+			tblConfigJobs.setItems((ObservableList<ItemSenseConfigJob>) FXCollections.observableArrayList(jobs));
 		}
 	}
-
 
 	public void injectParent(ConfigurationController configurationController) {
 		// TODO Auto-generated method stub
 		this.parent = configurationController;
 	}
-
 
 	public void onSaveData(ItemSenseConfigJob configJobData) {
 		if (configJobData.getOid() == null) {

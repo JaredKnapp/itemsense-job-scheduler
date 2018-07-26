@@ -18,6 +18,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
@@ -26,9 +28,12 @@ public class ConfigurationController implements Initializable {
 
 	ObservableSet<ItemSenseConfig> observableSet;
 
-	@FXML private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
-	@FXML private AnchorPane editPane;
-	@FXML private Button btnNew;
+	@FXML
+	private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
+	@FXML
+	private AnchorPane editPane;
+	@FXML
+	private Button btnNew;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -60,6 +65,13 @@ public class ConfigurationController implements Initializable {
 	}
 
 	@FXML
+	void lvItemSense_OnKeyPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.DELETE) {
+			lvItemSense.getItems().remove(lvItemSense.getEditingIndex());
+		}
+	}
+
+	@FXML
 	public void lvItemSense_OnMouseClicked(MouseEvent event) {
 		ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
 		editItemSense(configData);
@@ -68,6 +80,17 @@ public class ConfigurationController implements Initializable {
 	@FXML
 	public void btnNew_OnAction(ActionEvent event) {
 		editItemSense(new ItemSenseConfig());
+	}
+
+	@FXML
+	public void btnDelete_OnAction(ActionEvent event) {
+		int index = lvItemSense.getSelectionModel().getSelectedIndex();
+		if (index != -1) {
+			final int newSelectedIdx = (index == lvItemSense.getItems().size() - 1) ? index - 1 : index;
+			lvItemSense.getItems().remove(index);
+			lvItemSense.getSelectionModel().select(newSelectedIdx);
+		}
+		System.out.printf("There are %s items remanining.", lvItemSense.getItems().size());
 	}
 
 	// @FXML
@@ -111,10 +134,12 @@ public class ConfigurationController implements Initializable {
 			lvItemSense.getItems().add(configData);
 			configData.setOid(OIDGenerator.next());
 		}
+		editPane.getChildren().clear();
 		lvItemSense.refresh();
 	}
 
 	public void onCancel() {
+		editPane.getChildren().clear();
 		lvItemSense.refresh();
 	}
 

@@ -134,8 +134,8 @@ public class ConfigurationController implements Initializable {
 			lvItemSense.getItems().add(configData);
 			configData.setOid(OIDGenerator.next());
 		}
-		editPane.getChildren().clear();
-		lvItemSense.refresh();
+		// editPane.getChildren().clear();
+		// lvItemSense.refresh();
 	}
 
 	public void onCancel() {
@@ -147,4 +147,8 @@ public class ConfigurationController implements Initializable {
 		lvItemSense.refresh();
 	}
 
+        @FXML
+	public void btnSave_OnAction(ActionEvent event) {
+		// TBD
+	}
 }

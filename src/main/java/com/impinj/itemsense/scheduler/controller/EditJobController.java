@@ -39,7 +39,8 @@ public class EditJobController {
                 txtReceipe.setText(itemSenseConfig.getRecipe());
                 txtSchedule.setText(itemSenseConfig.getSchedule());
                 txtStartDelay.setText(itemSenseConfig.getStartDelay());
-                txtDuration.setText(itemSenseConfig.getDuration().toString());
+                if (itemSenseConfig.getDuration() != null)
+                    txtDuration.setText(itemSenseConfig.getDuration().toString());
                 chkStopRunning.setSelected(itemSenseConfig.isStopRunningJobs());
 	}
 	
@@ -52,9 +53,9 @@ public class EditJobController {
                 jobData.setStartDelay(txtStartDelay.getText());
                 jobData.setDuration(Integer.parseInt(txtDuration.getText()));
                 jobData.setStopRunningJobs(chkStopRunning.isSelected());
-		parent.onSaveData(jobData);
+		parent.onUpdateJobData(jobData);
 	}
         public void btnCancel_OnAction(ActionEvent event) {
-                parent.onCancel();
+                parent.onCancelJobData();
 	}
 }

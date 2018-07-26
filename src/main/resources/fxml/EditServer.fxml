@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
 	<center>
 		<ScrollPane fitToHeight="true" fitToWidth="true">
 			<content>
@@ -54,23 +54,24 @@
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-								<TextField fx:id="txtHostUrl" promptText="http://is.myserver.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-								<TextField fx:id="txtUserName" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+								<TextField fx:id="txtName" onKeyTyped="#OnKeyTyped" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+								<TextField fx:id="txtHostUrl" onKeyTyped="#OnKeyTyped" promptText="http://is.myserver.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+								<TextField fx:id="txtUserName" onKeyTyped="#OnKeyTyped" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 								<Label text="Password" GridPane.rowIndex="4">
 									<font>
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<Label text="UTC Offset" GridPane.rowIndex="6">
+								<Label text="UTC Offset" GridPane.rowIndex="5">
 									<font>
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
 								<PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-								<TextField fx:id="txtUtcOffset" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-								<CheckBox fx:id="chbIsActive" mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
+								<TextField fx:id="txtUtcOffset" onKeyTyped="#OnKeyTyped" prefHeight="62.0" prefWidth="527.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+								<CheckBox fx:id="chbIsActive" mnemonicParsing="false" onAction="#ChkActive_OnAction" text="Active" GridPane.columnIndex="1" />
+                        <Button fx:id="btnUpdate" disable="true" mnemonicParsing="false" onAction="#btnUpdate_OnAction" text="Update" GridPane.rowIndex="6" />
 							</children>
 						</GridPane>
 						<TableView fx:id="tblConfigJobs" editable="true" onMouseClicked="#tblConfigJobs_OnMouseClicked" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
@@ -132,8 +133,7 @@
 		<ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<buttons>
             <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" />
-				<Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnAction" text="Cancel" />
-				<Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save" />
+            <Button fx:id="btnDel" disable="true" mnemonicParsing="false" onAction="#btnDel_OnAction" text="Delete" />
 			</buttons>
 		</ButtonBar>
 	</bottom>

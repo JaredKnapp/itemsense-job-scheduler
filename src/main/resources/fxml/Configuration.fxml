@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.ConfigurationController">
+<BorderPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.ConfigurationController">
    <center>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -36,14 +36,15 @@
             </GridPane>
             <SplitPane dividerPositions="0.2" VBox.vgrow="ALWAYS">
               <items>
-                  <VBox SplitPane.resizableWithParent="false">
+                  <VBox prefHeight="570.0" prefWidth="214.0" SplitPane.resizableWithParent="false">
                      <children>
                         <ListView fx:id="lvItemSense" editable="true" onKeyPressed="#lvItemSense_OnKeyPressed" onMouseClicked="#lvItemSense_OnMouseClicked" scaleShape="false" VBox.vgrow="ALWAYS">
                   </ListView>
                         <ButtonBar minHeight="-Infinity" VBox.vgrow="NEVER">
                           <buttons>
-                            <Button fx:id="btnNew" mnemonicParsing="false" onAction="#btnNew_OnAction" text="New" />
                               <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#btnDelete_OnAction" text="Delete" />
+                            <Button fx:id="btnNew" mnemonicParsing="false" onAction="#btnNew_OnAction" text="New" />
+                              <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save" />
                           </buttons>
                         </ButtonBar>
                      </children>

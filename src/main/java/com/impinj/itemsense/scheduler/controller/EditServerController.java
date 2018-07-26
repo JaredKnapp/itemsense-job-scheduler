@@ -18,7 +18,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -26,13 +25,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.ws.rs.client.Client;
@@ -67,7 +63,10 @@ public class EditServerController implements Initializable {
 	private TextField txtUtcOffset; // Value injected by FXMLLoader
 
 	@FXML // fx:id="btnTestConnection"
-	private Button btnTestConnection; // Value injected by FXMLLoader
+	private Button btnUpdate; // Value injected by FXMLLoader
+        
+        @FXML // fx:id="btnTestConnection"
+	private Button btnDel; // Value injected by FXMLLoader
 
 	@FXML // fx:id="chbIsActive"
 	private CheckBox chbIsActive; // Value injected by FXMLLoader
@@ -88,7 +87,6 @@ public class EditServerController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 	}
-
 	@FXML
 	void btnTestConnection_OnAction(ActionEvent event) {
 		Client client = ClientBuilder.newClient();
@@ -118,7 +116,7 @@ public class EditServerController implements Initializable {
 	}
 
 	@FXML
-	void btnSave_OnAction(ActionEvent event) {
+	void btnUpdate_OnAction(ActionEvent event) {
 		configData.setActive(chbIsActive.isSelected());
 		configData.setName(txtName.getText());
 		configData.setUrl(txtHostUrl.getText());
@@ -129,6 +127,15 @@ public class EditServerController implements Initializable {
 		parent.onSaveData(configData);
 	}
 
+        @FXML
+	void OnKeyTyped(KeyEvent event) {
+            btnUpdate.setDisable(false);
+	}
+        @FXML
+	void ChkActive_OnAction(ActionEvent event) {
+            btnUpdate.setDisable(false);
+        }
+        
 	@FXML
 	void btnCancel_OnAction(ActionEvent event) {
 		parent.onCancel();
@@ -144,6 +151,7 @@ public class EditServerController implements Initializable {
 				loadJobEditor(selectedItem);
 			}
 		}
+                btnDel.setDisable(!(tblConfigJobs.getSelectionModel().getSelectedItem() != null));
 	}
 
 	private void loadJobEditor(ItemSenseConfigJob itemSenseConfig) {
@@ -189,7 +197,7 @@ public class EditServerController implements Initializable {
 		this.parent = configurationController;
 	}
 
-	public void onSaveData(ItemSenseConfigJob configJobData) {
+	public void onUpdateJobData(ItemSenseConfigJob configJobData) {
 		if (configJobData.getOid() == null) {
 			tblConfigJobs.getItems().add(configJobData);
 			configJobData.setOid(OIDGenerator.next());
@@ -200,8 +208,12 @@ public class EditServerController implements Initializable {
 		tblConfigJobs.refresh();
 	}
 
-	public void onCancel() {
-		dialogStage.close();
+	public void onCancelJobData() {
+            dialogStage.close();
 	}
-
+        	@FXML
+	void btnDel_OnAction(ActionEvent event) {
+            ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
+            tblConfigJobs.getItems().remove(job);
+	}
 }

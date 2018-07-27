@@ -73,6 +73,13 @@ public class DataService {
 							+ " job.config.fromClasspath: " + filesFromClasspath);
 		}
 	}
+        public void saveSystemConfig() throws IOException {
+            JsonMapper<SystemConfiguration> mapper = new JsonMapper<SystemConfiguration>(jobConfigDir,
+				jobConfigMasterfileJson, new TypeReference<SystemConfiguration>() {
+				}, filesFromClasspath);
+            mapper.write(systemConfig);
+            logger.info("Successfully Written " + mapper.getResourceFile());
+	}
 
 	// private void loadItemsenseConfigs() {
 	// List<String> isFiles = config.getConfigFiles();

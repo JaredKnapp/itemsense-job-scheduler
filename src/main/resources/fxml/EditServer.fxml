@@ -69,7 +69,6 @@
 								</Label>
 								<PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 								<TextField fx:id="txtUtcOffset" prefHeight="62.0" prefWidth="527.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.rowIndex="6" />
 								<CheckBox fx:id="chbIsActive" mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
                         <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <GridPane.margin>
@@ -143,8 +142,9 @@
 	<bottom>
 		<ButtonBar prefHeight="24.0" prefWidth="632.0" BorderPane.alignment="CENTER">
          <buttons>
-            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnCancel" text="Cancel" />
+								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" />
             <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save" />
+            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnCancel" text="Cancel" />
          </buttons>
 		</ButtonBar>
 	</bottom>

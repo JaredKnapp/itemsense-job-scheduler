@@ -92,7 +92,7 @@ public class EditServerController implements Initializable {
 		CoordinatorApiController controller = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
 		boolean success = true;
 		try {
-			controller.getRecipeController();
+			controller.getRecipeController().getRecipes(); 
 		} catch (Exception e) {
 			success = false;
 		}

@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import java.net.URI;
@@ -61,9 +62,6 @@ public class EditServerController implements Initializable {
 
 	@FXML // fx:id="txtUtcOffset"
 	private TextField txtUtcOffset; // Value injected by FXMLLoader
-
-	@FXML // fx:id="btnTestConnection"
-	private Button btnUpdate; // Value injected by FXMLLoader
         
         @FXML // fx:id="btnTestConnection"
 	private Button btnDel; // Value injected by FXMLLoader
@@ -115,30 +113,28 @@ public class EditServerController implements Initializable {
 		loadJobEditor(new ItemSenseConfigJob());
 	}
 
-	@FXML
-	void btnUpdate_OnAction(ActionEvent event) {
-		configData.setActive(chbIsActive.isSelected());
+        @FXML
+	void btnSave_OnAction(ActionEvent event) {
+		//dialogStage.close();
+		//tblConfigJobs.refresh();
+                configData.setActive(chbIsActive.isSelected());
 		configData.setName(txtName.getText());
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
 		configData.setPassword(txtPassword.getText());
 		configData.setUtcOffset(txtUtcOffset.getText());
-
-		parent.onSaveData(configData);
+                parent.onSaveData();
 	}
-
-        @FXML
-	void OnKeyTyped(KeyEvent event) {
-            btnUpdate.setDisable(false);
-	}
-        @FXML
-	void ChkActive_OnAction(ActionEvent event) {
-            btnUpdate.setDisable(false);
-        }
         
 	@FXML
-	void btnCancel_OnAction(ActionEvent event) {
+	void btnCancel_OnCancel(ActionEvent event) {
 		parent.onCancel();
+	}
+        
+        @FXML
+	void btnDel_OnAction(ActionEvent event) {
+            ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
+            tblConfigJobs.getItems().remove(job);
 	}
 
 	@FXML
@@ -197,23 +193,16 @@ public class EditServerController implements Initializable {
 		this.parent = configurationController;
 	}
 
-	public void onUpdateJobData(ItemSenseConfigJob configJobData) {
-		if (configJobData.getOid() == null) {
+        void onUpdateJobData(ItemSenseConfigJob configJobData) {
+            if (configJobData.getOid() == null) {
 			tblConfigJobs.getItems().add(configJobData);
 			configJobData.setOid(OIDGenerator.next());
 		}
-
 		dialogStage.close();
-
 		tblConfigJobs.refresh();
-	}
-
-	public void onCancelJobData() {
+        }
+        void onCancelJobData() {
             dialogStage.close();
-	}
-        	@FXML
-	void btnDel_OnAction(ActionEvent event) {
-            ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
-            tblConfigJobs.getItems().remove(job);
-	}
+        }
+
 }

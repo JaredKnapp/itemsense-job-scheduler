@@ -129,13 +129,17 @@ public class ConfigurationController implements Initializable {
 		}
 	}
 
-	public void onSaveData(ItemSenseConfig configData) {
-		if (configData.getOid() == null) {
-			lvItemSense.getItems().add(configData);
-			configData.setOid(OIDGenerator.next());
-		}
-		// editPane.getChildren().clear();
-		// lvItemSense.refresh();
+	public void onSaveData() {
+            ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
+            if (configData.getOid() == null) {
+		lvItemSense.getItems().add(configData);
+		configData.setOid(OIDGenerator.next());
+            }
+            editPane.getChildren().clear();
+            lvItemSense.refresh();
+            // Commit to disk
+            try { DataService.getService(true).saveSystemConfig();
+            } catch (Exception e) { e.printStackTrace(); }
 	}
 
 	public void onCancel() {
@@ -145,10 +149,5 @@ public class ConfigurationController implements Initializable {
 
 	public void onDelete() {
 		lvItemSense.refresh();
-	}
-
-        @FXML
-	public void btnSave_OnAction(ActionEvent event) {
-		// TBD
 	}
 }

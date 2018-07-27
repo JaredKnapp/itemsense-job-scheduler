@@ -1,5 +1,6 @@
 package com.impinj.itemsense.scheduler.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,10 +13,12 @@ public @Data class ItemSenseConfig {
 
 	@Getter
 	@Setter
+        @JsonIgnore
 	private String oid;
 
 	@Getter
 	@Setter
+        @JsonIgnore
 	private String fileName;
 
 	@Getter
@@ -50,11 +53,13 @@ public @Data class ItemSenseConfig {
 	@Setter
 	private List<ItemSenseConfigJob> jobList;
 
+        @JsonIgnore
 	public List<ItemSenseConfigJob> getActiveJobs() {
 		return (List<ItemSenseConfigJob>) getJobs().stream().filter(itemSenseJob -> itemSenseJob.isActive())
 				.collect(Collectors.toList());
 	}
 
+        @JsonIgnore
 	public List<ItemSenseConfigJob> getJobs() {
 		if (jobList == null) {
 			jobList = new ArrayList<ItemSenseConfigJob>();

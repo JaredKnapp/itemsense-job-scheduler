@@ -1,5 +1,6 @@
 package com.impinj.itemsense.scheduler.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +11,12 @@ public @Data class ItemSenseConfigJob {
 
 	@Getter
 	@Setter
+        @JsonIgnore
 	private String itemSenseOid;
 
 	@Getter
 	@Setter
+        @JsonIgnore
 	private String oid;
 	
 	@Getter
@@ -52,7 +55,8 @@ public @Data class ItemSenseConfigJob {
 	@Setter
 	private boolean stopRunningJobs;
 
-    public String getJobKey() {
-        return facility + KEY_SEP + name + KEY_SEP + recipe;
-    }
+        @JsonIgnore
+        public String getJobKey() {
+            return facility + KEY_SEP + name + KEY_SEP + recipe;
+        }
 }

@@ -9,7 +9,6 @@ import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +25,7 @@ import javafx.util.Callback;
 
 public class ConfigurationController implements Initializable {
 
-	ObservableSet<ItemSenseConfig> observableSet;
+	//ObservableSet<ItemSenseConfig> observableSet;
 
 	@FXML
 	private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
@@ -89,8 +88,10 @@ public class ConfigurationController implements Initializable {
 			final int newSelectedIdx = (index == lvItemSense.getItems().size() - 1) ? index - 1 : index;
 			lvItemSense.getItems().remove(index);
 			lvItemSense.getSelectionModel().select(newSelectedIdx);
+                        lvItemSense.refresh();  // BUG:  this list does not refresh list
+                                                //   Unless zero elements are remaining
 		}
-		System.out.printf("There are %s items remanining.", lvItemSense.getItems().size());
+		System.out.printf("There are %s items remanining.", lvItemSense.getItems().size());              
 	}
 
 	// @FXML

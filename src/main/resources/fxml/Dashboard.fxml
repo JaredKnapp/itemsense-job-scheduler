@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.DashboardController">
+<BorderPane prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.DashboardController">
 	<center>
 		<VBox spacing="10.0" BorderPane.alignment="CENTER">
 			<children>
@@ -161,7 +161,7 @@
                                           <Insets bottom="10.0" top="10.0" />
                                        </VBox.margin>
                                     </GridPane>
-                                    <TableView fx:id="tblTriggeredJobs1" fixedCellSize="30.0" prefHeight="90.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+                                    <TableView fx:id="tblTriggeredJobResults" fixedCellSize="30.0" prefHeight="90.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                                        <columns>
                                           <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Server">
                                              <cellValueFactory>

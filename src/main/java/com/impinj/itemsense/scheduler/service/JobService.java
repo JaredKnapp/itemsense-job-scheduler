@@ -5,7 +5,6 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +35,7 @@ import com.impinj.itemsense.scheduler.job.JobResult;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.model.TriggeredJob;
+import java.util.ArrayList;
 
 public class JobService {
 
@@ -53,13 +53,17 @@ public class JobService {
 	 * Quartz Jobs and the UIs both access this table to find results of jobs, so we
 	 * use an old sync'ed vector which is a vector!
 	 */
-	private List<JobResult> jobResults = Collections.synchronizedList(new LinkedList<JobResult>());
-	
+	//private static List<JobResult> jobResults = Collections.synchronizedList(new LinkedList<JobResult>());
+	private static List<JobResult> jobResults = new ArrayList<>();
+
+        
 	public static JobService getService(boolean createIfNull) {
 		if(service == null && createIfNull) service = new JobService();
 		return service;
 	}
-	
+	public static List<JobResult> getJobResults() {
+            return jobResults;
+        }
 	private JobService() {
 		logger.info("Creating Quartz Job Scheduler");
 		try {

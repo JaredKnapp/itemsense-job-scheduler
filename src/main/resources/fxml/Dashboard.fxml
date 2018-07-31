@@ -90,7 +90,7 @@
                                           <Insets bottom="10.0" top="10.0" />
                                        </VBox.margin>
             								</GridPane>
-            								<TableView fx:id="tblTriggeredJobs" fixedCellSize="30.0" prefHeight="90.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+            								<TableView fx:id="tblTriggeredJobs" fixedCellSize="30.0" prefHeight="255.0" prefWidth="878.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
             									<columns>
             										<TableColumn editable="false" prefWidth="75.0" sortable="false" text="Server">
             											<cellValueFactory>
@@ -163,29 +163,34 @@
                                     </GridPane>
                                     <TableView fx:id="tblTriggeredJobResults" fixedCellSize="30.0" prefHeight="90.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                                        <columns>
-                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Server">
-                                             <cellValueFactory>
-                                                <PropertyValueFactory property="itemsense" />
-                                             </cellValueFactory>
-                                          </TableColumn>
-                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Facility">
-                                             <cellValueFactory>
-                                                <PropertyValueFactory property="facility" />
-                                             </cellValueFactory>
-                                          </TableColumn>
                                           <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Job Name">
                                              <cellValueFactory>
                                                 <PropertyValueFactory property="jobName" />
                                              </cellValueFactory>
                                           </TableColumn>
-                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Run Date">
+                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Status">
                                              <cellValueFactory>
-                                                <PropertyValueFactory property="prevFire" />
+                                                <PropertyValueFactory property="status" />
                                              </cellValueFactory>
                                           </TableColumn>
-                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Status">
+                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Results">
                                              <cellValueFactory>
-                                                <PropertyValueFactory property="nextFire" />
+                                                <PropertyValueFactory property="results" />
+                                             </cellValueFactory>
+                                          </TableColumn>
+                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Run Status">
+                                             <cellValueFactory>
+                                                <PropertyValueFactory property="runStatus" />
+                                             </cellValueFactory>
+                                          </TableColumn>
+                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="JobType">
+                                             <cellValueFactory>
+                                                <PropertyValueFactory property="JobType" />
+                                             </cellValueFactory>
+                                          </TableColumn>
+                                          <TableColumn editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Class Simple Name">
+                                             <cellValueFactory>
+                                                <PropertyValueFactory property="jobClassSimpleName" />
                                              </cellValueFactory>
                                           </TableColumn>
                                        </columns>

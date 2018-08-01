@@ -1,6 +1,7 @@
 package com.impinj.itemsense.scheduler.controller;
 
 import com.impinj.itemsense.client.coordinator.CoordinatorApiController;
+import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -35,9 +36,11 @@ import javafx.stage.Stage;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EditServerController implements Initializable {
-
+        private static final Logger logger = LoggerFactory.getLogger(ItemSenseJob.class);
 	private ItemSenseConfig configData;
 	private ConfigurationController parent;
 	Stage dialogStage;
@@ -89,7 +92,9 @@ public class EditServerController implements Initializable {
 	void btnTestConnection_OnAction(ActionEvent event) {
 		Client client = ClientBuilder.newClient();
 		client.register(HttpAuthenticationFeature.basic(txtUserName.getText(), txtPassword.getText()));
-		CoordinatorApiController controller = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
+		logger.info("Testing connection User: "+txtUserName.getText()+" PWD:"+ txtPassword.getText()
+                                                       + "URL: "+txtHostUrl.getText());
+                CoordinatorApiController controller = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
 		boolean success = true;
 		try {
 			controller.getRecipeController().getRecipes(); 

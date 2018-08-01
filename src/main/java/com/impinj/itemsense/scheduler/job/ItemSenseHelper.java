@@ -146,7 +146,7 @@ public class ItemSenseHelper {
 			stopRunningJobsInFacility();
 		}
 
-		logger.info("Starting Job: %s facility: %s job: %s", config.getName(), configJob.getFacility(), job);
+		logger.info("Starting Job: "+config.getName()+" facility: "+configJob.getFacility()+" job: "+job);
 
 		// TODO: validate recipe exist before trying to start the job
 		JobController jobController = getItemsenseCoordinatorController().getJobController();

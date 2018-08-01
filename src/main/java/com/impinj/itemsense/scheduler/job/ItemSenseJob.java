@@ -44,7 +44,7 @@ public class ItemSenseJob implements Job {
 			// Note We could, in the future set refireImmediately, unscheduleAllTriigers, &
 			// unscheduleTrigger here based on the jobConfigs since we have a way to get the
 			// jobConfigs
-			String message = "Failure of Itemsense Job";
+			String message = e.getMessage();
 			logger.warn(message + itemsenseConfig.getName() + " + JobKey: " + jobKey.getName() + "exception message: "
 					+ e.getMessage(), e);
 			jobResult.setStatus(Status.FAILED);

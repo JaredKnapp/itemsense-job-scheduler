@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
 	<center>
 		<ScrollPane fitToHeight="true" fitToWidth="true">
 			<content>
@@ -37,6 +37,7 @@
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 							</rowConstraints>
 							<children>
 								<Label text="Name" GridPane.rowIndex="1">
@@ -54,33 +55,34 @@
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-								<TextField fx:id="txtHostUrl" promptText="http://is.myserver.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-								<TextField fx:id="txtUserName" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 								<Label text="Password" GridPane.rowIndex="4">
 									<font>
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<Label text="UTC Offset" GridPane.rowIndex="5">
+								<Label text="UTC Offset" GridPane.rowIndex="6">
 									<font>
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-								<TextField fx:id="txtUtcOffset" prefHeight="62.0" prefWidth="527.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 								<CheckBox fx:id="chbIsActive" mnemonicParsing="false" text="Active" GridPane.columnIndex="1" />
-                        <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="6">
+								<TextField fx:id="txtName" promptText="Descriptive Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+								<TextField fx:id="txtHostUrl" promptText="http://is.myserver.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+								<TextField fx:id="txtUserName" promptText="ItemSense User Name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+								<PasswordField fx:id="txtPassword" promptText="ItemSense User Password" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+								<TextField fx:id="txtUtcOffset" prefHeight="62.0" prefWidth="527.0" promptText="Time Offset" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="7">
                            <GridPane.margin>
                               <Insets left="230.0" top="20.0" />
                            </GridPane.margin>
                         </Button>
-                        <Button fx:id="btnDel" disable="true" mnemonicParsing="false" onAction="#btnDel_OnAction" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <Button fx:id="btnDel" disable="true" mnemonicParsing="false" onAction="#btnDel_OnAction" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="7">
                            <GridPane.margin>
                               <Insets left="150.0" top="20.0" />
                            </GridPane.margin>
                         </Button>
-                        <Label text="Jobs List:" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <Label text="Jobs List:" GridPane.columnIndex="1" GridPane.rowIndex="7">
                            <GridPane.margin>
                               <Insets left="80.0" top="16.0" />
                            </GridPane.margin>
@@ -133,6 +135,9 @@
 							<VBox.margin>
 								<Insets top="20.0" />
 							</VBox.margin>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
 						</TableView>
 					</children>
 				</VBox>
@@ -142,7 +147,6 @@
 	<bottom>
 		<ButtonBar prefHeight="24.0" prefWidth="632.0" BorderPane.alignment="CENTER">
          <buttons>
-								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" />
             <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save" />
             <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnCancel" text="Cancel" />
          </buttons>

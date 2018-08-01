@@ -14,7 +14,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
@@ -25,7 +28,7 @@ import javafx.util.Callback;
 
 public class ConfigurationController implements Initializable {
 
-	//ObservableSet<ItemSenseConfig> observableSet;
+	// ObservableSet<ItemSenseConfig> observableSet;
 
 	@FXML
 	private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
@@ -33,11 +36,62 @@ public class ConfigurationController implements Initializable {
 	private AnchorPane editPane;
 	@FXML
 	private Button btnNew;
+	@FXML
+	private Button btnDelete;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		populateView();
+	}
+
+	@FXML
+	void lvItemSense_OnKeyPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.DELETE) {
+			lvItemSense.getItems().remove(lvItemSense.getEditingIndex());
+		}
+	}
+
+	@FXML
+	public void lvItemSense_OnMouseClicked(MouseEvent event) {
+		ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
+		editItemSense(configData);
+	}
+
+	@FXML
+	public void btnNew_OnAction(ActionEvent event) {
+		editItemSense(new ItemSenseConfig());
+	}
+
+	@FXML
+	public void btnDelete_OnAction(ActionEvent event) {
+		ItemSenseConfig config = lvItemSense.getSelectionModel().getSelectedItem();
+		if (config != null) {
+			Alert alert = new Alert(AlertType.WARNING, "Delete this thing?", ButtonType.YES, ButtonType.NO);
+			alert.showAndWait();
+
+			if (alert.getResult() == ButtonType.YES) {
+				btnDelete.setDisable(true);
+				try {
+					DataService.getService(true).getSystemConfig().getItemSenseConfigs().remove(config);
+					DataService.getService(true).saveSystemConfig();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				this.initialize(null, null);
+			}
+		}
+		System.out.printf("There are %s items remanining.", lvItemSense.getItems().size());
+	}
+
+	private void populateView() {
 		try {
-			lvItemSense.setItems(FXCollections.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs()));
+			lvItemSense.setItems(FXCollections
+					.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs()));
 			lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
 
 				@Override
@@ -62,50 +116,6 @@ public class ConfigurationController implements Initializable {
 		}
 	}
 
-	@FXML
-	void lvItemSense_OnKeyPressed(KeyEvent event) {
-		if (event.getCode() == KeyCode.DELETE) {
-			lvItemSense.getItems().remove(lvItemSense.getEditingIndex());
-		}
-	}
-
-	@FXML
-	public void lvItemSense_OnMouseClicked(MouseEvent event) {
-		ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
-		editItemSense(configData);
-	}
-
-	@FXML
-	public void btnNew_OnAction(ActionEvent event) {
-		editItemSense(new ItemSenseConfig());
-	}
-
-	@FXML
-	public void btnDelete_OnAction(ActionEvent event) {
-		int index = lvItemSense.getSelectionModel().getSelectedIndex();
-		if (index != -1) {
-			final int newSelectedIdx = (index == lvItemSense.getItems().size() - 1) ? index - 1 : index;
-			lvItemSense.getItems().remove(index);
-			lvItemSense.getSelectionModel().select(newSelectedIdx);
-                        lvItemSense.refresh();  // BUG:  this list does not refresh list
-                                                //   Unless zero elements are remaining
-		}
-		System.out.printf("There are %s items remanining.", lvItemSense.getItems().size());              
-	}
-
-	// @FXML
-	// public void btnDelete_OnAction(ActionEvent event) {
-	// Alert alert = new Alert(AlertType.WARNING, "Delete this thing?",
-	// ButtonType.YES, ButtonType.NO);
-	// alert.showAndWait();
-	//
-	// if (alert.getResult() == ButtonType.YES) {
-	// btnDelete.setDisable(true);
-	//
-	// System.out.println("DELETING!!!");
-	// }
-	// }
-
 	private void editItemSense(ItemSenseConfig serverData) {
 		try {
 
@@ -129,17 +139,23 @@ public class ConfigurationController implements Initializable {
 		}
 	}
 
-	public void onSaveData() {
-            ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
-            if (configData.getOid() == null) {
-		lvItemSense.getItems().add(configData);
-		configData.setOid(OIDGenerator.next());
-            }
-            editPane.getChildren().clear();
-            lvItemSense.refresh();
-            // Commit to disk
-            try { DataService.getService(true).saveSystemConfig();
-            } catch (Exception e) { e.printStackTrace(); }
+	public void onSaveData(ItemSenseConfig configData) {
+		// Commit to disk
+		try {
+
+			if (configData.getOid() == null) {
+				configData.setOid(OIDGenerator.next());
+				DataService.getService(true).getSystemConfig().getItemSenseConfigs().add(configData);
+			}
+
+			DataService.getService(true).saveSystemConfig();
+			editPane.getChildren().clear();
+
+			this.populateView();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void onCancel() {
@@ -148,6 +164,11 @@ public class ConfigurationController implements Initializable {
 	}
 
 	public void onDelete() {
-		lvItemSense.refresh();
+		try {
+			DataService.getService(true).saveSystemConfig();
+			lvItemSense.refresh();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EditServerController implements Initializable {
-        private static final Logger logger = LoggerFactory.getLogger(ItemSenseJob.class);
+	private static final Logger logger = LoggerFactory.getLogger(ItemSenseJob.class);
 	private ItemSenseConfig configData;
 	private ConfigurationController parent;
 	Stage dialogStage;
@@ -65,8 +65,8 @@ public class EditServerController implements Initializable {
 
 	@FXML // fx:id="txtUtcOffset"
 	private TextField txtUtcOffset; // Value injected by FXMLLoader
-        
-        @FXML // fx:id="btnTestConnection"
+
+	@FXML // fx:id="btnTestConnection"
 	private Button btnDel; // Value injected by FXMLLoader
 
 	@FXML // fx:id="chbIsActive"
@@ -88,16 +88,17 @@ public class EditServerController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 	}
+
 	@FXML
 	void btnTestConnection_OnAction(ActionEvent event) {
 		Client client = ClientBuilder.newClient();
 		client.register(HttpAuthenticationFeature.basic(txtUserName.getText(), txtPassword.getText()));
-		logger.info("Testing connection User: "+txtUserName.getText()+" PWD:"+ txtPassword.getText()
-                                                       + "URL: "+txtHostUrl.getText());
-                CoordinatorApiController controller = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
+		logger.info("Testing connection User: " + txtUserName.getText() + " PWD:" + txtPassword.getText() + "URL: "
+				+ txtHostUrl.getText());
+		CoordinatorApiController controller = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
 		boolean success = true;
 		try {
-			controller.getRecipeController().getRecipes(); 
+			controller.getRecipeController().getRecipes();
 		} catch (Exception e) {
 			success = false;
 		}
@@ -118,28 +119,30 @@ public class EditServerController implements Initializable {
 		loadJobEditor(new ItemSenseConfigJob());
 	}
 
-        @FXML
+	@FXML
 	void btnSave_OnAction(ActionEvent event) {
-		//dialogStage.close();
-		//tblConfigJobs.refresh();
-                configData.setActive(chbIsActive.isSelected());
+		// dialogStage.close();
+		// tblConfigJobs.refresh();
+		configData.setActive(chbIsActive.isSelected());
 		configData.setName(txtName.getText());
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
 		configData.setPassword(txtPassword.getText());
 		configData.setUtcOffset(txtUtcOffset.getText());
-                parent.onSaveData();
+		
+		configData.setJobList(tblConfigJobs.getItems());
+		parent.onSaveData(configData);
 	}
-        
+
 	@FXML
 	void btnCancel_OnCancel(ActionEvent event) {
 		parent.onCancel();
 	}
-        
-        @FXML
+
+	@FXML
 	void btnDel_OnAction(ActionEvent event) {
-            ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
-            tblConfigJobs.getItems().remove(job);
+		ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
+		tblConfigJobs.getItems().remove(job);
 	}
 
 	@FXML
@@ -152,7 +155,7 @@ public class EditServerController implements Initializable {
 				loadJobEditor(selectedItem);
 			}
 		}
-                btnDel.setDisable(!(tblConfigJobs.getSelectionModel().getSelectedItem() != null));
+		btnDel.setDisable(!(tblConfigJobs.getSelectionModel().getSelectedItem() != null));
 	}
 
 	private void loadJobEditor(ItemSenseConfigJob itemSenseConfig) {
@@ -165,7 +168,7 @@ public class EditServerController implements Initializable {
 			controller.setData(itemSenseConfig);
 
 			dialogStage = new Stage();
-			dialogStage.setTitle("Edit Job");
+			dialogStage.setTitle(itemSenseConfig.getOid() == null ? "Add Job" : "Edit Job");
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			dialogStage.setScene(new Scene(popup));
 			dialogStage.showAndWait();
@@ -187,27 +190,28 @@ public class EditServerController implements Initializable {
 			txtUtcOffset.setText(serverData.getUtcOffset());
 
 			List<ItemSenseConfigJob> jobs = serverData.getJobList();
-			if(jobs == null) jobs = new ArrayList<ItemSenseConfigJob>();
-			
+			if (jobs == null)
+				jobs = new ArrayList<ItemSenseConfigJob>();
+
 			tblConfigJobs.setItems((ObservableList<ItemSenseConfigJob>) FXCollections.observableArrayList(jobs));
 		}
 	}
 
 	public void injectParent(ConfigurationController configurationController) {
-		// TODO Auto-generated method stub
 		this.parent = configurationController;
 	}
 
-        void onUpdateJobData(ItemSenseConfigJob configJobData) {
-            if (configJobData.getOid() == null) {
+	void onUpdateJobData(ItemSenseConfigJob configJobData) {
+		if (configJobData.getOid() == null) {
 			tblConfigJobs.getItems().add(configJobData);
 			configJobData.setOid(OIDGenerator.next());
 		}
 		dialogStage.close();
 		tblConfigJobs.refresh();
-        }
-        void onCancelJobData() {
-            dialogStage.close();
-        }
+	}
+
+	void onCancelJobData() {
+		dialogStage.close();
+	}
 
 }

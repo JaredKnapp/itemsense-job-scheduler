@@ -37,8 +37,7 @@ public class ConfigurationController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
-			lvItemSense.setItems(FXCollections
-					.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs()));
+			lvItemSense.setItems(FXCollections.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs()));
 			lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
 
 				@Override

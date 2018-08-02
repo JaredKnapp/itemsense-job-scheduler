@@ -1,21 +1,21 @@
 package com.impinj.itemsense.scheduler.controller;
 
-import com.impinj.itemsense.client.coordinator.CoordinatorApiController;
-import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import java.net.URL;
-import java.util.ResourceBundle;
-
-import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
-import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
-import com.impinj.itemsense.scheduler.service.DataService;
-import com.impinj.itemsense.scheduler.util.OIDGenerator;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.impinj.itemsense.scheduler.job.ItemSenseHelper;
+import com.impinj.itemsense.scheduler.job.ItemSenseJob;
+import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
+import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.util.OIDGenerator;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,15 +29,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class EditServerController implements Initializable {
 	private static final Logger logger = LoggerFactory.getLogger(ItemSenseJob.class);
@@ -50,22 +44,16 @@ public class EditServerController implements Initializable {
 
 	@FXML // URL location of the FXML file that was given to the FXMLLoader
 	private URL location;
-
 	@FXML // fx:id="txtName"
 	private TextField txtName; // Value injected by FXMLLoader
-
 	@FXML // fx:id="txtHostUrl"
 	private TextField txtHostUrl; // Value injected by FXMLLoader
-
 	@FXML // fx:id="txtUserName"
 	private TextField txtUserName; // Value injected by FXMLLoader
-
 	@FXML // fx:id="txtPassword"
 	private PasswordField txtPassword; // Value injected by FXMLLoader
-
 	@FXML // fx:id="txtUtcOffset"
 	private TextField txtUtcOffset; // Value injected by FXMLLoader
-
 	@FXML // fx:id="btnTestConnection"
 	private Button btnDel; // Value injected by FXMLLoader
 
@@ -84,52 +72,65 @@ public class EditServerController implements Initializable {
 	@FXML // fx:id="btnSave"
 	private Button btnSave; // Value injected by FXMLLoader
 
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 	}
 
+
 	@FXML
 	void btnTestConnection_OnAction(ActionEvent event) {
-		Client client = ClientBuilder.newClient();
-		client.register(HttpAuthenticationFeature.basic(txtUserName.getText(), txtPassword.getText()));
-		logger.info("Testing connection User: " + txtUserName.getText() + " PWD:" + txtPassword.getText() + "URL: "
-				+ txtHostUrl.getText());
-		CoordinatorApiController controller = new CoordinatorApiController(client, URI.create(txtHostUrl.getText()));
-		boolean success = true;
-		try {
-			controller.getRecipeController().getRecipes();
-		} catch (Exception e) {
-			success = false;
+
+		logger.info(String.format("Testing: User:%s PWD:%s URL:%s", txtUserName.getText(), txtPassword.getText(),
+				txtHostUrl.getText()));
+
+		if (txtUserName.getText() == null || txtPassword.getText() == null || txtHostUrl.getText() == null) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Test Connection");
+			alert.setHeaderText(null);
+			alert.setContentText("URL, User Name, and Password are required fields.");
+			alert.showAndWait();
+
+			txtHostUrl.requestFocus();
+
+		} else {
+
+			ItemSenseConfig config = new ItemSenseConfig();
+			config.setUrl(txtHostUrl.getText());
+			config.setUsername(txtUserName.getText());
+			config.setPassword(txtPassword.getText());
+
+			boolean success = new ItemSenseHelper(config, null, null).testConnection();
+
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Test Connection");
+			alert.setHeaderText(null);
+			if (success)
+				alert.setContentText("Connection succeeded!");
+			else
+				alert.setContentText("Connection failed!");
+
+			alert.showAndWait();
 		}
-
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Test Connection");
-		alert.setHeaderText(null);
-		if (success)
-			alert.setContentText("Connection succeeded!");
-		else
-			alert.setContentText("Connection failed!");
-
-		alert.showAndWait();
 	}
+	
 
 	@FXML
 	void btnAdd_OnAction(ActionEvent event) {
 		loadJobEditor(new ItemSenseConfigJob());
 	}
+	
 
 	@FXML
 	void btnSave_OnAction(ActionEvent event) {
-		// dialogStage.close();
-		// tblConfigJobs.refresh();
 		configData.setActive(chbIsActive.isSelected());
 		configData.setName(txtName.getText());
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
 		configData.setPassword(txtPassword.getText());
 		configData.setUtcOffset(txtUtcOffset.getText());
-		
+
 		configData.setJobList(tblConfigJobs.getItems());
 		parent.onSaveData(configData);
 	}
@@ -201,6 +202,7 @@ public class EditServerController implements Initializable {
 		this.parent = configurationController;
 	}
 
+
 	void onUpdateJobData(ItemSenseConfigJob configJobData) {
 		if (configJobData.getOid() == null) {
 			tblConfigJobs.getItems().add(configJobData);
@@ -209,6 +211,7 @@ public class EditServerController implements Initializable {
 		dialogStage.close();
 		tblConfigJobs.refresh();
 	}
+	
 
 	void onCancelJobData() {
 		dialogStage.close();

@@ -18,7 +18,6 @@ import com.impinj.itemsense.client.coordinator.facility.Facility;
 import com.impinj.itemsense.client.coordinator.job.Job;
 import com.impinj.itemsense.client.coordinator.job.JobController;
 import com.impinj.itemsense.client.coordinator.job.JobResponse;
-import com.impinj.itemsense.client.data.DataApiController;
 import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
 import com.impinj.itemsense.scheduler.job.JobResult.Status;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
@@ -27,14 +26,13 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 public class ItemSenseHelper {
 	private static final Logger logger = LoggerFactory.getLogger(ItemSenseHelper.class);
 
+	private Client client;
+	private CoordinatorApiController itemsenseCoordinatorController;
+	private Job job;
+
 	private ItemSenseConfig config;
 	private ItemSenseConfigJob configJob;
 	private JobResult jobResult;
-	private Job job;
-
-	private DataApiController itemsenseDataController;
-	private CoordinatorApiController itemsenseCoordinatorController;
-	private Client client;
 
 	/**
 	 * Constructor - when built with ItemSenseJobConfig, will start/stop ItemSense
@@ -50,11 +48,13 @@ public class ItemSenseHelper {
 		job.setReportToDatabaseEnabled(true);
 		job.setReportToMessageQueueEnabled(true);
 
-		// TODO: validate recipe is configured in IS
-		job.setRecipeName(configJob.getRecipe());
-		job.setDurationSeconds(configJob.getDuration());
-		job.setFacility(configJob.getFacility());
-		job.setStartDelay(configJob.getStartDelay());
+		if (configJob != null) {
+			// TODO: validate recipe is configured in IS
+			job.setRecipeName(configJob.getRecipe());
+			job.setDurationSeconds(configJob.getDuration());
+			job.setFacility(configJob.getFacility());
+			job.setStartDelay(configJob.getStartDelay());
+		}
 	}
 
 	public boolean isJobFailed(String status) {
@@ -74,7 +74,6 @@ public class ItemSenseHelper {
 	}
 
 	public Client getClient() {
-
 		// TODO: support auth token
 		// lazy instantiation
 		if (client == null) {
@@ -87,11 +86,30 @@ public class ItemSenseHelper {
 
 	public CoordinatorApiController getItemsenseCoordinatorController() {
 
+		String fullUrl = config.getUrl() + "/itemsense";
+
 		if (itemsenseCoordinatorController == null) {
-			itemsenseCoordinatorController = new CoordinatorApiController(getClient(), URI.create(config.getUrl()));
+			itemsenseCoordinatorController = new CoordinatorApiController(getClient(), URI.create(fullUrl));
 		}
 
 		return itemsenseCoordinatorController;
+	}
+
+	public boolean testConnection() {
+		try {
+			CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+			//RecipeController controller = coordinator.getRecipeController();
+			//List<Recipe> response = controller.getRecipes();// .getJobController().getJobs();
+			
+			List<Facility> response = coordinator.getFacilityController().getAllFacilities();
+
+			System.out.println(response == null ? 0 : response.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("Could not validate ItemSense Connection: " + this.toString());
+			return false;
+		}
+		return true;
 	}
 
 	public ArrayList<JobResponse> getJobsInFacility() {
@@ -146,7 +164,7 @@ public class ItemSenseHelper {
 			stopRunningJobsInFacility();
 		}
 
-		logger.info("Starting Job: "+config.getName()+" facility: "+configJob.getFacility()+" job: "+job);
+		logger.info("Starting Job: " + config.getName() + " facility: " + configJob.getFacility() + " job: " + job);
 
 		// TODO: validate recipe exist before trying to start the job
 		JobController jobController = getItemsenseCoordinatorController().getJobController();

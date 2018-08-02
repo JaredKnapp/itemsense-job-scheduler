@@ -102,7 +102,8 @@ public class ConfigurationController implements Initializable {
 						protected void updateItem(ItemSenseConfig item, boolean isEmpty) {
 							super.updateItem(item, isEmpty);
 							if (item != null) {
-								setText(item.getName());
+								String rowText = item.getName() + (!item.isActive()?" (disabled)":"");
+								setText(rowText);
 							}
 						}
 

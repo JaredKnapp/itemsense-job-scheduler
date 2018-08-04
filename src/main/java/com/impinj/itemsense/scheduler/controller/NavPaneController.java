@@ -2,18 +2,14 @@ package com.impinj.itemsense.scheduler.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 
 import com.impinj.itemsense.scheduler.App;
-import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;

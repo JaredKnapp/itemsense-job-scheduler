@@ -79,6 +79,7 @@ public class DataService {
 				}, filesFromClasspath);
             mapper.write(systemConfig);
             logger.info("Successfully Written " + mapper.getResourceFile());
+            mapper.close();
 	}
 
 	// private void loadItemsenseConfigs() {

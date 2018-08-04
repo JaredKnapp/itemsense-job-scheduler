@@ -54,14 +54,14 @@ public class JobService {
 	 * use an old sync'ed vector which is a vector!
 	 */
 	//private static List<JobResult> jobResults = Collections.synchronizedList(new LinkedList<JobResult>());
-	private static List<JobResult> jobResults = new ArrayList<>();
+	private List<JobResult> jobResults = new ArrayList<>();
 
         
 	public static JobService getService(boolean createIfNull) {
 		if(service == null && createIfNull) service = new JobService();
 		return service;
 	}
-	public static List<JobResult> getJobResults() {
+	public List<JobResult> getJobResults() {
             return jobResults;
         }
 	private JobService() {

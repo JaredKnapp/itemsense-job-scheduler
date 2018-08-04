@@ -10,14 +10,22 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.client.coordinator.CoordinatorApiController;
 import com.impinj.itemsense.client.coordinator.facility.Facility;
+import com.impinj.itemsense.client.coordinator.facility.FacilityController;
 import com.impinj.itemsense.client.coordinator.job.Job;
 import com.impinj.itemsense.client.coordinator.job.JobController;
 import com.impinj.itemsense.client.coordinator.job.JobResponse;
+import com.impinj.itemsense.client.coordinator.recipe.Recipe;
+import com.impinj.itemsense.client.coordinator.recipe.RecipeController;
+import com.impinj.itemsense.client.coordinator.user.User;
+import com.impinj.itemsense.client.data.DataApiController;
+import com.impinj.itemsense.client.data.item.Item;
 import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
 import com.impinj.itemsense.scheduler.job.JobResult.Status;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
@@ -77,8 +85,12 @@ public class ItemSenseHelper {
 		// TODO: support auth token
 		// lazy instantiation
 		if (client == null) {
-			client = ClientBuilder.newClient()
+//			client = ClientBuilder.newClient()
+//					.register(HttpAuthenticationFeature.basic(config.getUsername(), config.getPassword()));
+
+			client = ClientBuilder.newClient().register(JacksonFeature.class)
 					.register(HttpAuthenticationFeature.basic(config.getUsername(), config.getPassword()));
+
 		}
 
 		return client;
@@ -95,21 +107,54 @@ public class ItemSenseHelper {
 		return itemsenseCoordinatorController;
 	}
 
+	public boolean testConnectionXX() {
+		final String url = "http://192.168.0.98/itemsense";
+		final String username = "admin";
+		final String password = "admindefault";
+		Client client = ClientBuilder.newClient().register(JacksonFeature.class)
+				.register(HttpAuthenticationFeature.basic(username, password));
+
+		CoordinatorApiController configApi = new CoordinatorApiController(client, URI.create(url));
+
+		List<Facility> facilities = configApi.getFacilityController().getAllFacilities();
+
+		if (facilities == null) {
+			logger.error("Facilities is null - aborting");
+			return false;
+		}
+
+		for (Facility facility : facilities) {
+			logger.info(facility.toString());
+		}
+
+		DataApiController dataApi = new DataApiController(client, URI.create(url));
+
+		List<Item> items = dataApi.getItemController().getAllItems();
+
+		if (items == null) {
+			logger.error("Items is null - aborting");
+			return false;
+		}
+
+		for (Item item : items) {
+			logger.info(item.toString());
+		}
+
+		return true;
+	}
+
 	public boolean testConnection() {
+		boolean success = true;
 		try {
 			CoordinatorApiController coordinator = getItemsenseCoordinatorController();
-			//RecipeController controller = coordinator.getRecipeController();
-			//List<Recipe> response = controller.getRecipes();// .getJobController().getJobs();
-			
-			List<Facility> response = coordinator.getFacilityController().getAllFacilities();
-
-			System.out.println(response == null ? 0 : response.size());
+			List<Recipe> recipes = coordinator.getRecipeController().getRecipes();
+			success = (recipes==null ? false : 0 < recipes.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug("Could not validate ItemSense Connection: " + this.toString());
-			return false;
+			success = false;
 		}
-		return true;
+		return success;
 	}
 
 	public ArrayList<JobResponse> getJobsInFacility() {

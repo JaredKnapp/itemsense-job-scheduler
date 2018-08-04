@@ -1,12 +1,11 @@
 package com.impinj.itemsense.scheduler.controller;
 
-import com.impinj.itemsense.scheduler.job.JobResult;
-import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.impinj.itemsense.scheduler.job.JobResult;
 import com.impinj.itemsense.scheduler.model.TriggeredJob;
 import com.impinj.itemsense.scheduler.service.JobService;
 

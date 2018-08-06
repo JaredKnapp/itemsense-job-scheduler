@@ -2,9 +2,7 @@ package com.impinj.itemsense.scheduler.job;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.client.coordinator.CoordinatorApiController;
+import com.impinj.itemsense.client.coordinator.facility.Facility;
 import com.impinj.itemsense.client.coordinator.job.Job;
 import com.impinj.itemsense.client.coordinator.job.JobController;
 import com.impinj.itemsense.client.coordinator.job.JobResponse;
@@ -70,7 +69,7 @@ public class ItemSenseHelper {
 	public boolean isJobRunning(String status) {
 		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING) || status.equals("REGISTERED")
 				|| status.equals("WAITING") || status.equals("INITIALIZING") || status.equals("STARTING")
-				|| status.equals("PUBLISHING_STATE") || status.equals("STOPPED_STOPPING")
+				|| status.equals("PUBLISHING_STATE") || status.equals("fPED_STOPPING")
 				|| status.equals("COMPLETE_STOPPING"));
 	}
 
@@ -115,25 +114,28 @@ public class ItemSenseHelper {
 	}
 
 	public ArrayList<JobResponse> getJobsInFacility() {
-
-		JobController jobController = getItemsenseCoordinatorController().getJobController();
-		List<JobResponse> jobs = jobController.getJobs();
-
-		if (jobs != null) {
-			return (ArrayList<JobResponse>) jobs.stream().filter(response -> {
-				return Arrays.asList(response.getFacilities()).contains(configJob.getFacility());
-			}).collect(Collectors.toList());
-		} else {
-			return new ArrayList<JobResponse>();
-		}
+            JobController jobController = getItemsenseCoordinatorController().getJobController();
+            List<JobResponse> jobResponses = jobController.getJobs();
+            ArrayList<JobResponse> retResponses = new ArrayList<> ();
+            
+            for (JobResponse response : jobResponses) {
+                Facility facilities[] = response.getFacilities();
+                for (Facility facility : facilities) {
+                    if (facility.getName().contains(configJob.getFacility()))
+                        retResponses.add(response);
+                }                    
+            }
+            return retResponses;
 	}
 
 	public ArrayList<JobResponse> getRunningJobsInFacility() {
-		ArrayList<JobResponse> jobResponses = (ArrayList<JobResponse>) getJobsInFacility().stream()
-				.filter(jr -> isJobRunning(jr.getStatus())).collect(Collectors.toList());
-		logger.info("Job (count: %d) RUNNING: %s facility: %s", jobResponses.size(), config.getName(),
-				configJob.getFacility());
-		return jobResponses;
+            ArrayList<JobResponse> jobResponses = (ArrayList<JobResponse>) getJobsInFacility();
+            ArrayList<JobResponse> retResponses = new ArrayList<> ();
+            for (JobResponse response : jobResponses) {
+                if (isJobRunning(response.getStatus()))
+                    retResponses.add(response);
+            }
+            return retResponses;
 	}
 
 	public void stopRunningJobsInFacility() {

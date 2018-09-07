@@ -21,6 +21,7 @@ public class ItemSenseJob implements Job {
 
 	private static final Logger logger = LoggerFactory.getLogger(ItemSenseJob.class);
 
+	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
 		JobResult jobResult = new JobResult();

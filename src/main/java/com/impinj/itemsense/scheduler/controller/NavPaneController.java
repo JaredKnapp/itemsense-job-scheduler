@@ -31,29 +31,41 @@ public class NavPaneController {
 	private BorderPane dashboardPane;
 	private BorderPane configurationPane;
 
-	/**
-	 * Event handler for Dashboard
-	 */
-	@FXML
-	void switchToDashboard(ActionEvent event) {
-
-		try {
-
-			if (dashboardPane == null) {
-				URL dashboardUrl = getClass().getResource("/fxml/Dashboard.fxml");
-				dashboardPane = FXMLLoader.load(dashboardUrl);
-				System.out.println("Creating new dashboard");
-			}
-
-			BorderPane appPane = App.getRoot();
-			appPane.setCenter(dashboardPane);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+	@FXML 
+	void btnPopup_OnPopup(ActionEvent event) throws IOException {
+        URL popupUrl = getClass().getResource("/fxml/EditJob.fxml");
+        BorderPane popup = FXMLLoader.load(popupUrl);
+        Scene scene = new Scene(popup);
+        
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Edit ItemSense Job");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();        
+        
+        
+//		Dialog<ItemSenseConfigJob> dialog = new Dialog<>();
+//		Optional<ItemSenseConfigJob> result = dialog.showAndWait();
+		System.out.println("DONE");
 	}
 
+	/**
+	 * Event handler for Exit Button
+	 */
+	@FXML
+	void exitApplication(ActionEvent event) {
+		System.exit(0);
+	}
+
+	@FXML // This method is called by the FXMLLoader when initialization is complete
+	void initialize() {
+		assert btnShowDashboard != null : "fx:id=\"btnShowDashboard\" was not injected: check your FXML file 'NavPane.fxml'.";
+		assert btnShowConfiguration != null : "fx:id=\"btnShowConfiguration\" was not injected: check your FXML file 'NavPane.fxml'.";
+		assert btnExitApplication != null : "fx:id=\"btnExitApplication\" was not injected: check your FXML file 'NavPane.fxml'.";
+		
+		System.out.println("Initialized Component");
+	}
+	
 	/**
 	 * Event handler for Configuration
 	 */
@@ -79,37 +91,25 @@ public class NavPaneController {
 	}
 
 	/**
-	 * Event handler for Exit Button
+	 * Event handler for Dashboard
 	 */
 	@FXML
-	void exitApplication(ActionEvent event) {
-		System.exit(0);
-	}
-	
-	@FXML 
-	void btnPopup_OnPopup(ActionEvent event) throws IOException {
-        URL popupUrl = getClass().getResource("/fxml/EditJob.fxml");
-        BorderPane popup = FXMLLoader.load(popupUrl);
-        Scene scene = new Scene(popup);
-        
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Edit ItemSense Job");
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.setScene(scene);
-        dialogStage.showAndWait();        
-        
-        
-//		Dialog<ItemSenseConfigJob> dialog = new Dialog<>();
-//		Optional<ItemSenseConfigJob> result = dialog.showAndWait();
-		System.out.println("DONE");
-	}
+	void switchToDashboard(ActionEvent event) {
 
-	@FXML // This method is called by the FXMLLoader when initialization is complete
-	void initialize() {
-		assert btnShowDashboard != null : "fx:id=\"btnShowDashboard\" was not injected: check your FXML file 'NavPane.fxml'.";
-		assert btnShowConfiguration != null : "fx:id=\"btnShowConfiguration\" was not injected: check your FXML file 'NavPane.fxml'.";
-		assert btnExitApplication != null : "fx:id=\"btnExitApplication\" was not injected: check your FXML file 'NavPane.fxml'.";
-		
-		System.out.println("Initialized Component");
+		try {
+
+			if (dashboardPane == null) {
+				URL dashboardUrl = getClass().getResource("/fxml/Dashboard.fxml");
+				dashboardPane = FXMLLoader.load(dashboardUrl);
+				System.out.println("Creating new dashboard");
+			}
+
+			BorderPane appPane = App.getRoot();
+			appPane.setCenter(dashboardPane);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

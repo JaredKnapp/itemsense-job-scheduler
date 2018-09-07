@@ -19,10 +19,17 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+	private static final int _APPHEIGHT = 600;
+	private static final int _APPWIDTH = 1500;
+
 	// Creating a static root to pass to the controller
-	private static BorderPane root = new BorderPane();
-	private static String appId = UUID.randomUUID().toString();
-	
+	private static final BorderPane root = new BorderPane();
+	private static final String appId = UUID.randomUUID().toString();
+
+	public static String getApplicationId() {
+		return appId;
+	}
+
 	/**
 	 * Just a root getter for the controller to use
 	 */
@@ -30,17 +37,25 @@ public class App extends Application {
 		return root;
 	}
 
-	public static String getApplicationId() {
-		return appId;
-	}
-
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	public static void startJobs() throws IOException {
+		JobService.getService(true).queueAllJobs();
 	}
 
 	@Override
 	public void init() throws Exception {
 		this.loadData();
+	}
+
+	private void loadData() {
+		try {
+			DataService.getService(true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -56,7 +71,7 @@ public class App extends Application {
 			root.setTop(toolBar);
 			root.setCenter(dashboard);
 
-			Scene scene = new Scene(root, 1500, 600);
+			Scene scene = new Scene(root, _APPWIDTH, _APPHEIGHT);
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 			primaryStage.setOnCloseRequest(event -> {
@@ -78,17 +93,5 @@ public class App extends Application {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void loadData() {
-		try {
-			DataService.getService(true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void startJobs() throws IOException {
-		JobService.getService(true).queueAllJobs();
 	}
 }

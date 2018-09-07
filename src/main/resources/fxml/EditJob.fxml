@@ -12,18 +12,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
+<BorderPane minHeight="300.0" minWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
    <bottom>
       <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="36.0" prefWidth="323.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#btnCancel_OnAction" text="Cancel">
-               <HBox.margin>
-                  <Insets bottom="5.0" right="10.0" />
-               </HBox.margin>
-            </Button>
-            <Button fx:id="btnOk" mnemonicParsing="false" onAction="#btnOk_OnAction" text="OK">
+            <Button fx:id="btnOk" minWidth="75.0" mnemonicParsing="false" onAction="#btnOk_OnAction" text="OK">
                <HBox.margin>
                   <Insets right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#btnCancel_OnAction" text="Cancel">
+               <HBox.margin>
+                  <Insets bottom="5.0" right="10.0" />
                </HBox.margin>
             </Button>
          </children>

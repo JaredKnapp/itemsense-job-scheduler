@@ -7,18 +7,18 @@ import lombok.Setter;
 
 public @Data class ItemSenseConfigJob {
 
-    private static final String KEY_SEP = ".";
+	private static final String KEY_SEP = ".";
 
 	@Getter
 	@Setter
-        @JsonIgnore
+	@JsonIgnore
 	private String itemSenseOid;
 
 	@Getter
 	@Setter
-        @JsonIgnore
+	@JsonIgnore
 	private String oid;
-	
+
 	@Getter
 	@Setter
 	private boolean active;
@@ -55,8 +55,8 @@ public @Data class ItemSenseConfigJob {
 	@Setter
 	private boolean stopRunningJobs;
 
-        @JsonIgnore
-        public String getJobKey() {
-            return facility + KEY_SEP + name + KEY_SEP + recipe;
-        }
+	@JsonIgnore
+	public String getJobKey() {
+		return facility + KEY_SEP + name + KEY_SEP + recipe;
+	}
 }

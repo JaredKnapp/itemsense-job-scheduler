@@ -9,6 +9,7 @@ import com.impinj.itemsense.scheduler.job.JobResult;
 import com.impinj.itemsense.scheduler.model.TriggeredJob;
 import com.impinj.itemsense.scheduler.service.JobService;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
@@ -55,7 +56,7 @@ public class DashboardController {
 					refreshTriggeredJobs();
 				}
 			}));
-			refreshTimer.setCycleCount(Timeline.INDEFINITE);
+			refreshTimer.setCycleCount(Animation.INDEFINITE);
 			refreshTimer.play();
 
 		} catch (IOException e) {
@@ -94,16 +95,16 @@ public class DashboardController {
 		assert btnStart != null : "fx:id=\"btnStart\" was not injected: check your FXML file 'Dashboard.fxml'.";
         }
 
+	private void refreshTriggeredJobs() {
+		List<TriggeredJob> triggeredJobs = JobService.getService(true).getQuartzJobs();
+		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
+                tblTriggeredJobResults.setItems( FXCollections.observableArrayList(JobService.getService(true).getJobResults()));
+		setTableHeight(1.1);
+	}
+
 	private void setTableHeight(double rowPadding) {
 		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty().multiply(Bindings.size(tblTriggeredJobs.getItems()).add(rowPadding)));
 		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
 		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
-	}
-
-	private void refreshTriggeredJobs() {
-		List<TriggeredJob> triggeredJobs = JobService.getService(true).getQuartzJobs();
-		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
-                tblTriggeredJobResults.setItems( (ObservableList<JobResult>)FXCollections.observableArrayList(JobService.getService(true).getJobResults()));
-		setTableHeight(1.1);
 	}
 }

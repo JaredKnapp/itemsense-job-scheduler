@@ -72,12 +72,34 @@ public class EditServerController implements Initializable {
 	@FXML // fx:id="btnSave"
 	private Button btnSave; // Value injected by FXMLLoader
 
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
+	@FXML
+	void btnAdd_OnAction(ActionEvent event) {
+		loadJobEditor(new ItemSenseConfigJob());
 	}
 
+	@FXML
+	void btnCancel_OnCancel(ActionEvent event) {
+		parent.onCancel();
+	}
+
+	@FXML
+	void btnDel_OnAction(ActionEvent event) {
+		ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
+		tblConfigJobs.getItems().remove(job);
+	}
+
+	@FXML
+	void btnSave_OnAction(ActionEvent event) {
+		configData.setActive(chbIsActive.isSelected());
+		configData.setName(txtName.getText());
+		configData.setUrl(txtHostUrl.getText());
+		configData.setUsername(txtUserName.getText());
+		configData.setPassword(txtPassword.getText());
+		configData.setUtcOffset(txtUtcOffset.getText());
+
+		configData.setJobList(tblConfigJobs.getItems());
+		parent.onSaveData(configData);
+	}
 
 	@FXML
 	void btnTestConnection_OnAction(ActionEvent event) {
@@ -114,49 +136,14 @@ public class EditServerController implements Initializable {
 			alert.showAndWait();
 		}
 	}
-	
 
-	@FXML
-	void btnAdd_OnAction(ActionEvent event) {
-		loadJobEditor(new ItemSenseConfigJob());
-	}
-	
-
-	@FXML
-	void btnSave_OnAction(ActionEvent event) {
-		configData.setActive(chbIsActive.isSelected());
-		configData.setName(txtName.getText());
-		configData.setUrl(txtHostUrl.getText());
-		configData.setUsername(txtUserName.getText());
-		configData.setPassword(txtPassword.getText());
-		configData.setUtcOffset(txtUtcOffset.getText());
-
-		configData.setJobList(tblConfigJobs.getItems());
-		parent.onSaveData(configData);
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
 	}
 
-	@FXML
-	void btnCancel_OnCancel(ActionEvent event) {
-		parent.onCancel();
-	}
-
-	@FXML
-	void btnDel_OnAction(ActionEvent event) {
-		ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
-		tblConfigJobs.getItems().remove(job);
-	}
-
-	@FXML
-	void tblConfigJobs_OnMouseClicked(MouseEvent event) {
-		// double click
-		if (event.getClickCount() == 2) {
-			if (tblConfigJobs.getSelectionModel().getSelectedItem() != null) {
-				ItemSenseConfigJob selectedItem = (ItemSenseConfigJob) tblConfigJobs.getSelectionModel()
-						.getSelectedItem();
-				loadJobEditor(selectedItem);
-			}
-		}
-		btnDel.setDisable(!(tblConfigJobs.getSelectionModel().getSelectedItem() != null));
+	public void injectParent(ConfigurationController configurationController) {
+		this.parent = configurationController;
 	}
 
 	private void loadJobEditor(ItemSenseConfigJob itemSenseConfig) {
@@ -179,6 +166,19 @@ public class EditServerController implements Initializable {
 		}
 	}
 
+	void onCancelJobData() {
+		dialogStage.close();
+	}
+
+	void onUpdateJobData(ItemSenseConfigJob configJobData) {
+		if (configJobData.getOid() == null) {
+			tblConfigJobs.getItems().add(configJobData);
+			configJobData.setOid(OIDGenerator.next());
+		}
+		dialogStage.close();
+		tblConfigJobs.refresh();
+	}
+
 	public void setData(ItemSenseConfig serverData) {
 		this.configData = serverData;
 
@@ -194,27 +194,20 @@ public class EditServerController implements Initializable {
 			if (jobs == null)
 				jobs = new ArrayList<ItemSenseConfigJob>();
 
-			tblConfigJobs.setItems((ObservableList<ItemSenseConfigJob>) FXCollections.observableArrayList(jobs));
+			tblConfigJobs.setItems(FXCollections.observableArrayList(jobs));
 		}
 	}
 
-	public void injectParent(ConfigurationController configurationController) {
-		this.parent = configurationController;
-	}
-
-
-	void onUpdateJobData(ItemSenseConfigJob configJobData) {
-		if (configJobData.getOid() == null) {
-			tblConfigJobs.getItems().add(configJobData);
-			configJobData.setOid(OIDGenerator.next());
+	@FXML
+	void tblConfigJobs_OnMouseClicked(MouseEvent event) {
+		// double click
+		if (event.getClickCount() == 2) {
+			if (tblConfigJobs.getSelectionModel().getSelectedItem() != null) {
+				ItemSenseConfigJob selectedItem = tblConfigJobs.getSelectionModel().getSelectedItem();
+				loadJobEditor(selectedItem);
+			}
 		}
-		dialogStage.close();
-		tblConfigJobs.refresh();
-	}
-	
-
-	void onCancelJobData() {
-		dialogStage.close();
+		btnDel.setDisable(!(tblConfigJobs.getSelectionModel().getSelectedItem() != null));
 	}
 
 }

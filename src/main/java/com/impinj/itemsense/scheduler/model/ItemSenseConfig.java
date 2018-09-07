@@ -13,12 +13,12 @@ public @Data class ItemSenseConfig {
 
 	@Getter
 	@Setter
-        @JsonIgnore
+	@JsonIgnore
 	private String oid;
 
 	@Getter
 	@Setter
-        @JsonIgnore
+	@JsonIgnore
 	private String fileName;
 
 	@Getter
@@ -53,13 +53,12 @@ public @Data class ItemSenseConfig {
 	@Setter
 	private List<ItemSenseConfigJob> jobList;
 
-        @JsonIgnore
+	@JsonIgnore
 	public List<ItemSenseConfigJob> getActiveJobs() {
-		return (List<ItemSenseConfigJob>) getJobs().stream().filter(itemSenseJob -> itemSenseJob.isActive())
-				.collect(Collectors.toList());
+		return getJobs().stream().filter(itemSenseJob -> itemSenseJob.isActive()).collect(Collectors.toList());
 	}
 
-        @JsonIgnore
+	@JsonIgnore
 	public List<ItemSenseConfigJob> getJobs() {
 		if (jobList == null) {
 			jobList = new ArrayList<ItemSenseConfigJob>();

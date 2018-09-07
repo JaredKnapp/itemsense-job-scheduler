@@ -43,6 +43,12 @@ public class JobService {
 	private static final int JOB_RESULTS_STACK_SIZE = 1000;
 	private static JobService service;
 
+	public static JobService getService(boolean createIfNull) {
+		if (service == null && createIfNull)
+			service = new JobService();
+		return service;
+	}
+
 	/**
 	 * The place non-Spring (the Quartz jobs when they wake up) get the
 	 * configuration information.
@@ -53,17 +59,10 @@ public class JobService {
 	 * Quartz Jobs and the UIs both access this table to find results of jobs, so we
 	 * use an old sync'ed vector which is a vector!
 	 */
-	//private static List<JobResult> jobResults = Collections.synchronizedList(new LinkedList<JobResult>());
+	// private static List<JobResult> jobResults = Collections.synchronizedList(new
+	// LinkedList<JobResult>());
 	private List<JobResult> jobResults = new ArrayList<>();
 
-        
-	public static JobService getService(boolean createIfNull) {
-		if(service == null && createIfNull) service = new JobService();
-		return service;
-	}
-	public List<JobResult> getJobResults() {
-            return jobResults;
-        }
 	private JobService() {
 		logger.info("Creating Quartz Job Scheduler");
 		try {
@@ -76,12 +75,93 @@ public class JobService {
 		}
 	}
 
+	/**
+	 * Delete from the Quartz Queue
+	 */
+	public void dequeueAllJobs() {
+		try {
+			scheduler.getJobGroupNames().stream().forEach(groupName -> {
+				try {
+					scheduler.getJobKeys(GroupMatcher.groupEquals(groupName)).forEach(jobKey -> {
+						try {
+							scheduler.deleteJob(jobKey);
+							logger.info("Removed Job " + jobKey);
+						} catch (SchedulerException e) {
+							logger.error("Unable to delete Job " + jobKey);
+						}
+					});
+				} catch (Exception e) {
+					logger.error("Unable to obtains jobs to delete ");
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Unable to obtain job group name(s) to delete ");
+		}
+	}
+
+	public List<JobResult> getJobResults() {
+		return jobResults;
+	}
+
+	public List<TriggeredJob> getQuartzJobs() {
+		try {
+			return scheduler.getTriggerKeys(GroupMatcher.groupEquals(App.getApplicationId())).stream()
+					.map(triggerKey -> {
+						try {
+							return new TriggeredJob((CronTriggerImpl) scheduler.getTrigger(triggerKey),
+									scheduler.getJobDetail(jobKeyFromTriggerKey(triggerKey)));
+						} catch (Exception e) {
+							throw new RuntimeException(
+									"Unable to find Quartz Job and Trigger for Trigger Key " + triggerKey, e);
+						}
+					}).collect(Collectors.toList());
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to find Quartz Jobs", e);
+		}
+	}
+
 	private JobKey jobKeyFromConf(ItemSenseConfigJob config) {
 		return JobKey.jobKey(config.getOid(), App.getApplicationId());
 	}
 
-	private TriggerKey triggerKeyFromConf(ItemSenseConfigJob config) {
-		return TriggerKey.triggerKey(config.getOid(), App.getApplicationId());
+	private JobKey jobKeyFromTriggerKey(TriggerKey triggerKey) {
+		return JobKey.jobKey(triggerKey.getName(), triggerKey.getGroup());
+	}
+
+	public void queueAllJobs() throws IOException {
+		logger.info("Reloading all Quartz Jobs");
+		DataService.getService(true).getSystemConfig().getItemSenseConfigs().forEach(config -> queueJobs(config));
+	}
+
+	/**
+	 * This method will queue all active jobs if ItemSense is active. If ItemSense
+	 * is not active, no jobs will be queued.
+	 *
+	 * @param store
+	 */
+	public void queueJobs(ItemSenseConfig configData) {
+		if (configData.isActive()) {
+			configData.getActiveJobs().stream().forEach(jobConfig -> {
+				try {
+					scheduleJob(jobConfig, ItemSenseJob.class);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+
+	// TODO: Replace with Event Processing
+	protected void saveJobResult(JobResult jobResult) {
+		// if the stack is full, remove the last item to make room for the jobResult
+		// just heard...
+		if (jobResults.size() == JOB_RESULTS_STACK_SIZE) {
+			((LinkedList<JobResult>) jobResults).removeLast();
+		}
+		// add the result at "0" - the beginning of the list
+		jobResults.add(0, jobResult);
 	}
 
 	/**
@@ -143,90 +223,13 @@ public class JobService {
 		}
 	}
 
-	/**
-	 * This method will queue all active jobs if ItemSense is active. If ItemSense
-	 * is not active, no jobs will be queued.
-	 *
-	 * @param store
-	 */
-	public void queueJobs(ItemSenseConfig configData) {
-		if (configData.isActive()) {
-			configData.getActiveJobs().stream().forEach(jobConfig -> {
-				try {
-					scheduleJob(jobConfig, ItemSenseJob.class);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-		}
-	}
-
-	public void queueAllJobs() throws IOException {
-		logger.info("Reloading all Quartz Jobs");
-		DataService.getService(true).getSystemConfig().getItemSenseConfigs().forEach(config -> queueJobs(config));
-	}
-
-	/**
-	 * Delete from the Quartz Queue
-	 */
-	public void dequeueAllJobs() {
-		try {
-			scheduler.getJobGroupNames().stream().forEach(groupName -> {
-				try {
-					scheduler.getJobKeys(GroupMatcher.groupEquals(groupName)).forEach(jobKey -> {
-						try {
-							scheduler.deleteJob(jobKey);
-							logger.info("Removed Job " + jobKey);
-						} catch (SchedulerException e) {
-							logger.error("Unable to delete Job " + jobKey);
-						}
-					});
-				} catch (Exception e) {
-					logger.error("Unable to obtains jobs to delete ");
-				}
-			});
-		} catch (Exception e) {
-			logger.error("Unable to obtain job group name(s) to delete ");
-		}
-	}
-	
 	public void shutdown() throws SchedulerException {
 		this.dequeueAllJobs();
 		scheduler.shutdown(false);
 	}
-    
-    private JobKey jobKeyFromTriggerKey(TriggerKey triggerKey) {
-        return JobKey.jobKey(triggerKey.getName(), triggerKey.getGroup());
-    }
-    
-	public List<TriggeredJob> getQuartzJobs() {
-        try {
-            return scheduler.getTriggerKeys(GroupMatcher.groupEquals(App.getApplicationId())).stream().map(triggerKey -> {
-                try {
-                    return new TriggeredJob((CronTriggerImpl) scheduler.getTrigger(triggerKey),
-                            scheduler.getJobDetail(jobKeyFromTriggerKey(triggerKey)));
-                } catch (Exception e) {
-                    throw new RuntimeException("Unable to find Quartz Job and Trigger for Trigger Key " + triggerKey,
-                            e);
-                }
-            }).collect(Collectors.toList());
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to find Quartz Jobs", e);
-        }
-    }
-	
-	
-	//TODO: Replace with Event Processing
-	protected void saveJobResult(JobResult jobResult) {
-		// if the stack is full, remove the last item to make room for the jobResult
-		// just heard...
-		if (jobResults.size() == JOB_RESULTS_STACK_SIZE) {
-			((LinkedList<JobResult>) jobResults).removeLast();
-		}
-		// add the result at "0" - the beginning of the list
-		jobResults.add(0, jobResult);
+
+	private TriggerKey triggerKeyFromConf(ItemSenseConfigJob config) {
+		return TriggerKey.triggerKey(config.getOid(), App.getApplicationId());
 	}
 
 }

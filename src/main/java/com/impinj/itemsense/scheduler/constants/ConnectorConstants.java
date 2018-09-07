@@ -13,8 +13,9 @@ public final class ConnectorConstants {
 
 	public static final String JOB_DATA_MAP_ITEMSENSE_CONFIG = "ItemSenseConfig";
 	public static final String JOB_DATA_MAP_JOB_CONFIG = "JobConfig";
- 
-	//Hide the constructor
-	private ConnectorConstants() {}
+
+	// Hide the constructor
+	private ConnectorConstants() {
+	}
 
 }

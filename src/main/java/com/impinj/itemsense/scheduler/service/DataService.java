@@ -18,17 +18,18 @@ public class DataService {
 	private static final Logger logger = LoggerFactory.getLogger(JsonMapper.class);
 	private static DataService service;
 
-	private final String jobConfigDir = "target/classes";
-	private final String jobConfigMasterfileJson = "SystemConfiguration.json";
-	private final Boolean filesFromClasspath = false;
-
-	private SystemConfiguration systemConfig;
-
 	public static DataService getService(boolean createIfNull) throws IOException {
 		if (service == null && createIfNull)
 			service = new DataService();
 		return service;
 	}
+
+	private final String jobConfigDir = "target/classes";
+	private final String jobConfigMasterfileJson = "SystemConfiguration.json";
+
+	private final Boolean filesFromClasspath = false;
+
+	private SystemConfiguration systemConfig;
 
 	private DataService() throws IOException {
 		loadSystemConfig();
@@ -45,6 +46,32 @@ public class DataService {
 
 	public SystemConfiguration getSystemConfig() {
 		return this.systemConfig;
+	}
+
+	private ItemSenseConfig loadItemsenseConfig(String isFile) {
+		ItemSenseConfig config = null;
+		logger.debug("Loading itemsense: " + isFile + " from " + jobConfigDir);
+		try (JsonMapper<ItemSenseConfig> mapper = new JsonMapper<ItemSenseConfig>(jobConfigDir, isFile,
+				new TypeReference<ItemSenseConfig>() {
+				}, filesFromClasspath)) {
+			config = mapper.read();
+			config.setOid(OIDGenerator.next());
+			// now process the jobs
+			if (config.getJobList() != null) {
+				logger.debug("itemSenseConfig.getJobList().size(): " + config.getJobList().size());
+				for (ItemSenseConfigJob jobConfig : config.getJobList()) {
+					jobConfig.setOid(OIDGenerator.next());
+					jobConfig.setName(config.getName());
+					jobConfig.setItemSenseOid(config.getOid());
+				}
+			}
+		} catch (FileNotFoundException fnfe) {
+			logger.error("ItemSense Config file not found: " + isFile + "(From application.properties: job.config.dir"
+					+ jobConfigDir + " job.config.masterfile.json: " + jobConfigMasterfileJson
+					+ " job.config.fromClasspath: " + filesFromClasspath + ")");
+			return null;
+		}
+		return config;
 	}
 
 	private void loadSystemConfig() {
@@ -72,14 +99,6 @@ public class DataService {
 							+ jobConfigDir + " job.config.masterfile.json: " + jobConfigMasterfileJson
 							+ " job.config.fromClasspath: " + filesFromClasspath);
 		}
-	}
-        public void saveSystemConfig() throws IOException {
-            JsonMapper<SystemConfiguration> mapper = new JsonMapper<SystemConfiguration>(jobConfigDir,
-				jobConfigMasterfileJson, new TypeReference<SystemConfiguration>() {
-				}, filesFromClasspath);
-            mapper.write(systemConfig);
-            logger.info("Successfully Written " + mapper.getResourceFile());
-            mapper.close();
 	}
 
 	// private void loadItemsenseConfigs() {
@@ -119,29 +138,12 @@ public class DataService {
 	//
 	// }
 
-	private ItemSenseConfig loadItemsenseConfig(String isFile) {
-		ItemSenseConfig config = null;
-		logger.debug("Loading itemsense: " + isFile + " from " + jobConfigDir);
-		try (JsonMapper<ItemSenseConfig> mapper = new JsonMapper<ItemSenseConfig>(jobConfigDir, isFile,
-				new TypeReference<ItemSenseConfig>() {
-				}, filesFromClasspath)) {
-			config = mapper.read();
-			config.setOid(OIDGenerator.next());
-			// now process the jobs
-			if (config.getJobList() != null) {
-				logger.debug("itemSenseConfig.getJobList().size(): " + config.getJobList().size());
-				for (ItemSenseConfigJob jobConfig : config.getJobList()) {
-					jobConfig.setOid(OIDGenerator.next());
-					jobConfig.setName(config.getName());
-					jobConfig.setItemSenseOid(config.getOid());
-				}
-			}
-		} catch (FileNotFoundException fnfe) {
-			logger.error("ItemSense Config file not found: " + isFile + "(From application.properties: job.config.dir"
-					+ jobConfigDir + " job.config.masterfile.json: " + jobConfigMasterfileJson
-					+ " job.config.fromClasspath: " + filesFromClasspath + ")");
-			return null;
-		}
-		return config;
+	public void saveSystemConfig() throws IOException {
+		JsonMapper<SystemConfiguration> mapper = new JsonMapper<SystemConfiguration>(jobConfigDir,
+				jobConfigMasterfileJson, new TypeReference<SystemConfiguration>() {
+				}, filesFromClasspath);
+		mapper.write(systemConfig);
+		logger.info("Successfully Written " + mapper.getResourceFile());
+		mapper.close();
 	}
 }

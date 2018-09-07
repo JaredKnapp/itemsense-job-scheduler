@@ -57,22 +57,6 @@ public class ItemSenseHelper {
 		}
 	}
 
-	public boolean isJobFailed(String status) {
-		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_FAIL));
-	}
-
-	public boolean isJobStopped(String status) {
-		return (status.equals("STOPPED") || status.equals("COMPLETE") || status.equals("COMPLETE_WITH_ERRORS")
-				|| status.equals("FAILED"));
-	}
-
-	public boolean isJobRunning(String status) {
-		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING) || status.equals("REGISTERED")
-				|| status.equals("WAITING") || status.equals("INITIALIZING") || status.equals("STARTING")
-				|| status.equals("PUBLISHING_STATE") || status.equals("fPED_STOPPING")
-				|| status.equals("COMPLETE_STOPPING"));
-	}
-
 	public Client getClient() {
 		// TODO: support auth token
 		// lazy instantiation
@@ -98,20 +82,6 @@ public class ItemSenseHelper {
 
 		return itemsenseCoordinatorController;
 	}
-	
-	public boolean testConnection() {
-		boolean success = true;
-		try {
-			CoordinatorApiController coordinator = getItemsenseCoordinatorController();
-			List<Recipe> recipes = coordinator.getRecipeController().getRecipes();
-			success = (recipes==null ? false : 0 < recipes.size());
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("Could not validate ItemSense Connection: " + this.toString());
-			success = false;
-		}
-		return success;
-	}
 
 	public ArrayList<JobResponse> getJobsInFacility() {
             JobController jobController = getItemsenseCoordinatorController().getJobController();
@@ -129,13 +99,78 @@ public class ItemSenseHelper {
 	}
 
 	public ArrayList<JobResponse> getRunningJobsInFacility() {
-            ArrayList<JobResponse> jobResponses = (ArrayList<JobResponse>) getJobsInFacility();
+            ArrayList<JobResponse> jobResponses = getJobsInFacility();
             ArrayList<JobResponse> retResponses = new ArrayList<> ();
             for (JobResponse response : jobResponses) {
                 if (isJobRunning(response.getStatus()))
                     retResponses.add(response);
             }
             return retResponses;
+	}
+
+	public boolean isJobFailed(String status) {
+		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_FAIL));
+	}
+	
+	public boolean isJobRunning(String status) {
+		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING) || status.equals("REGISTERED")
+				|| status.equals("WAITING") || status.equals("INITIALIZING") || status.equals("STARTING")
+				|| status.equals("PUBLISHING_STATE") || status.equals("fPED_STOPPING")
+				|| status.equals("COMPLETE_STOPPING"));
+	}
+
+	public boolean isJobStopped(String status) {
+		return (status.equals("STOPPED") || status.equals("COMPLETE") || status.equals("COMPLETE_WITH_ERRORS")
+				|| status.equals("FAILED"));
+	}
+
+	public JobResult runJob() {
+		if (configJob.isStopRunningJobs()) {
+			stopRunningJobsInFacility();
+		}
+
+		logger.info(String.format("Starting Job: %s facility: %s recipe: %s", config.getName(), configJob.getFacility(), job.getRecipeName()));
+
+		// TODO: validate recipe exist before trying to start the job
+		JobController jobController = getItemsenseCoordinatorController().getJobController();
+		JobResponse jobResponse = jobController.startJob(job);
+		if (isJobFailed(jobResponse.getStatus())) {
+			String msg = String.format("FAILED to start Job in ItemSense: %s facility: %s  recipe: %s  jobId: %s",
+					config.getName(), configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
+			this.jobResult.setStatus(Status.FAILED);
+			this.jobResult.setResults(msg);
+
+			logger.error(String.format("%s job: %s jobResponse: %s", msg, job, jobResponse));
+			return this.jobResult;
+		}
+
+		// TODO: should there be retry logic?
+
+		// the job has started, but is not yet "RUNNING"
+		// hang out while it does initialization
+		while (isJobRunning(jobResponse.getStatus())
+				&& !jobResponse.getStatus().contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING)) {
+			jobResponse = jobController.getJob(jobResponse.getId());
+			// TODO: Fix to work correctly against new Status from and stop reason code
+			// ItemSense
+			if (isJobFailed(jobResponse.getStatus())) {
+				String msg = String.format("FAILED to initialize Job in ItemSense: %s facility: %s recipe: %s jobId: %s",
+						config.getName(), configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
+				this.jobResult.setStatus(Status.FAILED);
+				this.jobResult.setResults(msg);
+
+				logger.error(String.format("%s job: %s jobResponse: %s", msg, job, jobResponse));
+				return this.jobResult;
+			}
+		}
+		// TODO: should this be debug?
+		String msg = String.format("Job is RUNNING: %s facility: %s recipe: %s jobId: %s", config.getName(),
+				configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
+		this.jobResult.setStatus(Status.SUCCEEDED);
+		this.jobResult.setResults(msg);
+
+		logger.info(String.format("%s job: %s jobResponse: %s", msg, job, jobResponse));
+		return this.jobResult;
 	}
 
 	public void stopRunningJobsInFacility() {
@@ -163,53 +198,18 @@ public class ItemSenseHelper {
 		}
 	}
 
-	public JobResult runJob() {
-		if (configJob.isStopRunningJobs()) {
-			stopRunningJobsInFacility();
+	public boolean testConnection() {
+		boolean success = true;
+		try {
+			CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+			List<Recipe> recipes = coordinator.getRecipeController().getRecipes();
+			success = (recipes==null ? false : 0 < recipes.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("Could not validate ItemSense Connection: " + this.toString());
+			success = false;
 		}
-
-		logger.info("Starting Job: " + config.getName() + " facility: " + configJob.getFacility() + " job: " + job);
-
-		// TODO: validate recipe exist before trying to start the job
-		JobController jobController = getItemsenseCoordinatorController().getJobController();
-		JobResponse jobResponse = jobController.startJob(job);
-		if (isJobFailed(jobResponse.getStatus())) {
-			String msg = String.format("FAILED to start Job in ItemSense: %s facility: %s  recipe: %s  jobId: %s",
-					config.getName(), configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
-			this.jobResult.setStatus(Status.FAILED);
-			this.jobResult.setResults(msg);
-
-			logger.error("%s job: %s jobResponse: %s", msg, job, jobResponse);
-			return this.jobResult;
-		}
-
-		// TODO: should there be retry logic?
-
-		// the job has started, but is not yet "RUNNING"
-		// hang out while it does initialization
-		while (isJobRunning(jobResponse.getStatus())
-				&& !jobResponse.getStatus().contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING)) {
-			jobResponse = jobController.getJob(jobResponse.getId());
-			// TODO: Fix to work correctly against new Status from and stop reason code
-			// ItemSense
-			if (isJobFailed(jobResponse.getStatus())) {
-				String msg = String.format("FAILED to start Job in ItemSense: %s facility: %s recipe: %s jobId: %s",
-						config.getName(), configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
-				this.jobResult.setStatus(Status.FAILED);
-				this.jobResult.setResults(msg);
-
-				logger.error("%s job: %s jobResponse: %s", msg, job, jobResponse);
-				return this.jobResult;
-			}
-		}
-		// TODO: should this be debug?
-		String msg = String.format("Job is RUNNING: %s facility: %s recipe: %s jobId: %s", config.getName(),
-				configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
-		this.jobResult.setStatus(Status.SUCCEEDED);
-		this.jobResult.setResults(msg);
-
-		logger.info("%s job: %s jobResponse: %s", msg, job, jobResponse);
-		return this.jobResult;
+		return success;
 	}
 
 }

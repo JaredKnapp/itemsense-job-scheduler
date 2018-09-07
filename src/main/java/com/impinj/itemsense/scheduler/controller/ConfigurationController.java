@@ -9,6 +9,8 @@ import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,8 +30,6 @@ import javafx.util.Callback;
 
 public class ConfigurationController implements Initializable {
 
-	// ObservableSet<ItemSenseConfig> observableSet;
-
 	@FXML
 	private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
 	@FXML
@@ -39,27 +39,61 @@ public class ConfigurationController implements Initializable {
 	@FXML
 	private Button btnDelete;
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		populateView();
-	}
+	private void editItemSense(ItemSenseConfig serverData) {
+		try {
 
-	@FXML
-	void lvItemSense_OnKeyPressed(KeyEvent event) {
-		if (event.getCode() == KeyCode.DELETE) {
-			lvItemSense.getItems().remove(lvItemSense.getEditingIndex());
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditServer.fxml"));
+			Node editableForm = loader.load();
+
+			EditServerController controller = loader.getController();
+			controller.injectParent(this);
+			controller.setData(serverData);
+
+			editPane.getChildren().clear();
+			editPane.getChildren().add(editableForm);
+
+			AnchorPane.setBottomAnchor(editableForm, 0d);
+			AnchorPane.setTopAnchor(editableForm, 0d);
+			AnchorPane.setRightAnchor(editableForm, 0d);
+			AnchorPane.setLeftAnchor(editableForm, 0d);
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
-	@FXML
-	public void lvItemSense_OnMouseClicked(MouseEvent event) {
-		ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
-		editItemSense(configData);
+	private void populateView() {
+		try {
+			ObservableList<ItemSenseConfig> items = FXCollections.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs());
+			lvItemSense.setItems(items);
+			lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
+				
+				@Override
+				public ListCell<ItemSenseConfig> call(ListView<ItemSenseConfig> param) {
+					ListCell<ItemSenseConfig> cell = new ListCell<ItemSenseConfig>() {
+
+						@Override
+						protected void updateItem(ItemSenseConfig item, boolean isEmpty) {
+							super.updateItem(item, isEmpty);
+							if (item != null) {
+								String rowText = item.getName() + (!item.isActive() ? " (disabled)" : "");
+								setText(rowText);
+							}
+						}
+
+					};
+					return cell;
+				}
+			});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	@FXML
-	public void btnNew_OnAction(ActionEvent event) {
-		editItemSense(new ItemSenseConfig());
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		populateView();
 	}
 
 	@FXML
@@ -85,63 +119,41 @@ public class ConfigurationController implements Initializable {
 				this.initialize(null, null);
 			}
 		}
-		System.out.printf("There are %s items remanining.", lvItemSense.getItems().size());
 	}
 
-	private void populateView() {
-		try {
-			lvItemSense.setItems(FXCollections
-					.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs()));
-			lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
+	@FXML
+	public void btnNew_OnAction(ActionEvent event) {
+		editItemSense(new ItemSenseConfig());
+	}
 
-				@Override
-				public ListCell<ItemSenseConfig> call(ListView<ItemSenseConfig> param) {
-					ListCell<ItemSenseConfig> cell = new ListCell<ItemSenseConfig>() {
-
-						@Override
-						protected void updateItem(ItemSenseConfig item, boolean isEmpty) {
-							super.updateItem(item, isEmpty);
-							if (item != null) {
-								String rowText = item.getName() + (!item.isActive()?" (disabled)":"");
-								setText(rowText);
-							}
-						}
-
-					};
-					return cell;
-				}
-			});
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	@FXML
+	void lvItemSense_OnKeyPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.DELETE) {
+			lvItemSense.getItems().remove(lvItemSense.getEditingIndex());
 		}
 	}
 
-	private void editItemSense(ItemSenseConfig serverData) {
+	@FXML
+	public void lvItemSense_OnMouseClicked(MouseEvent event) {
+		ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
+		editItemSense(configData);
+	}
+
+	public void onCancel() {
+		editPane.getChildren().clear();
+		lvItemSense.refresh();
+	}
+
+	public void onDelete() {
 		try {
-
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditServer.fxml"));
-			Node editableForm = loader.load();
-
-			EditServerController controller = loader.getController();
-			controller.injectParent(this);
-			controller.setData(serverData);
-
-			editPane.getChildren().clear();
-			editPane.getChildren().add(editableForm);
-
-			AnchorPane.setBottomAnchor(editableForm, 0d);
-			AnchorPane.setTopAnchor(editableForm, 0d);
-			AnchorPane.setRightAnchor(editableForm, 0d);
-			AnchorPane.setLeftAnchor(editableForm, 0d);
-
-		} catch (IOException e) {
+			DataService.getService(true).saveSystemConfig();
+			lvItemSense.refresh();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void onSaveData(ItemSenseConfig configData) {
-		// Commit to disk
 		try {
 
 			if (configData.getOid() == null) {
@@ -159,17 +171,4 @@ public class ConfigurationController implements Initializable {
 		}
 	}
 
-	public void onCancel() {
-		editPane.getChildren().clear();
-		lvItemSense.refresh();
-	}
-
-	public void onDelete() {
-		try {
-			DataService.getService(true).saveSystemConfig();
-			lvItemSense.refresh();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

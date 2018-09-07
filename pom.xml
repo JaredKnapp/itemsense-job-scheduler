@@ -137,7 +137,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<!-- <addClasspath>true</addClasspath> -->
+							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
 							<mainClass>com.impinj.itemsense.scheduler.App</mainClass>
 						</manifest>

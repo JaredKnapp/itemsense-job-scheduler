@@ -4,9 +4,9 @@
 		  "active": true,
 		  "name": "Impinj Test Store 1",
 		  "utcOffset": "-7",
-		  "url": "http://sandbox.solutions.impinj.net/itemsense",
-		  "username": "connectorUser",
-		  "password": "Impinj2016",
+		  "url": "http://isjames",
+		  "username": "admin",
+		  "password": "admindefault",
 		  "token": "",
 		  "jobList": [
 			    {

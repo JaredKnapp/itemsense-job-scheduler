@@ -30,7 +30,6 @@ public class JobResult {
 
     private String jobKey;
     private Status status; 
-    private String runStatus = "(not wired yet)";
     private String results ;
     private String storeOid;
     private String storeName;
@@ -48,7 +47,6 @@ public class JobResult {
         setFromJobDetail(context.getJobDetail());
         setResults(jobException.getCause().getLocalizedMessage());
         setStatus(Status.FAILED);
-        setRunStatus("Quartz Job Exception");
     }
 
     public JobResult(JobResponse jobResponse, JobDetail jobDetail) {
@@ -60,7 +58,6 @@ public class JobResult {
             // TODO some jobs have NO times in them, so what to do?
         }
         setStatus(Status.SUCCEEDED);
-        setRunStatus(jobResponse.getStatus());
         setResults("Success");
     }
     
@@ -73,5 +70,6 @@ public class JobResult {
         setJobName(jobConfig.getName());
         setJobType(jobConfig.getJobType());
         setJobClassSimpleName(jobDetail.getJobClass().getSimpleName());
+        
     }
 }

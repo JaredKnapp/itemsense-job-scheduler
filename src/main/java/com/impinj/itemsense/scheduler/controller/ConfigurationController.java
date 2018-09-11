@@ -100,7 +100,7 @@ public class ConfigurationController implements Initializable {
 	public void btnDelete_OnAction(ActionEvent event) {
 		ItemSenseConfig config = lvItemSense.getSelectionModel().getSelectedItem();
 		if (config != null) {
-			Alert alert = new Alert(AlertType.WARNING, "Delete this thing?", ButtonType.YES, ButtonType.NO);
+			Alert alert = new Alert(AlertType.WARNING, "Delete this configuration?", ButtonType.YES, ButtonType.NO);
 			alert.showAndWait();
 
 			if (alert.getResult() == ButtonType.YES) {

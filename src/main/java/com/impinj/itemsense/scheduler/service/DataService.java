@@ -24,7 +24,7 @@ public class DataService {
 		return service;
 	}
 
-	private final String jobConfigDir = "target/classes";
+	private final String jobConfigDir = ".";  // Run config files from current folder
 	private final String jobConfigMasterfileJson = "SystemConfiguration.json";
 
 	private final Boolean filesFromClasspath = false;

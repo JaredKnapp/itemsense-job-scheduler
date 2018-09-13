@@ -53,7 +53,7 @@ public class ItemSenseHelper {
 			job.setRecipeName(configJob.getRecipe());
 			job.setDurationSeconds(configJob.getDuration());
 			job.setFacility(configJob.getFacility());
-			job.setStartDelay(configJob.getStartDelay());
+			job.setStartDelay("PT"+configJob.getStartDelay()+"S");  // Add PT<seconds>S formating
 		}
 	}
 

@@ -13,6 +13,9 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.util.JsonMapper;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 public class DataService {
 	private static final Logger logger = LoggerFactory.getLogger(JsonMapper.class);
@@ -30,6 +33,33 @@ public class DataService {
 	private final Boolean filesFromClasspath = false;
 
 	private SystemConfiguration systemConfig;
+        
+        final private String DefaultConfigString = "{" +
+            "\"itemSenseConfigs\" : [{ \n"+
+		"  \"active\": true, \n"+
+		"  \"name\": \"Impinj Test Store 1\", \n"+
+		"  \"utcOffset\": \"-7\", \n"+
+		"  \"url\": \"http://isjames\", \n"+
+		"  \"username\": \"admin\", \n"+
+		"  \"password\": \"admindefault\", \n"+
+		"  \"token\": \"\", \n"+
+		"  \"jobList\": [ \n"+
+			"    { \n"+
+			"      \"active\": true, \n"+
+			"      \"facility\": \"Training\", \n"+
+			"      \"name\": \"Deep Inventory Every Minute\", \n"+
+			"      \"recipe\": \"IMPINJ_Deep_Scan_Inventory\", \n"+
+			"      \"jobType\": \"Inventory\", \n"+
+			"      \"schedule\": \"0 0/5 * * * ?\", \n"+
+			"      \"startDelay\": \"0\", \n"+
+			"      \"duration\": 55, \n"+
+			"      \"stopRunningJobs\": true \n"+
+		    " } \n"+
+	    " ] \n"+
+	" }], \n"+
+        " \"filePath\": \".\" \n"+
+        "}";
+
 
 	private DataService() throws IOException {
 		loadSystemConfig();
@@ -76,6 +106,19 @@ public class DataService {
 
 	private void loadSystemConfig() {
 		logger.info("Loading Connector configuration.");
+                // jobConfigMasterfileJson doesn't exist, create it with 1 default config to be used as an example.
+                File file = new File(jobConfigDir+"/"+jobConfigMasterfileJson);
+                BufferedWriter output=null;
+                try {
+                    if (!file.exists()) {
+                        output = new BufferedWriter(new FileWriter(file));
+                        output.write(DefaultConfigString);
+                        output.close();
+                    }
+                 } catch ( IOException e ) {
+                    logger.error("Not able to create "+jobConfigMasterfileJson);
+                    System.exit(0); // quit
+                 }
 		try (JsonMapper<SystemConfiguration> mapper = new JsonMapper<SystemConfiguration>(jobConfigDir,
 				jobConfigMasterfileJson, new TypeReference<SystemConfiguration>() {
 				}, filesFromClasspath)) {

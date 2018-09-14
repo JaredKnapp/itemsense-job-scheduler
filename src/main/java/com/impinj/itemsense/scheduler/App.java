@@ -18,9 +18,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class App extends Application {
-
-	private static final int _APPHEIGHT = 600;
-	private static final int _APPWIDTH = 1500;
+// Application show display on laptop
+	private static final int _APPHEIGHT = 500;
+	private static final int _APPWIDTH = 1300;
 
 	// Creating a static root to pass to the controller
 	private static final BorderPane root = new BorderPane();

@@ -13,9 +13,10 @@ import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
+import java.awt.event.InputMethodListener;
+import java.util.Collection;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -99,8 +101,9 @@ public class EditServerController implements Initializable {
 
 		configData.setJobList(tblConfigJobs.getItems());
 		parent.onSaveData(configData);
+                btnSave.setDisable(true);
 	}
-
+                
 	@FXML
 	void btnTestConnection_OnAction(ActionEvent event) {
 
@@ -139,7 +142,13 @@ public class EditServerController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
+	    // TODO Auto-generated method stub
+            // Setup Event listeners to prompt "Save
+            txtName.setOnKeyTyped(event -> btnSave.setDisable(false));
+            txtHostUrl.setOnKeyTyped(event -> btnSave.setDisable(false));
+            txtUserName.setOnKeyTyped(event -> btnSave.setDisable(false));
+            txtPassword.setOnKeyTyped(event -> btnSave.setDisable(false));
+            txtUtcOffset.setOnKeyTyped(event -> btnSave.setDisable(false));
 	}
 
 	public void injectParent(ConfigurationController configurationController) {
@@ -160,7 +169,6 @@ public class EditServerController implements Initializable {
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			dialogStage.setScene(new Scene(popup));
 			dialogStage.showAndWait();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -177,6 +185,7 @@ public class EditServerController implements Initializable {
 		}
 		dialogStage.close();
 		tblConfigJobs.refresh();
+                btnSave.setDisable(false);
 	}
 
 	public void setData(ItemSenseConfig serverData) {

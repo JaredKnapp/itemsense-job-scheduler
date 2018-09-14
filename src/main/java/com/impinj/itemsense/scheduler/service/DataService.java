@@ -144,43 +144,6 @@ public class DataService {
 		}
 	}
 
-	// private void loadItemsenseConfigs() {
-	// List<String> isFiles = config.getConfigFiles();
-	// itemSenseConfigs = new ArrayList<>();
-	// logger.debug("itemSense Files to load:" + isFiles);
-	// isFiles.stream().forEach(isFile -> {
-	// ItemSense isConfig = loadItemsenseConfig(isFile);
-	//
-	// String isOid = OIDGenerator.next();
-	// isConfig.setOid(isOid);
-	// isConfig.setFileName(isFile);
-	//
-	// logger.debug("itemsenseConfig loaded: " + isConfig);
-	// itemSenseConfigs.add(isConfig);
-	//
-	// // now process the jobs
-	// if (isConfig.getJobList() != null) {
-	// logger.debug("itemSenseConfig.getJobList().size(): " +
-	// isConfig.getJobList().size());
-	// for (Job jobConfig : isConfig.getJobList()) {
-	// jobConfig.setOid(OIDGenerator.next());
-	// jobConfig.setName(isConfig.getName());
-	// jobConfig.setItemSenseOid(isConfig.getOid());
-	// }
-	// }
-	// // if (isconfig.getidcloudjoblist()!=null) {
-	// // logger.debug("storeconfig.getidcloudjoblist().size(): " +
-	// // isconfig.getidcloudjoblist().size());
-	// // isconfig.getidcloudjoblist().stream().foreach( idcloudjob -> {
-	// // idcloudjob.setoid(oidgenerator.next());
-	// // idcloudjob.setstorename(storeconfig.getstorename());
-	// // idcloudjob.setstoreoid(storeconfig.getoid());
-	// // });
-	// // }
-	// });
-	//
-	// }
-
 	public void saveSystemConfig() throws IOException {
 		JsonMapper<SystemConfiguration> mapper = new JsonMapper<SystemConfiguration>(jobConfigDir,
 				jobConfigMasterfileJson, new TypeReference<SystemConfiguration>() {

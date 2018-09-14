@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
@@ -60,7 +61,7 @@
 										<Font name="System Bold" size="12.0" />
 									</font>
 								</Label>
-								<Label text="UTC Offset" GridPane.rowIndex="6">
+								<Label text="UTC Offset" GridPane.rowIndex="5">
 									<font>
 										<Font name="System Bold" size="12.0" />
 									</font>
@@ -70,23 +71,23 @@
 								<TextField fx:id="txtHostUrl" promptText="http://is.myserver.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 								<TextField fx:id="txtUserName" promptText="ItemSense User Name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 								<PasswordField fx:id="txtPassword" promptText="ItemSense User Password" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-								<TextField fx:id="txtUtcOffset" prefHeight="62.0" prefWidth="527.0" promptText="Time Offset" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="7">
+            								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.rowIndex="6" />
+                        <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets left="230.0" top="20.0" />
                            </GridPane.margin>
                         </Button>
-                        <Button fx:id="btnDel" disable="true" mnemonicParsing="false" onAction="#btnDel_OnAction" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                        <Button fx:id="btnDel" disable="true" mnemonicParsing="false" onAction="#btnDel_OnAction" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets left="150.0" top="20.0" />
                            </GridPane.margin>
                         </Button>
-                        <Label text="Jobs List:" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                        <Label text="Jobs List:" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets left="80.0" top="16.0" />
                            </GridPane.margin>
                         </Label>
+                        <ComboBox fx:id="cbUtcOffset" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 							</children>
 						</GridPane>
 						<TableView fx:id="tblConfigJobs" onMouseClicked="#tblConfigJobs_OnMouseClicked" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">

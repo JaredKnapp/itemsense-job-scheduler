@@ -13,8 +13,6 @@ import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
-import java.awt.event.InputMethodListener;
-import java.util.Collection;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -27,10 +25,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -54,8 +52,8 @@ public class EditServerController implements Initializable {
 	private TextField txtUserName; // Value injected by FXMLLoader
 	@FXML // fx:id="txtPassword"
 	private PasswordField txtPassword; // Value injected by FXMLLoader
-	@FXML // fx:id="txtUtcOffset"
-	private TextField txtUtcOffset; // Value injected by FXMLLoader
+	@FXML // fx:id="cbUtcOffset"
+	private ComboBox cbUtcOffset; // Value injected by FXMLLoader
 	@FXML // fx:id="btnTestConnection"
 	private Button btnDel; // Value injected by FXMLLoader
 
@@ -97,7 +95,7 @@ public class EditServerController implements Initializable {
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
 		configData.setPassword(txtPassword.getText());
-		configData.setUtcOffset(txtUtcOffset.getText());
+		configData.setUtcOffset(cbUtcOffset.getValue().toString());
 
 		configData.setJobList(tblConfigJobs.getItems());
 		parent.onSaveData(configData);
@@ -144,11 +142,13 @@ public class EditServerController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 	    // TODO Auto-generated method stub
             // Setup Event listeners to prompt "Save
-            txtName.setOnKeyTyped(event -> btnSave.setDisable(false));
+            txtName.setOnKeyTyped(eent -> btnSave.setDisable(false));
             txtHostUrl.setOnKeyTyped(event -> btnSave.setDisable(false));
             txtUserName.setOnKeyTyped(event -> btnSave.setDisable(false));
             txtPassword.setOnKeyTyped(event -> btnSave.setDisable(false));
-            txtUtcOffset.setOnKeyTyped(event -> btnSave.setDisable(false));
+            cbUtcOffset.setOnAction(event -> btnSave.setDisable(false));
+            for (int i = -11;  i <= 12;i++)
+                cbUtcOffset.getItems().addAll(Integer.toString(i));
 	}
 
 	public void injectParent(ConfigurationController configurationController) {
@@ -197,7 +197,7 @@ public class EditServerController implements Initializable {
 			txtHostUrl.setText(serverData.getUrl());
 			txtUserName.setText(serverData.getUsername());
 			txtPassword.setText(serverData.getPassword());
-			txtUtcOffset.setText(serverData.getUtcOffset());
+			cbUtcOffset.setValue(serverData.getUtcOffset());
 
 			List<ItemSenseConfigJob> jobs = serverData.getJobList();
 			if (jobs == null)

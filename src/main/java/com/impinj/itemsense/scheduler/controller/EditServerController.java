@@ -95,8 +95,9 @@ public class EditServerController implements Initializable {
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
 		configData.setPassword(txtPassword.getText());
-		configData.setUtcOffset(cbUtcOffset.getValue().toString());
-
+                Object obj = cbUtcOffset.getValue();
+                if (obj != null)
+                    configData.setUtcOffset(obj.toString());
 		configData.setJobList(tblConfigJobs.getItems());
 		parent.onSaveData(configData);
                 btnSave.setDisable(true);

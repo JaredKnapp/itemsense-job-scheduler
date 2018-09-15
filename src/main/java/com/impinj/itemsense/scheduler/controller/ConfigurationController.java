@@ -66,6 +66,14 @@ public class ConfigurationController implements Initializable {
 		try {
 			ObservableList<ItemSenseConfig> items = FXCollections.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs());
 			lvItemSense.setItems(items);
+                        // Show first item in list when user first goes to ItemSense configuration screen
+                        if (items.size() > 0) {
+                            lvItemSense.getSelectionModel().selectFirst();
+                            ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
+                            editItemSense(configData);
+                            btnDelete.setDisable(false);
+                        }
+                                    
 			lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
 				
 				@Override
@@ -85,6 +93,8 @@ public class ConfigurationController implements Initializable {
 					return cell;
 				}
 			});
+           
+                            
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

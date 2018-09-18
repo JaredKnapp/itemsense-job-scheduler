@@ -1,6 +1,8 @@
 
 package com.impinj.itemsense.scheduler.controller;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 
 import javafx.event.ActionEvent;
@@ -37,9 +39,10 @@ public class EditJobController {
 	private TextField txtDuration;
 	@FXML
 	private CheckBox chkStopRunning;
-        @FXML
+	@FXML
 	private Hyperlink hyperlink;
-        Stage dialogStage;
+	@FXML
+	WebView CronWebView;
 
 	public void btnCancel_OnAction(ActionEvent event) {
 		parent.onCancelJobData();
@@ -52,7 +55,7 @@ public class EditJobController {
 		jobData.setRecipe(txtReceipe.getText());
 		jobData.setSchedule(txtSchedule.getText());
 		jobData.setStartDelay(txtStartDelay.getText());
-		jobData.setDuration(Integer.parseInt(txtDuration.getText()));
+		jobData.setDuration(Integer.parseInt(StringUtils.isNotBlank(txtDuration.getText()) ? txtDuration.getText() : "0"));
 		jobData.setStopRunningJobs(chkStopRunning.isSelected());
 		parent.onUpdateJobData(jobData);
 	}

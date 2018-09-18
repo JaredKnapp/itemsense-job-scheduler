@@ -9,7 +9,6 @@ import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

@@ -5,11 +5,16 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class EditJobController {
 	ItemSenseConfigJob itemSenseConfigJob;
@@ -34,8 +39,7 @@ public class EditJobController {
 	private CheckBox chkStopRunning;
         @FXML
 	private Hyperlink hyperlink;
-        @FXML
-        WebView CronWebView;
+        Stage dialogStage;
 
 	public void btnCancel_OnAction(ActionEvent event) {
 		parent.onCancelJobData();
@@ -59,10 +63,29 @@ public class EditJobController {
         
         @FXML
         void PressHyperlink_OnAction(ActionEvent event) {
-            WebEngine webEngine = CronWebView.getEngine();
-            webEngine.load("http://java2s.com");
+            loadCronMainder();
         }
-
+        
+	private void loadCronMainder() {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CronMaker.fxml"));
+		try {
+			Parent popup = loader.load();
+			CronMakerController controller = loader.getController();
+			controller.injectParent(this);
+                        
+			dialogStage = new Stage();
+			dialogStage.setTitle("Cron Maker");
+			dialogStage.initModality(Modality.APPLICATION_MODAL);
+			dialogStage.setScene(new Scene(popup));
+                        controller.loadPage();
+			dialogStage.showAndWait();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+        void onCancelCronMaker() {
+		dialogStage.close();
+	}
 	public void injectParent(EditServerController editServerController) {
 		this.parent = editServerController;
 	}

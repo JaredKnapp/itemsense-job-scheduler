@@ -12,13 +12,11 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.web.WebView?>
 
 <BorderPane minHeight="300.0" minWidth="300.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
    <bottom>
-      <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="270.0" prefWidth="323.0" BorderPane.alignment="CENTER">
+      <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="9.0" prefWidth="323.0" BorderPane.alignment="CENTER">
          <children>
-            <Hyperlink fx:id="hyperlink" onAction="#PressHyperlink_OnAction" text="Cron Maker" />
             <Button fx:id="btnOk" minWidth="75.0" mnemonicParsing="false" onAction="#btnOk_OnAction" text="OK">
                <HBox.margin>
                   <Insets right="10.0" />
@@ -29,7 +27,6 @@
                   <Insets bottom="5.0" right="10.0" />
                </HBox.margin>
             </Button>
-            <WebView fx:id="CronWebView" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </HBox>
    </bottom>
@@ -55,7 +52,6 @@
                   <Label text="Name" GridPane.rowIndex="1" />
                   <Label text="Facility" GridPane.rowIndex="2" />					
                   <Label text="Receipe" GridPane.rowIndex="3" />
-                  <Label text="Schedule (cron)" GridPane.rowIndex="4" />
                   <Label text="Start Delay  (sec)" GridPane.rowIndex="5" />
                   <Label text="Duration (sec)" GridPane.rowIndex="6" />
                   <CheckBox fx:id="chkActive" mnemonicParsing="false" text="Active" GridPane.columnIndex="1">
@@ -94,6 +90,7 @@
                      <padding>
                         <Insets bottom="6.0" />
                      </padding></CheckBox>
+                  <Hyperlink fx:id="hyperlink" onAction="#PressHyperlink_OnAction" text="Schedule (cron)" GridPane.rowIndex="4" />
                </children>
             </GridPane>
          </content>

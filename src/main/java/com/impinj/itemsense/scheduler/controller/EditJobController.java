@@ -6,7 +6,10 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 public class EditJobController {
 	ItemSenseConfigJob itemSenseConfigJob;
@@ -29,6 +32,10 @@ public class EditJobController {
 	private TextField txtDuration;
 	@FXML
 	private CheckBox chkStopRunning;
+        @FXML
+	private Hyperlink hyperlink;
+        @FXML
+        WebView CronWebView;
 
 	public void btnCancel_OnAction(ActionEvent event) {
 		parent.onCancelJobData();
@@ -48,8 +55,13 @@ public class EditJobController {
 
 	@FXML // This method is called by the FXMLLoader when initialization is complete
 	void initialize() {
-
 	}
+        
+        @FXML
+        void PressHyperlink_OnAction(ActionEvent event) {
+            WebEngine webEngine = CronWebView.getEngine();
+            webEngine.load("http://java2s.com");
+        }
 
 	public void injectParent(EditServerController editServerController) {
 		this.parent = editServerController;

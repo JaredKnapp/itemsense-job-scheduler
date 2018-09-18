@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -11,11 +12,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.web.WebView?>
 
 <BorderPane minHeight="300.0" minWidth="300.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
    <bottom>
-      <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="36.0" prefWidth="323.0" BorderPane.alignment="CENTER">
+      <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="270.0" prefWidth="323.0" BorderPane.alignment="CENTER">
          <children>
+            <Hyperlink fx:id="hyperlink" onAction="#PressHyperlink_OnAction" text="Cron Maker" />
             <Button fx:id="btnOk" minWidth="75.0" mnemonicParsing="false" onAction="#btnOk_OnAction" text="OK">
                <HBox.margin>
                   <Insets right="10.0" />
@@ -26,6 +29,7 @@
                   <Insets bottom="5.0" right="10.0" />
                </HBox.margin>
             </Button>
+            <WebView fx:id="CronWebView" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </HBox>
    </bottom>

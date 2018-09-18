@@ -39,7 +39,7 @@ public class DataService {
 		"  \"active\": true, \n"+
 		"  \"name\": \"Impinj Test Store 1\", \n"+
 		"  \"utcOffset\": \"-7\", \n"+
-		"  \"url\": \"http://isjames\", \n"+
+		"  \"url\": \"http://<Enter Hostname>\", \n"+
 		"  \"username\": \"admin\", \n"+
 		"  \"password\": \"admindefault\", \n"+
 		"  \"token\": \"\", \n"+

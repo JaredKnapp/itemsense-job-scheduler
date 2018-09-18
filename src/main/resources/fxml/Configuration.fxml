@@ -10,11 +10,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="1000.0" fx:controller="com.impinj.itemsense.scheduler.controller.ConfigurationController">
+<BorderPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.ConfigurationController">
    <center>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -42,9 +43,25 @@
                   </ListView>
                         <ButtonBar minHeight="-Infinity" VBox.vgrow="NEVER">
                           <buttons>
-                              <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#btnDelete_OnAction" text="Delete" />
-                            <Button fx:id="btnNew" mnemonicParsing="false" onAction="#btnNew_OnAction" text="New" />
+                              <HBox>
+                                 <children>
+                                    <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#btnDelete_OnAction" text="Delete">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin></Button>
+                                  <Button fx:id="btnNew" mnemonicParsing="false" onAction="#btnNew_OnAction" text="New">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin></Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </HBox>
                           </buttons>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </ButtonBar>
                      </children>
                   </VBox>

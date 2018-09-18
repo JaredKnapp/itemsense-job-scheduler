@@ -41,8 +41,7 @@ public class EditJobController {
 	private CheckBox chkStopRunning;
 	@FXML
 	private Hyperlink hyperlink;
-	@FXML
-	WebView CronWebView;
+        private Stage dialogStage;
 
 	public void btnCancel_OnAction(ActionEvent event) {
 		parent.onCancelJobData();

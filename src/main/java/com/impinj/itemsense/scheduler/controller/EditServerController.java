@@ -143,7 +143,8 @@ public class EditServerController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 	    // TODO Auto-generated method stub
             // Setup Event listeners to prompt "Save
-            txtName.setOnKeyTyped(eent -> btnSave.setDisable(false));
+            chbIsActive.setOnMouseClicked(event -> btnSave.setDisable(false));
+            txtName.setOnKeyTyped(event -> btnSave.setDisable(false));
             txtHostUrl.setOnKeyTyped(event -> btnSave.setDisable(false));
             txtUserName.setOnKeyTyped(event -> btnSave.setDisable(false));
             txtPassword.setOnKeyTyped(event -> btnSave.setDisable(false));

@@ -127,7 +127,7 @@ public class EditServerController implements Initializable {
 			config.setUsername(txtUserName.getText());
 			config.setPassword(txtPassword.getText());
 
-			boolean success = new ItemSenseHelper(config, null, null).testConnection();
+			boolean success = getItemSenseHelper().testConnection();
 
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Test Connection");
@@ -140,6 +140,14 @@ public class EditServerController implements Initializable {
 			alert.showAndWait();
 		}
 	}
+        
+        public ItemSenseHelper getItemSenseHelper() {
+            ItemSenseConfig config = new ItemSenseConfig();
+	    config.setUrl(txtHostUrl.getText());
+	    config.setUsername(txtUserName.getText());
+	    config.setPassword(txtPassword.getText());
+	    return new ItemSenseHelper(config, null, null);
+        }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

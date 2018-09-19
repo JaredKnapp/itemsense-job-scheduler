@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -62,15 +63,6 @@
                      <GridPane.margin>
                         <Insets bottom="6.0" top="6.0" />
                      </GridPane.margin></TextField>
-                  <TextField fx:id="txtFacility" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="6.0" top="6.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="txtReceipe" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
-                     <GridPane.margin>
-                        <Insets bottom="6.0" top="6.0" />
-                     </GridPane.margin></TextField>
                   <TextField fx:id="txtSchedule" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets bottom="6.0" top="6.0" />
@@ -91,6 +83,8 @@
                         <Insets bottom="6.0" />
                      </padding></CheckBox>
                   <Hyperlink fx:id="hyperlink" onAction="#PressHyperlink_OnAction" text="Schedule (cron)" GridPane.rowIndex="4" />
+                  <ComboBox fx:id="cbFacility" prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="cbRecipe" prefHeight="25.0" prefWidth="202.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
          </content>

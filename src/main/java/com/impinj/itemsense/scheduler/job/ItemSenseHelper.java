@@ -210,5 +210,24 @@ public class ItemSenseHelper {
 		}
 		return success;
 	}
-
+        public List<String> getFacilityNames() {
+            CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+            List<Facility> facilities = coordinator.getFacilityController().getAllFacilities();
+            List<String> facilityNames = new ArrayList<>();
+            for (Facility f : facilities) {
+                    f.getName();
+                    facilityNames.add(f.getName());
+                }
+            return facilityNames;
+        }
+        public List<String> getRecipeNames() {
+            CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+            List<Recipe> recipies = coordinator.getRecipeController().getRecipes();
+            List<String> recipeNames = new ArrayList<>();
+            for (Recipe r : recipies) {
+                    r.getName();
+                    recipeNames.add(r.getName());
+                }
+            return recipeNames;
+        }
 }

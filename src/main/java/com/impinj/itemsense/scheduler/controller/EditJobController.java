@@ -1,9 +1,11 @@
 
 package com.impinj.itemsense.scheduler.controller;
 
+import com.impinj.itemsense.client.coordinator.facility.Facility;
 import org.apache.commons.lang3.StringUtils;
 
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,10 +13,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -26,11 +27,11 @@ public class EditJobController {
 	@FXML
 	private CheckBox chkActive;
 	@FXML
-	private TextField txtFacility;
+	private ComboBox cbFacility;
 	@FXML
 	private TextField txtName;
 	@FXML
-	private TextField txtReceipe;
+	private ComboBox cbRecipe;
 	@FXML
 	private TextField txtSchedule;
 	@FXML
@@ -50,8 +51,8 @@ public class EditJobController {
 	public void btnOk_OnAction(ActionEvent event) {
 		jobData.setActive(chkActive.isSelected());
 		jobData.setName(txtName.getText());
-		jobData.setFacility(txtFacility.getText());
-		jobData.setRecipe(txtReceipe.getText());
+		jobData.setFacility((String)cbFacility.getValue());
+                jobData.setRecipe((String)cbRecipe.getValue());
 		jobData.setSchedule(txtSchedule.getText());
 		jobData.setStartDelay(txtStartDelay.getText());
 		jobData.setDuration(Integer.parseInt(StringUtils.isNotBlank(txtDuration.getText()) ? txtDuration.getText() : "0"));
@@ -96,8 +97,10 @@ public class EditJobController {
 		jobData = itemSenseConfig;
 		chkActive.setSelected(itemSenseConfig.isActive());
 		txtName.setText(itemSenseConfig.getName());
-		txtFacility.setText(itemSenseConfig.getFacility());
-		txtReceipe.setText(itemSenseConfig.getRecipe());
+		cbFacility.getItems().addAll(parent.getItemSenseHelper().getFacilityNames());
+                cbFacility.setValue(itemSenseConfig.getFacility());
+                cbRecipe.getItems().addAll(parent.getItemSenseHelper().getRecipeNames());
+                cbRecipe.setValue(itemSenseConfig.getRecipe());
 		txtSchedule.setText(itemSenseConfig.getSchedule());
 		txtStartDelay.setText(itemSenseConfig.getStartDelay());
 		if (itemSenseConfig.getDuration() != null)

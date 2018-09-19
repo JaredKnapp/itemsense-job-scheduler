@@ -17,8 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
- * Reads a object from file on the class path or file system. Created by Paul
- * Hill on 6/7/2016.
+ * Reads a object from file on the class path or file system.
  */
 public class JsonMapper<T> implements Closeable {
 

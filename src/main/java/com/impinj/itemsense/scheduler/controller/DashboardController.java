@@ -36,8 +36,8 @@ public class DashboardController {
 
 	@FXML
 	private TableView<TriggeredJob> tblTriggeredJobs;
-        
-        @FXML
+
+	@FXML
 	private TableView<JobResult> tblTriggeredJobResults;
 
 	private Timeline refreshTimer;
@@ -80,7 +80,7 @@ public class DashboardController {
 		}
 
 		tblTriggeredJobs.setItems(FXCollections.observableArrayList());
-		setTableHeight(3);
+		// setTableHeight(3);
 
 		btnStart.setDisable(false);
 		btnStart.setVisible(true);
@@ -92,17 +92,18 @@ public class DashboardController {
 	void initialize() {
 		assert btnStop != null : "fx:id=\"btnStop\" was not injected: check your FXML file 'Dashboard.fxml'.";
 		assert btnStart != null : "fx:id=\"btnStart\" was not injected: check your FXML file 'Dashboard.fxml'.";
-        }
+	}
 
 	private void refreshTriggeredJobs() {
 		List<TriggeredJob> triggeredJobs = JobService.getService(true).getQuartzJobs();
 		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
-                tblTriggeredJobResults.setItems( FXCollections.observableArrayList(JobService.getService(true).getJobResults()));
-		setTableHeight(1.1);
+		tblTriggeredJobResults.setItems(FXCollections.observableArrayList(JobService.getService(true).getJobResults()));
+		// setTableHeight(1.1);
 	}
 
 	private void setTableHeight(double rowPadding) {
-		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty().multiply(Bindings.size(tblTriggeredJobs.getItems()).add(rowPadding)));
+		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty()
+				.multiply(Bindings.size(tblTriggeredJobs.getItems()).add(rowPadding)));
 		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
 		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
 	}

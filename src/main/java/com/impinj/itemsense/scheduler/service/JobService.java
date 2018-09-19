@@ -75,51 +75,8 @@ public class JobService {
 		}
 	}
 
-	/**
-	 * Delete from the Quartz Queue
-	 */
-	public void dequeueAllJobs() {
-		try {
-			scheduler.getJobGroupNames().stream().forEach(groupName -> {
-				try {
-					scheduler.getJobKeys(GroupMatcher.groupEquals(groupName)).forEach(jobKey -> {
-						try {
-							scheduler.deleteJob(jobKey);
-							logger.info("Removed Job " + jobKey);
-						} catch (SchedulerException e) {
-							logger.error("Unable to delete Job " + jobKey);
-						}
-					});
-				} catch (Exception e) {
-					logger.error("Unable to obtains jobs to delete ");
-				}
-			});
-		} catch (Exception e) {
-			logger.error("Unable to obtain job group name(s) to delete ");
-		}
-	}
-
-	public List<JobResult> getJobResults() {
-		return jobResults;
-	}
-
-	public List<TriggeredJob> getQuartzJobs() {
-		try {
-			return scheduler.getTriggerKeys(GroupMatcher.groupEquals(App.getApplicationId())).stream()
-					.map(triggerKey -> {
-						try {
-							return new TriggeredJob((CronTriggerImpl) scheduler.getTrigger(triggerKey),
-									scheduler.getJobDetail(jobKeyFromTriggerKey(triggerKey)));
-						} catch (Exception e) {
-							throw new RuntimeException(
-									"Unable to find Quartz Job and Trigger for Trigger Key " + triggerKey, e);
-						}
-					}).collect(Collectors.toList());
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to find Quartz Jobs", e);
-		}
+	private TriggerKey triggerKeyFromConf(ItemSenseConfigJob config) {
+		return TriggerKey.triggerKey(config.getOid(), App.getApplicationId());
 	}
 
 	private JobKey jobKeyFromConf(ItemSenseConfigJob config) {
@@ -128,40 +85,6 @@ public class JobService {
 
 	private JobKey jobKeyFromTriggerKey(TriggerKey triggerKey) {
 		return JobKey.jobKey(triggerKey.getName(), triggerKey.getGroup());
-	}
-
-	public void queueAllJobs() throws IOException {
-		logger.info("Reloading all Quartz Jobs");
-		DataService.getService(true).getSystemConfig().getItemSenseConfigs().forEach(config -> queueJobs(config));
-	}
-
-	/**
-	 * This method will queue all active jobs if ItemSense is active. If ItemSense
-	 * is not active, no jobs will be queued.
-	 *
-	 * @param store
-	 */
-	public void queueJobs(ItemSenseConfig configData) {
-		if (configData.isActive()) {
-			configData.getActiveJobs().stream().forEach(jobConfig -> {
-				try {
-					scheduleJob(jobConfig, ItemSenseJob.class);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-		}
-	}
-
-	// TODO: Replace with Event Processing
-	protected void saveJobResult(JobResult jobResult) {
-		// if the stack is full, remove the last item to make room for the jobResult
-		// just heard...
-		if (jobResults.size() == JOB_RESULTS_STACK_SIZE) {
-			((LinkedList<JobResult>) jobResults).removeLast();
-		}
-		// add the result at "0" - the beginning of the list
-		jobResults.add(0, jobResult);
 	}
 
 	/**
@@ -176,7 +99,7 @@ public class JobService {
 	 * @param jobClass
 	 * @throws Exception
 	 */
-	public void scheduleJob(ItemSenseConfigJob itemSenseConfigJob, Class<? extends Job> jobClass) throws Exception {
+	private void scheduleJob(ItemSenseConfigJob itemSenseConfigJob, Class<? extends Job> jobClass) throws Exception {
 
 		boolean hasNextValidTimeAfterNow = false;
 
@@ -223,13 +146,90 @@ public class JobService {
 		}
 	}
 
+	/**
+	 * This method will queue all active jobs if ItemSense is active. If ItemSense
+	 * is not active, no jobs will be queued.
+	 *
+	 * @param store
+	 */
+	public void queueJobs(ItemSenseConfig configData) {
+		if (configData.isActive()) {
+			configData.getActiveJobs().stream().forEach(jobConfig -> {
+				try {
+					scheduleJob(jobConfig, ItemSenseJob.class);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+
+	public void queueAllJobs() throws IOException {
+		logger.info("Reloading all Quartz Jobs");
+		DataService.getService(true).getSystemConfig().getItemSenseConfigs().forEach(config -> queueJobs(config));
+	}
+
+	/**
+	 * Delete from the Quartz Queue
+	 */
+	public void dequeueAllJobs() {
+		try {
+			scheduler.getJobGroupNames().stream().forEach(groupName -> {
+				try {
+					scheduler.getJobKeys(GroupMatcher.groupEquals(groupName)).forEach(jobKey -> {
+						try {
+							scheduler.deleteJob(jobKey);
+							logger.info("Removed Job " + jobKey);
+						} catch (SchedulerException e) {
+							logger.error("Unable to delete Job " + jobKey);
+						}
+					});
+				} catch (Exception e) {
+					logger.error("Unable to obtains jobs to delete ");
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Unable to obtain job group name(s) to delete ");
+		}
+	}
+
+	public List<JobResult> getJobResults() {
+		return jobResults;
+	}
+
+	public List<TriggeredJob> getQuartzJobs() {
+		try {
+			return scheduler.getTriggerKeys(GroupMatcher.groupEquals(App.getApplicationId())).stream()
+					.map(triggerKey -> {
+						try {
+							return new TriggeredJob((CronTriggerImpl) scheduler.getTrigger(triggerKey),
+									scheduler.getJobDetail(jobKeyFromTriggerKey(triggerKey)));
+						} catch (Exception e) {
+							throw new RuntimeException(
+									"Unable to find Quartz Job and Trigger for Trigger Key " + triggerKey, e);
+						}
+					}).collect(Collectors.toList());
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to find Quartz Jobs", e);
+		}
+	}
+	
+	// TODO: Replace with Event Processing
+	protected void saveJobResult(JobResult jobResult) {
+		// if the stack is full, remove the last item to make room for the jobResult
+		// just heard...
+		if (jobResults.size() == JOB_RESULTS_STACK_SIZE) {
+			((LinkedList<JobResult>) jobResults).removeLast();
+		}
+		// add the result at "0" - the beginning of the list
+		jobResults.add(0, jobResult);
+	}
+
 	public void shutdown() throws SchedulerException {
 		this.dequeueAllJobs();
 		scheduler.shutdown(false);
-	}
-
-	private TriggerKey triggerKeyFromConf(ItemSenseConfigJob config) {
-		return TriggerKey.triggerKey(config.getOid(), App.getApplicationId());
 	}
 
 }

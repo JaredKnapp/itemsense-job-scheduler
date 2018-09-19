@@ -15,11 +15,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditServerController">
 	<center>
 		<ScrollPane fitToHeight="true" fitToWidth="true">
 			<content>
@@ -91,8 +92,11 @@
                         </Label>
                         <ComboBox fx:id="cbUtcOffset" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 							</children>
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
 						</GridPane>
-						<TableView fx:id="tblConfigJobs" onMouseClicked="#tblConfigJobs_OnMouseClicked" prefHeight="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+						<TableView fx:id="tblConfigJobs" onMouseClicked="#tblConfigJobs_OnMouseClicked" prefHeight="200.0" VBox.vgrow="ALWAYS">
 							<columns>
 								<TableColumn prefWidth="42.0" text="Active">
             											<cellValueFactory>
@@ -148,10 +152,25 @@
 		</ScrollPane>
 	</center>
 	<bottom>
-		<ButtonBar prefHeight="24.0" prefWidth="632.0" BorderPane.alignment="CENTER">
+		<ButtonBar prefHeight="24.0" prefWidth="632.0">
          <buttons>
-            <Button fx:id="btnSave" disable="true" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save" />
-            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnCancel" text="Cancel" />
+            <HBox>
+               <children>
+                  <Button fx:id="btnSave" disable="true" mnemonicParsing="false" onAction="#btnSave_OnAction" text="Save">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#btnCancel_OnCancel" text="Cancel">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </HBox>
          </buttons>
 		</ButtonBar>
 	</bottom>

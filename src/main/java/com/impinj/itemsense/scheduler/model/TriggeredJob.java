@@ -16,8 +16,6 @@ import lombok.Data;
  * A bean to contain a Quartz Trigger and Quartz Job, so I can display them
  * together. Yes, Jobs can have more than one trigger, but this bean is to load
  * a table of triggers.
- *
- * @author Paul Hill
  */
 
 @Data
@@ -57,7 +55,6 @@ public class TriggeredJob {
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-		// bad form but my javascript is super weak...
 		this.prevFire = trigger.getPreviousFireTime();
 		this.nextFire = trigger.getNextFireTime();
 	}

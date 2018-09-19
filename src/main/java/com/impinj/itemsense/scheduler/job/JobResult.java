@@ -18,8 +18,6 @@ import lombok.Data;
  * All the creation of Job Results happens here, so we can coordinate the use of all the JobResult fields.  Sure that makes this class
  * depend on all the sources, but that's dependency injection instead of scattered creation in other classes.  If you add
  * and change this class, all changes are here.
- * @author paul
- *
  */
 @Data
 public class JobResult {
@@ -36,7 +34,7 @@ public class JobResult {
     private String jobName;
     private String jobType;
     private String jobClassSimpleName;
-    // TODO use the new Java.time objects!
+    // TODO use the newer Java.time objects
     private ZonedDateTime creationDateTime = ZonedDateTime.now(ZoneOffset.UTC);
 
     public JobResult() {

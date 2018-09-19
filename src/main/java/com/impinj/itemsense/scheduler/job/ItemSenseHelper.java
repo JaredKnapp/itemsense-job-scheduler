@@ -74,9 +74,8 @@ public class ItemSenseHelper {
 
 	public CoordinatorApiController getItemsenseCoordinatorController() {
 
-		String fullUrl = config.getUrl() + "/itemsense";
-
 		if (itemsenseCoordinatorController == null) {
+			String fullUrl = config.getUrl() + "/itemsense";
 			itemsenseCoordinatorController = new CoordinatorApiController(getClient(), URI.create(fullUrl));
 		}
 

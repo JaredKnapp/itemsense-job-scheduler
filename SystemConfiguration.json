@@ -1,0 +1,33 @@
+{
+  "itemSenseConfigs" : [ {
+    "active" : true,
+    "name" : "Home - Build 954",
+    "url" : "http://192.168.1.108",
+    "username" : "admin",
+    "password" : "admindefault",
+    "token" : null,
+    "utcOffset" : "-7",
+    "jobList" : [ {
+      "active" : true,
+      "facility" : "Home",
+      "name" : "Speedway Deep Scan",
+      "recipe" : "IMPINJ_Deep_Scan_Inventory_Speedway",
+      "jobType" : null,
+      "schedule" : "0 0/1 * 1/1 * ? *",
+      "startDelay" : "0",
+      "duration" : 30,
+      "stopRunningJobs" : false
+    }, {
+      "active" : true,
+      "facility" : "Home",
+      "name" : "ERROR",
+      "recipe" : "IMPINJ_Deep_Scan_Inventory_Speedway",
+      "jobType" : null,
+      "schedule" : "0 0/1 * 1/1 * ? *",
+      "startDelay" : "0",
+      "duration" : 0,
+      "stopRunningJobs" : false
+    } ]
+  } ],
+  "filePath" : "."
+}

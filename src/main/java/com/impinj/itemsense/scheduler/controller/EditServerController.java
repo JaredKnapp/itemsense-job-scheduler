@@ -12,6 +12,7 @@ import com.impinj.itemsense.scheduler.job.ItemSenseHelper;
 import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.util.ComboChoice;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import javafx.collections.FXCollections;
@@ -53,7 +54,7 @@ public class EditServerController implements Initializable {
 	@FXML // fx:id="txtPassword"
 	private PasswordField txtPassword; // Value injected by FXMLLoader
 	@FXML // fx:id="cbUtcOffset"
-	private ComboBox cbUtcOffset; // Value injected by FXMLLoader
+	private ComboBox<Comparable> cbUtcOffset; // Value injected by FXMLLoader
 	@FXML // fx:id="btnTestConnection"
 	private Button btnDel; // Value injected by FXMLLoader
 
@@ -86,6 +87,7 @@ public class EditServerController implements Initializable {
 	void btnDel_OnAction(ActionEvent event) {
 		ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
 		tblConfigJobs.getItems().remove(job);
+		btnSave.setDisable(false);
 	}
 
 	@FXML
@@ -95,14 +97,14 @@ public class EditServerController implements Initializable {
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
 		configData.setPassword(txtPassword.getText());
-                Object obj = cbUtcOffset.getValue();
-                if (obj != null)
-                    configData.setUtcOffset(obj.toString());
+		Object obj = cbUtcOffset.getValue();
+		if (obj != null)
+			configData.setUtcOffset(obj.toString());
 		configData.setJobList(tblConfigJobs.getItems());
 		parent.onSaveData(configData);
-                btnSave.setDisable(true);
+		btnSave.setDisable(true);
 	}
-                
+
 	@FXML
 	void btnTestConnection_OnAction(ActionEvent event) {
 
@@ -141,16 +143,17 @@ public class EditServerController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-	    // TODO Auto-generated method stub
-            // Setup Event listeners to prompt "Save
-            chbIsActive.setOnMouseClicked(event -> btnSave.setDisable(false));
-            txtName.setOnKeyTyped(event -> btnSave.setDisable(false));
-            txtHostUrl.setOnKeyTyped(event -> btnSave.setDisable(false));
-            txtUserName.setOnKeyTyped(event -> btnSave.setDisable(false));
-            txtPassword.setOnKeyTyped(event -> btnSave.setDisable(false));
-            cbUtcOffset.setOnAction(event -> btnSave.setDisable(false));
-            for (int i = -11;  i <= 12;i++)
-                cbUtcOffset.getItems().addAll(Integer.toString(i));
+		// TODO Auto-generated method stub
+		// Setup Event listeners to prompt "Save
+		chbIsActive.setOnMouseClicked(event -> btnSave.setDisable(false));
+		txtName.setOnKeyTyped(event -> btnSave.setDisable(false));
+		txtHostUrl.setOnKeyTyped(event -> btnSave.setDisable(false));
+		txtUserName.setOnKeyTyped(event -> btnSave.setDisable(false));
+		txtPassword.setOnKeyTyped(event -> btnSave.setDisable(false));
+		cbUtcOffset.setOnAction(event -> btnSave.setDisable(false));
+		for (int index = -11; index <= 12; index++) {
+			cbUtcOffset.getItems().add(index);
+		}
 	}
 
 	public void injectParent(ConfigurationController configurationController) {
@@ -184,10 +187,11 @@ public class EditServerController implements Initializable {
 		if (configJobData.getOid() == null) {
 			tblConfigJobs.getItems().add(configJobData);
 			configJobData.setOid(OIDGenerator.next());
+			configJobData.setItemSenseOid(configData.getOid());
 		}
 		dialogStage.close();
 		tblConfigJobs.refresh();
-                btnSave.setDisable(false);
+		btnSave.setDisable(false);
 	}
 
 	public void setData(ItemSenseConfig serverData) {

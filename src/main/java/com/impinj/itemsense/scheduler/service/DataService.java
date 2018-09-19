@@ -27,39 +27,23 @@ public class DataService {
 		return service;
 	}
 
-	private final String jobConfigDir = ".";  // Run config files from current folder
+	private final String jobConfigDir = "."; // Run config files from current folder
 	private final String jobConfigMasterfileJson = "SystemConfiguration.json";
 
 	private final Boolean filesFromClasspath = false;
 
 	private SystemConfiguration systemConfig;
-        
-        final private String DefaultConfigString = "{" +
-            "\"itemSenseConfigs\" : [{ \n"+
-		"  \"active\": true, \n"+
-		"  \"name\": \"Impinj Test Store 1\", \n"+
-		"  \"utcOffset\": \"-7\", \n"+
-		"  \"url\": \"http://<Enter Hostname>\", \n"+
-		"  \"username\": \"admin\", \n"+
-		"  \"password\": \"admindefault\", \n"+
-		"  \"token\": \"\", \n"+
-		"  \"jobList\": [ \n"+
-			"    { \n"+
-			"      \"active\": true, \n"+
-			"      \"facility\": \"Training\", \n"+
-			"      \"name\": \"Deep Inventory Every Minute\", \n"+
-			"      \"recipe\": \"IMPINJ_Deep_Scan_Inventory\", \n"+
-			"      \"jobType\": \"Inventory\", \n"+
-			"      \"schedule\": \"0 0/5 * * * ?\", \n"+
-			"      \"startDelay\": \"0\", \n"+
-			"      \"duration\": 55, \n"+
-			"      \"stopRunningJobs\": true \n"+
-		    " } \n"+
-	    " ] \n"+
-	" }], \n"+
-        " \"filePath\": \".\" \n"+
-        "}";
 
+	final private String DefaultConfigString = "{" + "\"itemSenseConfigs\" : [{ \n" + "  \"active\": true, \n"
+			+ "  \"name\": \"Impinj Test Store 1\", \n" + "  \"utcOffset\": \"-7\", \n"
+			+ "  \"url\": \"http://<Enter Hostname>\", \n" + "  \"username\": \"admin\", \n"
+			+ "  \"password\": \"admindefault\", \n" + "  \"token\": \"\", \n" + "  \"jobList\": [ \n" + "    { \n"
+			+ "      \"active\": true, \n" + "      \"facility\": \"Training\", \n"
+			+ "      \"name\": \"Deep Inventory Every Minute\", \n"
+			+ "      \"recipe\": \"IMPINJ_Deep_Scan_Inventory\", \n" + "      \"jobType\": \"Inventory\", \n"
+			+ "      \"schedule\": \"0 0/5 * * * ?\", \n" + "      \"startDelay\": \"0\", \n"
+			+ "      \"duration\": 55, \n" + "      \"stopRunningJobs\": true \n" + " } \n" + " ] \n" + " }], \n"
+			+ " \"filePath\": \".\" \n" + "}";
 
 	private DataService() throws IOException {
 		loadSystemConfig();
@@ -78,47 +62,22 @@ public class DataService {
 		return this.systemConfig;
 	}
 
-	private ItemSenseConfig loadItemsenseConfig(String isFile) {
-		ItemSenseConfig config = null;
-		logger.debug("Loading itemsense: " + isFile + " from " + jobConfigDir);
-		try (JsonMapper<ItemSenseConfig> mapper = new JsonMapper<ItemSenseConfig>(jobConfigDir, isFile,
-				new TypeReference<ItemSenseConfig>() {
-				}, filesFromClasspath)) {
-			config = mapper.read();
-			config.setOid(OIDGenerator.next());
-			// now process the jobs
-			if (config.getJobList() != null) {
-				logger.debug("itemSenseConfig.getJobList().size(): " + config.getJobList().size());
-				for (ItemSenseConfigJob jobConfig : config.getJobList()) {
-					jobConfig.setOid(OIDGenerator.next());
-					jobConfig.setName(config.getName());
-					jobConfig.setItemSenseOid(config.getOid());
-				}
-			}
-		} catch (FileNotFoundException fnfe) {
-			logger.error("ItemSense Config file not found: " + isFile + "(From application.properties: job.config.dir"
-					+ jobConfigDir + " job.config.masterfile.json: " + jobConfigMasterfileJson
-					+ " job.config.fromClasspath: " + filesFromClasspath + ")");
-			return null;
-		}
-		return config;
-	}
-
 	private void loadSystemConfig() {
 		logger.info("Loading Connector configuration.");
-                // jobConfigMasterfileJson doesn't exist, create it with 1 default config to be used as an example.
-                File file = new File(jobConfigDir+"/"+jobConfigMasterfileJson);
-                BufferedWriter output=null;
-                try {
-                    if (!file.exists()) {
-                        output = new BufferedWriter(new FileWriter(file));
-                        output.write(DefaultConfigString);
-                        output.close();
-                    }
-                 } catch ( IOException e ) {
-                    logger.error("Not able to create "+jobConfigMasterfileJson);
-                    System.exit(0); // quit
-                 }
+		// jobConfigMasterfileJson doesn't exist, create it with 1 default config to be
+		// used as an example.
+		File file = new File(jobConfigDir + "/" + jobConfigMasterfileJson);
+		BufferedWriter output = null;
+		try {
+			if (!file.exists()) {
+				output = new BufferedWriter(new FileWriter(file));
+				output.write(DefaultConfigString);
+				output.close();
+			}
+		} catch (IOException e) {
+			logger.error("Not able to create " + jobConfigMasterfileJson);
+			System.exit(0); // quit
+		}
 		try (JsonMapper<SystemConfiguration> mapper = new JsonMapper<SystemConfiguration>(jobConfigDir,
 				jobConfigMasterfileJson, new TypeReference<SystemConfiguration>() {
 				}, filesFromClasspath)) {
@@ -130,7 +89,6 @@ public class DataService {
 					logger.debug("itemSenseConfig.getJobList().size(): " + configData.getJobList().size());
 					configData.getJobList().forEach(jobConfig -> {
 						jobConfig.setOid(OIDGenerator.next());
-						jobConfig.setName(configData.getName());
 						jobConfig.setItemSenseOid(configData.getOid());
 					});
 				}

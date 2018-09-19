@@ -86,7 +86,7 @@
                         <Insets bottom="6.0" top="6.0" />
                      </GridPane.margin>
                   </TextField>
-                  <CheckBox fx:id="chkStopRunning" mnemonicParsing="false" text="Stop Running" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                  <CheckBox fx:id="chkStopRunning" mnemonicParsing="false" text="New job stops running job" GridPane.columnIndex="1" GridPane.rowIndex="7">
                      <padding>
                         <Insets bottom="6.0" />
                      </padding></CheckBox>

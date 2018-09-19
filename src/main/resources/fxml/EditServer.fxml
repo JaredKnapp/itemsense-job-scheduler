@@ -38,7 +38,6 @@
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 							</rowConstraints>
 							<children>
 								<Label text="Name" GridPane.rowIndex="1">
@@ -71,7 +70,10 @@
 								<TextField fx:id="txtHostUrl" promptText="http://is.myserver.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 								<TextField fx:id="txtUserName" promptText="ItemSense User Name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 								<PasswordField fx:id="txtPassword" promptText="ItemSense User Password" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" GridPane.rowIndex="6" />
+            								<Button fx:id="btnTestConnection" mnemonicParsing="false" onAction="#btnTestConnection_OnAction" text="Test Connection" textFill="RED" GridPane.rowIndex="6">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font></Button>
                         <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd_OnAction" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets left="230.0" top="20.0" />

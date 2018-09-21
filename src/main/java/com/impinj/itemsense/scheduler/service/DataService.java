@@ -41,7 +41,7 @@ public class DataService {
 			+ "      \"active\": true, \n" + "      \"facility\": \"Training\", \n"
 			+ "      \"name\": \"Deep Inventory Every Minute\", \n"
 			+ "      \"recipe\": \"IMPINJ_Deep_Scan_Inventory\", \n" + "      \"jobType\": \"Inventory\", \n"
-			+ "      \"schedule\": \"0 0/5 * * * ?\", \n" + "      \"startDelay\": \"0\", \n"
+			+ "      \"schedule\": \"0 0/1 * * * ?\", \n" + "      \"startDelay\": \"0\", \n"
 			+ "      \"duration\": 55, \n" + "      \"stopRunningJobs\": true \n" + " } \n" + " ] \n" + " }], \n"
 			+ " \"filePath\": \".\" \n" + "}";
 

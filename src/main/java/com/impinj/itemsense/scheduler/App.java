@@ -8,6 +8,7 @@ import org.quartz.SchedulerException;
 
 import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.service.JobService;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -60,7 +61,12 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		try {
+            try {
+                List<String> params = getParameters().getRaw();
+                if (params.size() > 0) {
+                        System.out.println("Detected commandline arg: Running in headless mode");
+                        JobService.getService(true).queueAllJobs();
+                } else {
 
 			URL toolBarUrl = getClass().getResource("/fxml/NavPane.fxml");
 			ToolBar toolBar = FXMLLoader.load(toolBarUrl);
@@ -89,7 +95,7 @@ public class App extends Application {
 			primaryStage.setTitle("ItemSense Job Scheduler");
 			primaryStage.getIcons().add(new Image("/images/quartz_icon.png"));
 			primaryStage.show();
-
+                    }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

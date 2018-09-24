@@ -11,12 +11,15 @@ import com.impinj.itemsense.scheduler.service.JobService;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 
 public class App extends Application {
 // Application show display on laptop
@@ -26,6 +29,8 @@ public class App extends Application {
 	// Creating a static root to pass to the controller
 	private static final BorderPane root = new BorderPane();
 	private static final String appId = UUID.randomUUID().toString();
+        private static final String SERVICE_ARG = "service";
+        private static final String HELP_ARG = "help";
 
 	public static String getApplicationId() {
 		return appId;
@@ -63,8 +68,21 @@ public class App extends Application {
 	public void start(Stage primaryStage) {
             try {
                 List<String> params = getParameters().getRaw();
-                if (params.size() > 0) {
-                        System.out.println("Detected commandline arg: Running in headless mode");
+                
+                // Use J Opt Simple to parse the commandline arguments
+                String[] paramArray = new String[params.size()];
+                paramArray = params.toArray(paramArray);
+                OptionParser parser = new OptionParser();
+                parser.accepts(SERVICE_ARG);  // used to specify that process is run headless
+                parser.accepts(HELP_ARG);  // used to specify that process is run headless
+                OptionSet optionsSet = parser.parse(paramArray);
+                // Use arguments to decide path of execution
+                if (optionsSet.has(HELP_ARG)) {
+                    System.out.println("com.impinj.itemsense.scheduler.App [-service]");
+                    System.exit(0);  // Exit program
+                }
+                else if (optionsSet.has(SERVICE_ARG)) {
+                        System.out.println("Running as just a service. i.e. No GUI");
                         JobService.getService(true).queueAllJobs();
                 } else {
 

@@ -23,6 +23,8 @@ public class App extends Application {
 // Application show display on laptop
 	private static final int _APPHEIGHT = 650;
 	private static final int _APPWIDTH = 900;
+        private static final int _MIN_APPHEIGHT = 300;
+	private static final int _MIN_APPWIDTH = 400;
 
 	// Creating a static root to pass to the controller
 	private static final BorderPane root = new BorderPane();
@@ -40,7 +42,22 @@ public class App extends Application {
 	public static BorderPane getRoot() {
 		return root;
 	}
-
+        
+        static class ShutdownHook extends Thread {
+            // Shutsdown the Quartz service when headless service is terminated.
+            public void run() {
+                System.out.println("Shutting down scheduling service.");
+                try {
+                    QuartzService service = QuartzService.getService(false);
+                    if (service != null) {
+                        service.shutdown();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
 	public static void main(String[] args) {
 		OptionParser parser = new OptionParser();
 		parser.accepts(SERVICE_ARG); // used to specify that process is run headless
@@ -52,10 +69,10 @@ public class App extends Application {
 			System.exit(0); // Exit program
 		} else if (optionsSet.has(SERVICE_ARG)) {
 			System.out.println("Running as just a service. i.e. No GUI");
-			try {
+                        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+                        try {
 				DataService.getService(true);
 				QuartzService.getService(true).queueAllJobs();
-				// wait()
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -95,6 +112,8 @@ public class App extends Application {
 			root.setCenter(dashboard);
 
 			Scene scene = new Scene(root, _APPWIDTH, _APPHEIGHT);
+                        primaryStage.setMinHeight(_MIN_APPHEIGHT);
+                        primaryStage.setMinWidth(_MIN_APPWIDTH);
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 			primaryStage.setOnCloseRequest(event -> {

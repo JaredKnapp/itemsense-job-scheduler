@@ -12,7 +12,6 @@ import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.service.ItemSenseService;
 import com.impinj.itemsense.scheduler.service.quartz.ItemSenseJob;
-import com.impinj.itemsense.scheduler.util.ComboChoice;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 import javafx.collections.FXCollections;

@@ -1,6 +1,9 @@
 package com.impinj.itemsense.scheduler.service;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -9,13 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
-import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.model.SystemConfiguration;
 import com.impinj.itemsense.scheduler.util.JsonMapper;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 
 public class DataService {
 	private static final Logger logger = LoggerFactory.getLogger(JsonMapper.class);

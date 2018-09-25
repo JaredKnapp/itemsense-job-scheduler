@@ -1,11 +1,9 @@
 
 package com.impinj.itemsense.scheduler.controller;
 
-import com.impinj.itemsense.client.coordinator.facility.Facility;
 import org.apache.commons.lang3.StringUtils;
 
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
-import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,11 +25,11 @@ public class EditJobController {
 	@FXML
 	private CheckBox chkActive;
 	@FXML
-	private ComboBox cbFacility;
+	private ComboBox<String> cbFacility;
 	@FXML
 	private TextField txtName;
 	@FXML
-	private ComboBox cbRecipe;
+	private ComboBox<String> cbRecipe;
 	@FXML
 	private TextField txtSchedule;
 	@FXML

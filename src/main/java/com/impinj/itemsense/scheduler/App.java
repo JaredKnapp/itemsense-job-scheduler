@@ -9,10 +9,7 @@ import org.quartz.SchedulerException;
 import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.service.quartz.QuartzService;
 
-import java.util.List;
-
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ToolBar;

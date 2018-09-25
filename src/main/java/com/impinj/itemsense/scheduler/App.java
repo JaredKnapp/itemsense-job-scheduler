@@ -30,8 +30,8 @@ public class App extends Application {
 	// Creating a static root to pass to the controller
 	private static final BorderPane root = new BorderPane();
 	private static final String appId = UUID.randomUUID().toString();
-        private static final String SERVICE_ARG = "service";
-        private static final String HELP_ARG = "help";
+	private static final String SERVICE_ARG = "service";
+	private static final String HELP_ARG = "help";
 
 	public static String getApplicationId() {
 		return appId;
@@ -45,7 +45,26 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		launch(args);
+		OptionParser parser = new OptionParser();
+		parser.accepts(SERVICE_ARG); // used to specify that process is run headless
+		parser.accepts(HELP_ARG); // used to specify that process is run headless
+		OptionSet optionsSet = parser.parse(args);
+		// Use arguments to decide path of execution
+		if (optionsSet.has(HELP_ARG)) {
+			System.out.println("com.impinj.itemsense.scheduler.App [-service]");
+			System.exit(0); // Exit program
+		} else if (optionsSet.has(SERVICE_ARG)) {
+			System.out.println("Running as just a service. i.e. No GUI");
+			try {
+				DataService.getService(true);
+				QuartzService.getService(true).queueAllJobs();
+				// wait()
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			launch(args);
+		}
 	}
 
 	public static void startJobs() throws IOException {
@@ -67,25 +86,7 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-            try {
-                List<String> params = getParameters().getRaw();
-                
-                // Use J Opt Simple to parse the commandline arguments
-                String[] paramArray = new String[params.size()];
-                paramArray = params.toArray(paramArray);
-                OptionParser parser = new OptionParser();
-                parser.accepts(SERVICE_ARG);  // used to specify that process is run headless
-                parser.accepts(HELP_ARG);  // used to specify that process is run headless
-                OptionSet optionsSet = parser.parse(paramArray);
-                // Use arguments to decide path of execution
-                if (optionsSet.has(HELP_ARG)) {
-                    System.out.println("com.impinj.itemsense.scheduler.App [-service]");
-                    System.exit(0);  // Exit program
-                }
-                else if (optionsSet.has(SERVICE_ARG)) {
-                        System.out.println("Running as just a service. i.e. No GUI");
-                        QuartzService.getService(true).queueAllJobs();
-                } else {
+		try {
 
 			URL toolBarUrl = getClass().getResource("/fxml/NavPane.fxml");
 			ToolBar toolBar = FXMLLoader.load(toolBarUrl);
@@ -105,7 +106,6 @@ public class App extends Application {
 					if (service != null)
 						service.shutdown();
 				} catch (SchedulerException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			});
@@ -114,7 +114,6 @@ public class App extends Application {
 			primaryStage.setTitle("ItemSense Job Scheduler");
 			primaryStage.getIcons().add(new Image("/images/quartz_icon.png"));
 			primaryStage.show();
-                    }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

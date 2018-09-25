@@ -1,17 +1,15 @@
-package com.impinj.itemsense.scheduler.service;
+package com.impinj.itemsense.scheduler.service.quartz;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.listeners.JobListenerSupport;
 
-import com.impinj.itemsense.scheduler.job.JobResult;
-
 public class JobListener extends JobListenerSupport {
 
-	JobService parent;
+	QuartzService parent;
 
-	public JobListener(JobService jobService) {
-		this.parent = jobService;
+	public JobListener(QuartzService quartzService) {
+		this.parent = quartzService;
 	}
 
 	@Override

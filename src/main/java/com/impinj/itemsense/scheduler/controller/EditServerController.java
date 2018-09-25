@@ -8,10 +8,10 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impinj.itemsense.scheduler.job.ItemSenseHelper;
-import com.impinj.itemsense.scheduler.job.ItemSenseJob;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.service.ItemSenseService;
+import com.impinj.itemsense.scheduler.service.quartz.ItemSenseJob;
 import com.impinj.itemsense.scheduler.util.ComboChoice;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
@@ -141,12 +141,12 @@ public class EditServerController implements Initializable {
 		}
 	}
         
-        public ItemSenseHelper getItemSenseHelper() {
+        public ItemSenseService getItemSenseHelper() {
             ItemSenseConfig config = new ItemSenseConfig();
 	    config.setUrl(txtHostUrl.getText());
 	    config.setUsername(txtUserName.getText());
 	    config.setPassword(txtPassword.getText());
-	    return new ItemSenseHelper(config, null, null);
+	    return new ItemSenseService(config, null, null);
         }
 
 	@Override

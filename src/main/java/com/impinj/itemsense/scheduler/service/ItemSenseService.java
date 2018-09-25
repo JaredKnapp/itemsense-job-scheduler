@@ -1,4 +1,4 @@
-package com.impinj.itemsense.scheduler.job;
+package com.impinj.itemsense.scheduler.service;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -18,13 +18,14 @@ import com.impinj.itemsense.client.coordinator.job.Job;
 import com.impinj.itemsense.client.coordinator.job.JobController;
 import com.impinj.itemsense.client.coordinator.job.JobResponse;
 import com.impinj.itemsense.client.coordinator.recipe.Recipe;
-import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
-import com.impinj.itemsense.scheduler.job.JobResult.Status;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.service.quartz.JobResult;
+import com.impinj.itemsense.scheduler.service.quartz.JobResult.Status;
+import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
-public class ItemSenseHelper {
-	private static final Logger logger = LoggerFactory.getLogger(ItemSenseHelper.class);
+public class ItemSenseService {
+	private static final Logger logger = LoggerFactory.getLogger(ItemSenseService.class);
 
 	private Client client;
 	private CoordinatorApiController itemsenseCoordinatorController;
@@ -39,7 +40,7 @@ public class ItemSenseHelper {
 	 * Jobs
 	 * 
 	 */
-	public ItemSenseHelper(ItemSenseConfig config, ItemSenseConfigJob configJob, JobResult jobResult) {
+	public ItemSenseService(ItemSenseConfig config, ItemSenseConfigJob configJob, JobResult jobResult) {
 		this.config = config;
 		this.configJob = configJob;
 		this.jobResult = jobResult;

@@ -1,8 +1,6 @@
-package com.impinj.itemsense.scheduler.config;
+package com.impinj.itemsense.scheduler.model;
 
 import java.util.ArrayList;
-
-import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 
 import lombok.Data;
 

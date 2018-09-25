@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.impinj.itemsense.scheduler.config.SystemConfiguration;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.model.SystemConfiguration;
 import com.impinj.itemsense.scheduler.util.JsonMapper;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 import java.io.BufferedWriter;

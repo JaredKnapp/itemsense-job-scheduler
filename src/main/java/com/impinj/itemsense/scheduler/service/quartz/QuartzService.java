@@ -1,4 +1,4 @@
-package com.impinj.itemsense.scheduler.service;
+package com.impinj.itemsense.scheduler.service.quartz;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -29,23 +29,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.scheduler.App;
-import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
-import com.impinj.itemsense.scheduler.job.ItemSenseJob;
-import com.impinj.itemsense.scheduler.job.JobResult;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.model.TriggeredJob;
+import com.impinj.itemsense.scheduler.service.DataService;
+import com.impinj.itemsense.scheduler.util.ConnectorConstants;
+
 import java.util.ArrayList;
 
-public class JobService {
+public class QuartzService {
 
-	private static final Logger logger = LoggerFactory.getLogger(JobService.class);
+	private static final Logger logger = LoggerFactory.getLogger(QuartzService.class);
 	private static final int JOB_RESULTS_STACK_SIZE = 1000;
-	private static JobService service;
+	private static QuartzService service;
 
-	public static JobService getService(boolean createIfNull) {
+	public static QuartzService getService(boolean createIfNull) {
 		if (service == null && createIfNull)
-			service = new JobService();
+			service = new QuartzService();
 		return service;
 	}
 
@@ -63,7 +63,7 @@ public class JobService {
 	// LinkedList<JobResult>());
 	private List<JobResult> jobResults = new ArrayList<>();
 
-	private JobService() {
+	private QuartzService() {
 		logger.info("Creating Quartz Job Scheduler");
 		try {
 			scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -217,7 +217,7 @@ public class JobService {
 	}
 	
 	// TODO: Replace with Event Processing
-	protected void saveJobResult(JobResult jobResult) {
+	public void saveJobResult(JobResult jobResult) {
 		// if the stack is full, remove the last item to make room for the jobResult
 		// just heard...
 		if (jobResults.size() == JOB_RESULTS_STACK_SIZE) {

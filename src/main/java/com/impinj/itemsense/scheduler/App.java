@@ -7,7 +7,8 @@ import java.util.UUID;
 import org.quartz.SchedulerException;
 
 import com.impinj.itemsense.scheduler.service.DataService;
-import com.impinj.itemsense.scheduler.service.JobService;
+import com.impinj.itemsense.scheduler.service.quartz.QuartzService;
+
 import java.util.List;
 
 import javafx.application.Application;
@@ -48,7 +49,7 @@ public class App extends Application {
 	}
 
 	public static void startJobs() throws IOException {
-		JobService.getService(true).queueAllJobs();
+		QuartzService.getService(true).queueAllJobs();
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class App extends Application {
                 }
                 else if (optionsSet.has(SERVICE_ARG)) {
                         System.out.println("Running as just a service. i.e. No GUI");
-                        JobService.getService(true).queueAllJobs();
+                        QuartzService.getService(true).queueAllJobs();
                 } else {
 
 			URL toolBarUrl = getClass().getResource("/fxml/NavPane.fxml");
@@ -100,7 +101,7 @@ public class App extends Application {
 
 			primaryStage.setOnCloseRequest(event -> {
 				try {
-					JobService service = JobService.getService(false);
+					QuartzService service = QuartzService.getService(false);
 					if (service != null)
 						service.shutdown();
 				} catch (SchedulerException e) {

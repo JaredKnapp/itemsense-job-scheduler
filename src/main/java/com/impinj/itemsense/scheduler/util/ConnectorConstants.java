@@ -1,4 +1,4 @@
-package com.impinj.itemsense.scheduler.constants;
+package com.impinj.itemsense.scheduler.util;
 
 public final class ConnectorConstants {
 	/**

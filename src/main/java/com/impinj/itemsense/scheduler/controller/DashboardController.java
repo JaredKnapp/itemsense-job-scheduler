@@ -5,9 +5,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.impinj.itemsense.scheduler.job.JobResult;
 import com.impinj.itemsense.scheduler.model.TriggeredJob;
-import com.impinj.itemsense.scheduler.service.JobService;
+import com.impinj.itemsense.scheduler.service.quartz.JobResult;
+import com.impinj.itemsense.scheduler.service.quartz.QuartzService;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -45,7 +45,7 @@ public class DashboardController {
 	@FXML
 	void btnStart_OnAction(ActionEvent event) {
 		try {
-			JobService.getService(true).queueAllJobs();
+			QuartzService.getService(true).queueAllJobs();
 			refreshTriggeredJobs();
 
 			refreshTimer = new Timeline(new KeyFrame(Duration.seconds(10), new EventHandler<ActionEvent>() {
@@ -74,7 +74,7 @@ public class DashboardController {
 			refreshTimer.stop();
 		}
 
-		JobService service = JobService.getService(false);
+		QuartzService service = QuartzService.getService(false);
 		if (service != null) {
 			service.dequeueAllJobs();
 		}
@@ -95,9 +95,9 @@ public class DashboardController {
 	}
 
 	private void refreshTriggeredJobs() {
-		List<TriggeredJob> triggeredJobs = JobService.getService(true).getQuartzJobs();
+		List<TriggeredJob> triggeredJobs = QuartzService.getService(true).getQuartzJobs();
 		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
-		tblTriggeredJobResults.setItems(FXCollections.observableArrayList(JobService.getService(true).getJobResults()));
+		tblTriggeredJobResults.setItems(FXCollections.observableArrayList(QuartzService.getService(true).getJobResults()));
 		// setTableHeight(1.1);
 	}
 

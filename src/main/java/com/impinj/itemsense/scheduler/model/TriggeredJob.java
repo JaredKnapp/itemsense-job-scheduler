@@ -8,7 +8,7 @@ import org.quartz.JobDetail;
 import org.quartz.impl.triggers.CronTriggerImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
+import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
 import lombok.Data;
 

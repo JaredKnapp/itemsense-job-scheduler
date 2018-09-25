@@ -1,4 +1,4 @@
-package com.impinj.itemsense.scheduler.job;
+package com.impinj.itemsense.scheduler.service.quartz;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -8,9 +8,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.impinj.itemsense.client.coordinator.job.JobResponse;
-import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
 import lombok.Data;
 

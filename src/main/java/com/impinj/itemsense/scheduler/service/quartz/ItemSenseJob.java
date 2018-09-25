@@ -1,4 +1,4 @@
-package com.impinj.itemsense.scheduler.job;
+package com.impinj.itemsense.scheduler.service.quartz;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -7,10 +7,11 @@ import org.quartz.JobKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impinj.itemsense.scheduler.constants.ConnectorConstants;
-import com.impinj.itemsense.scheduler.job.JobResult.Status;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import com.impinj.itemsense.scheduler.service.ItemSenseService;
+import com.impinj.itemsense.scheduler.service.quartz.JobResult.Status;
+import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
 /**
  * Run an ItemSenseJob There are two ways to communicate with the UI
@@ -38,7 +39,7 @@ public class ItemSenseJob implements Job {
 		logger.info("ItemSenseJob.execute store " + itemsenseConfig.getName() + " started job: " + jobKey.getName()
 				+ "   jobKey: " + jobKey);
 
-		ItemSenseHelper isHelper = new ItemSenseHelper(itemsenseConfig, jobConfig, jobResult);
+		ItemSenseService isHelper = new ItemSenseService(itemsenseConfig, jobConfig, jobResult);
 		try {
 			jobResult = isHelper.runJob();
 		} catch (Exception e) {

@@ -12,7 +12,6 @@ import com.impinj.itemsense.scheduler.service.quartz.QuartzService;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -97,14 +96,8 @@ public class DashboardController {
 	private void refreshTriggeredJobs() {
 		List<TriggeredJob> triggeredJobs = QuartzService.getService(true).getQuartzJobs();
 		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
-		tblTriggeredJobResults.setItems(FXCollections.observableArrayList(QuartzService.getService(true).getJobResults()));
+		tblTriggeredJobResults
+				.setItems(FXCollections.observableArrayList(QuartzService.getService(true).getJobResults()));
 		// setTableHeight(1.1);
-	}
-
-	private void setTableHeight(double rowPadding) {
-		tblTriggeredJobs.prefHeightProperty().bind(tblTriggeredJobs.fixedCellSizeProperty()
-				.multiply(Bindings.size(tblTriggeredJobs.getItems()).add(rowPadding)));
-		tblTriggeredJobs.minHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
-		tblTriggeredJobs.maxHeightProperty().bind(tblTriggeredJobs.prefHeightProperty());
 	}
 }

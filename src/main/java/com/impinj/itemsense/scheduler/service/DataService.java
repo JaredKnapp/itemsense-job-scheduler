@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +18,15 @@ import com.impinj.itemsense.scheduler.util.JsonMapper;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
 public class DataService {
-	private static final Logger logger = LoggerFactory.getLogger(JsonMapper.class);
+	//private static final Logger logger = LoggerFactory.getLogger(DataService.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataService.class);
+	//private static final ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(DataService.class);
+
 	private static DataService service;
 
 	public static DataService getService(boolean createIfNull) throws IOException {
+		PropertyConfigurator.configure("log4j.properties");
+
 		if (service == null && createIfNull)
 			service = new DataService();
 		return service;

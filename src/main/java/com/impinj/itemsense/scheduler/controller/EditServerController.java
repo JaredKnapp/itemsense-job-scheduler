@@ -139,14 +139,14 @@ public class EditServerController implements Initializable {
 			alert.showAndWait();
 		}
 	}
-        
-        public ItemSenseService getItemSenseHelper() {
-            ItemSenseConfig config = new ItemSenseConfig();
-	    config.setUrl(txtHostUrl.getText());
-	    config.setUsername(txtUserName.getText());
-	    config.setPassword(txtPassword.getText());
-	    return new ItemSenseService(config, null, null);
-        }
+
+	public ItemSenseService getItemSenseHelper() {
+		ItemSenseConfig config = new ItemSenseConfig();
+		config.setUrl(txtHostUrl.getText());
+		config.setUsername(txtUserName.getText());
+		config.setPassword(txtPassword.getText());
+		return new ItemSenseService(config, null, null);
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

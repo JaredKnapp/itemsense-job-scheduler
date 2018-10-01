@@ -1,5 +1,9 @@
 package com.impinj.itemsense.scheduler.util;
 
+/*
+   Static Contants 
+*/
+
 public final class ConnectorConstants {
 	/**
 	 * Impinj ItemSense constants.

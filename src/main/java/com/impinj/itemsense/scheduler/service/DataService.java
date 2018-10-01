@@ -17,6 +17,10 @@ import com.impinj.itemsense.scheduler.model.SystemConfiguration;
 import com.impinj.itemsense.scheduler.util.JsonMapper;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
+/*
+    DataService stores and retieves configuration files.  If no configurations, a default configuration file will be generated.
+*/
+
 public class DataService {
 	//private static final Logger logger = LoggerFactory.getLogger(DataService.class);
 	private static final Logger logger = LoggerFactory.getLogger(DataService.class);

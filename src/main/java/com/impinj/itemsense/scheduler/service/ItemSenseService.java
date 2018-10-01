@@ -24,6 +24,10 @@ import com.impinj.itemsense.scheduler.service.quartz.JobResult;
 import com.impinj.itemsense.scheduler.service.quartz.JobResult.Status;
 import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
+/*
+    ItemSenseService - connects to ItemSense to query parameters using the REST API.
+*/
+
 public class ItemSenseService {
 	private static final Logger logger = LoggerFactory.getLogger(ItemSenseService.class);
 

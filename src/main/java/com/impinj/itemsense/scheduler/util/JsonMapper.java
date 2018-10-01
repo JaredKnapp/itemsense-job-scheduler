@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
- * Reads a object from file on the class path or file system.
+ * Reads a object from file storing the system configuration on the class path or file system.
  */
 public class JsonMapper<T> implements Closeable {
 

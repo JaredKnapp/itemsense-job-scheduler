@@ -12,6 +12,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * NavPaneController is the control which corresponds to the NavPane.fxml
+ */
+
 public class NavPaneController {
 	@FXML // fx:id="showDashboard"
 	private Button btnShowDashboard;

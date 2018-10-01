@@ -55,6 +55,5 @@ public class ItemSenseJob implements Job {
 		jobExecutionContext.setResult(jobResult);
 		logger.info("ItemSense.execute store " + itemsenseConfig.getName() + " completed job: " + jobKey.getName()
 				+ "   jobKey: " + jobKey);
-
 	}
 }

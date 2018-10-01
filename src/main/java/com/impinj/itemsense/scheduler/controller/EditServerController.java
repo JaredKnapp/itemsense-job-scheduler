@@ -33,6 +33,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * EditServerController is the control which corresponds to the EditServer.fxml
+ */
+
 public class EditServerController implements Initializable {
 	private static final Logger logger = LoggerFactory.getLogger(ItemSenseJob.class);
 	private ItemSenseConfig configData;

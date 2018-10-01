@@ -20,6 +20,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.util.Duration;
 
+/* 
+    DashboardController is the control which corresponds to the CDashboard.fxml
+*/
+
+
 public class DashboardController {
 	@FXML // ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;

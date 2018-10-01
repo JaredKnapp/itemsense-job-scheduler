@@ -15,9 +15,9 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 /**
- * FXML Controller class
- *
  * @author jskinner
+ * CronMakerController is the control which corresponds to the CronMaker.fxml
+ * 
  */
 public class CronMakerController implements Initializable {
 

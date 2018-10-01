@@ -19,6 +19,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/* 
+    EditJobController is the control which corresponds to the EditJob.fxml
+*/
+
 public class EditJobController {
 	ItemSenseConfigJob itemSenseConfigJob;
 	EditServerController parent;
@@ -98,9 +102,7 @@ public class EditJobController {
             chkActive.setSelected(itemSenseConfig.isActive());
             txtName.setText(itemSenseConfig.getName());
             cbFacility.setValue(itemSenseConfig.getFacility());
-        //    cbFacility.getItems().add(itemSenseConfig.getFacility());
             cbRecipe.setValue(itemSenseConfig.getRecipe());
-        //    cbRecipe.getItems().add(itemSenseConfig.getRecipe());
             txtSchedule.setText(itemSenseConfig.getSchedule());
             txtStartDelay.setText(itemSenseConfig.getStartDelay());
             if (itemSenseConfig.getDuration() != null) {

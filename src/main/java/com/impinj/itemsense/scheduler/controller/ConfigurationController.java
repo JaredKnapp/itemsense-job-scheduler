@@ -27,6 +27,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
+/* 
+    ConfigurationController is the control which corresponds to the Configuration.fxml
+*/
+
 public class ConfigurationController implements Initializable {
 
 	@FXML

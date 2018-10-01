@@ -126,7 +126,7 @@ public class EditServerController implements Initializable {
 			config.setUsername(txtUserName.getText());
 			config.setPassword(txtPassword.getText());
 
-			boolean success = getItemSenseHelper().testConnection();
+			boolean success = getItemSenseService().testConnection();
 
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Test Connection");
@@ -140,7 +140,7 @@ public class EditServerController implements Initializable {
 		}
 	}
 
-	public ItemSenseService getItemSenseHelper() {
+	public ItemSenseService getItemSenseService() {
 		ItemSenseConfig config = new ItemSenseConfig();
 		config.setUrl(txtHostUrl.getText());
 		config.setUsername(txtUserName.getText());

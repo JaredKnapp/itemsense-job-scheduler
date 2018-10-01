@@ -4,6 +4,8 @@ package com.impinj.itemsense.scheduler.controller;
 import org.apache.commons.lang3.StringUtils;
 
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
+import java.util.List;
+import javafx.application.Platform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -92,17 +94,34 @@ public class EditJobController {
 	}
 
 	public void setData(ItemSenseConfigJob itemSenseConfig) {
-		jobData = itemSenseConfig;
-		chkActive.setSelected(itemSenseConfig.isActive());
-		txtName.setText(itemSenseConfig.getName());
-		cbFacility.getItems().addAll(parent.getItemSenseHelper().getFacilityNames());
-                cbFacility.setValue(itemSenseConfig.getFacility());
-                cbRecipe.getItems().addAll(parent.getItemSenseHelper().getRecipeNames());
-                cbRecipe.setValue(itemSenseConfig.getRecipe());
-		txtSchedule.setText(itemSenseConfig.getSchedule());
-		txtStartDelay.setText(itemSenseConfig.getStartDelay());
-		if (itemSenseConfig.getDuration() != null)
-			txtDuration.setText(itemSenseConfig.getDuration().toString());
-		chkStopRunning.setSelected(itemSenseConfig.isStopRunningJobs());
-	}
+            jobData = itemSenseConfig;
+            chkActive.setSelected(itemSenseConfig.isActive());
+            txtName.setText(itemSenseConfig.getName());
+            cbFacility.setValue(itemSenseConfig.getFacility());
+        //    cbFacility.getItems().add(itemSenseConfig.getFacility());
+            cbRecipe.setValue(itemSenseConfig.getRecipe());
+        //    cbRecipe.getItems().add(itemSenseConfig.getRecipe());
+            txtSchedule.setText(itemSenseConfig.getSchedule());
+            txtStartDelay.setText(itemSenseConfig.getStartDelay());
+            if (itemSenseConfig.getDuration() != null) {
+                txtDuration.setText(itemSenseConfig.getDuration().toString());
+            }
+            chkStopRunning.setSelected(itemSenseConfig.isStopRunningJobs());
+
+            Platform.runLater(() ->
+            {
+                    List<String> faciltiesNames = parent.getItemSenseService().getFacilityNames();
+                    if (faciltiesNames != null) {
+                        cbFacility.getItems().clear();
+                        cbFacility.getItems().addAll(faciltiesNames);
+                        cbFacility.setValue(itemSenseConfig.getFacility());
+                    }
+                    List<String> recipeNames =  parent.getItemSenseService().getRecipeNames();
+                    if (recipeNames != null) {
+                        cbRecipe.getItems().clear();
+                        cbRecipe.getItems().addAll(recipeNames);
+                        cbRecipe.setValue(itemSenseConfig.getRecipe());
+                    }
+            });
+        }
 }

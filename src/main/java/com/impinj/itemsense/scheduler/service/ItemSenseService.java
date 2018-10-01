@@ -212,23 +212,33 @@ public class ItemSenseService {
 		return success;
 	}
         public List<String> getFacilityNames() {
-            CoordinatorApiController coordinator = getItemsenseCoordinatorController();
-            List<Facility> facilities = coordinator.getFacilityController().getAllFacilities();
-            List<String> facilityNames = new ArrayList<>();
-            for (Facility f : facilities) {
+            try {
+                CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+                List<Facility> facilities = coordinator.getFacilityController().getAllFacilities();
+                List<String> facilityNames = new ArrayList<>();
+                for (Facility f : facilities) {
                     f.getName();
                     facilityNames.add(f.getName());
                 }
-            return facilityNames;
+                return facilityNames;
+            } catch (Exception e) {
+                System.out.println("Unable to retrieve Facility Names");
+            }
+            return null;   // unable retrieve facilities
         }
         public List<String> getRecipeNames() {
-            CoordinatorApiController coordinator = getItemsenseCoordinatorController();
-            List<Recipe> recipies = coordinator.getRecipeController().getRecipes();
-            List<String> recipeNames = new ArrayList<>();
-            for (Recipe r : recipies) {
+            try {
+                CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+                List<Recipe> recipies = coordinator.getRecipeController().getRecipes();
+                List<String> recipeNames = new ArrayList<>();
+                for (Recipe r : recipies) {
                     r.getName();
                     recipeNames.add(r.getName());
                 }
-            return recipeNames;
+                return recipeNames;
+            } catch (Exception e) {
+                System.out.println("Unable to retrieve Recipe Names");
+            }
+            return null;   // unable retrieve facilities
         }
 }

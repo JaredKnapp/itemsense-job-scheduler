@@ -8,9 +8,11 @@ package com.impinj.itemsense.scheduler.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
@@ -25,13 +27,17 @@ public class CronMakerController implements Initializable {
     @FXML 
     private WebView CronWebView;
     
+    final String CRON_SITE_URL = "http://www.cronmaker.com/";
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
     public void loadPage() {
-        WebEngine webEngine = CronWebView.getEngine();
-        webEngine.load("http://www.cronmaker.com/");
-    }    
+        Platform.runLater(() -> {
+            WebEngine webEngine = CronWebView.getEngine();
+            webEngine.load(CRON_SITE_URL);
+        });
+    }
     public void btnOk_OnAction(ActionEvent event) {
         parent.onCancelCronMaker();
     }

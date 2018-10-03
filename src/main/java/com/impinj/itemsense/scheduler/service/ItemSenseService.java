@@ -9,7 +9,6 @@ import javax.ws.rs.client.ClientBuilder;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.client.coordinator.CoordinatorApiController;
@@ -24,12 +23,14 @@ import com.impinj.itemsense.scheduler.service.quartz.JobResult;
 import com.impinj.itemsense.scheduler.service.quartz.JobResult.Status;
 import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
+import ch.qos.logback.classic.Logger;
+
 /*
     ItemSenseService - connects to ItemSense to query parameters using the REST API.
 */
 
 public class ItemSenseService {
-	private static final Logger logger = LoggerFactory.getLogger(ItemSenseService.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(ItemSenseService.class);
 
 	private Client client;
 	private CoordinatorApiController itemsenseCoordinatorController;
@@ -58,20 +59,15 @@ public class ItemSenseService {
 			job.setRecipeName(configJob.getRecipe());
 			job.setDurationSeconds(configJob.getDuration());
 			job.setFacility(configJob.getFacility());
-			job.setStartDelay("PT"+configJob.getStartDelay()+"S");  // Add PT<seconds>S formating
+			job.setStartDelay("PT" + configJob.getStartDelay() + "S"); // Add PT<seconds>S formating
 		}
 	}
 
 	public Client getClient() {
-		// TODO: support auth token
-		// lazy instantiation
 		if (client == null) {
-//			client = ClientBuilder.newClient()
-//					.register(HttpAuthenticationFeature.basic(config.getUsername(), config.getPassword()));
-
-			client = ClientBuilder.newClient().register(JacksonFeature.class)
+			client = ClientBuilder.newClient()
+					.register(JacksonFeature.class)
 					.register(HttpAuthenticationFeature.basic(config.getUsername(), config.getPassword()));
-
 		}
 
 		return client;
@@ -80,42 +76,42 @@ public class ItemSenseService {
 	public CoordinatorApiController getItemsenseCoordinatorController() {
 
 		if (itemsenseCoordinatorController == null) {
-			String fullUrl = config.getUrl() + "/itemsense";
-			itemsenseCoordinatorController = new CoordinatorApiController(getClient(), URI.create(fullUrl));
+			URI fullUri = URI.create(config.getUrl() + "/itemsense").normalize();
+			itemsenseCoordinatorController = new CoordinatorApiController(getClient(), fullUri);
 		}
 
 		return itemsenseCoordinatorController;
 	}
 
 	public ArrayList<JobResponse> getJobsInFacility() {
-            JobController jobController = getItemsenseCoordinatorController().getJobController();
-            List<JobResponse> jobResponses = jobController.getJobs();
-            ArrayList<JobResponse> retResponses = new ArrayList<> ();
-            
-            for (JobResponse response : jobResponses) {
-                Facility facilities[] = response.getFacilities();
-                for (Facility facility : facilities) {
-                    if (facility.getName().contains(configJob.getFacility()))
-                        retResponses.add(response);
-                }                    
-            }
-            return retResponses;
+		JobController jobController = getItemsenseCoordinatorController().getJobController();
+		List<JobResponse> jobResponses = jobController.getJobs();
+		ArrayList<JobResponse> retResponses = new ArrayList<>();
+
+		for (JobResponse response : jobResponses) {
+			Facility facilities[] = response.getFacilities();
+			for (Facility facility : facilities) {
+				if (facility.getName().contains(configJob.getFacility()))
+					retResponses.add(response);
+			}
+		}
+		return retResponses;
 	}
 
 	public ArrayList<JobResponse> getRunningJobsInFacility() {
-            ArrayList<JobResponse> jobResponses = getJobsInFacility();
-            ArrayList<JobResponse> retResponses = new ArrayList<> ();
-            for (JobResponse response : jobResponses) {
-                if (isJobRunning(response.getStatus()))
-                    retResponses.add(response);
-            }
-            return retResponses;
+		ArrayList<JobResponse> jobResponses = getJobsInFacility();
+		ArrayList<JobResponse> retResponses = new ArrayList<>();
+		for (JobResponse response : jobResponses) {
+			if (isJobRunning(response.getStatus()))
+				retResponses.add(response);
+		}
+		return retResponses;
 	}
 
 	public boolean isJobFailed(String status) {
 		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_FAIL));
 	}
-	
+
 	public boolean isJobRunning(String status) {
 		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING) || status.equals("REGISTERED")
 				|| status.equals("WAITING") || status.equals("INITIALIZING") || status.equals("STARTING")
@@ -133,7 +129,8 @@ public class ItemSenseService {
 			stopRunningJobsInFacility();
 		}
 
-		logger.info(String.format("Starting Job: %s facility: %s recipe: %s", config.getName(), configJob.getFacility(), job.getRecipeName()));
+		logger.info(String.format("Starting Job: %s facility: %s recipe: %s", config.getName(), configJob.getFacility(),
+				job.getRecipeName()));
 
 		// TODO: validate recipe exist before trying to start the job
 		JobController jobController = getItemsenseCoordinatorController().getJobController();
@@ -158,8 +155,9 @@ public class ItemSenseService {
 			// TODO: Fix to work correctly against new Status from and stop reason code
 			// ItemSense
 			if (isJobFailed(jobResponse.getStatus())) {
-				String msg = String.format("FAILED to initialize Job in ItemSense: %s facility: %s recipe: %s jobId: %s",
-						config.getName(), configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
+				String msg = String.format(
+						"FAILED to initialize Job in ItemSense: %s facility: %s recipe: %s jobId: %s", config.getName(),
+						configJob.getFacility(), job.getRecipeName(), jobResponse.getId());
 				this.jobResult.setStatus(Status.FAILED);
 				this.jobResult.setResults(msg);
 
@@ -183,8 +181,7 @@ public class ItemSenseService {
 		ArrayList<JobResponse> runningJobs = getRunningJobsInFacility();
 
 		for (JobResponse runningJobResponse : runningJobs) {
-			logger.info("Stopping job: %s facility: %s JobID: %s", config.getName(), configJob.getFacility(),
-					runningJobResponse.getId());
+			logger.info("Stopping job: {} facility: {} JobID: {}", new Object[] {config.getName(), configJob.getFacility(), runningJobResponse.getId()});
 			jobController.stopJob(runningJobResponse.getId());
 			// given ItemSense can only have one job running at a time per
 			// facility, loop until has actually stopped
@@ -192,13 +189,11 @@ public class ItemSenseService {
 			// TODO: UPDATE FOR NEW JOB STATUS
 			JobResponse stoppedJobResponse = jobController.getJob(runningJobResponse.getId());
 			while (!isJobStopped(stoppedJobResponse.getStatus())) {
-				logger.debug(msg + " stopping job " + runningJobResponse.getId() + ": status: "
-						+ stoppedJobResponse.getStatus());
+				logger.debug(msg + " stopping job " + runningJobResponse.getId() + ": status: " + stoppedJobResponse.getStatus());
 				stoppedJobResponse = jobController.getJob(runningJobResponse.getId());
 			}
 
-			logger.info(
-					msg + " stopped job " + runningJobResponse.getId() + ": status: " + stoppedJobResponse.getStatus());
+			logger.info("{} stopped job {}: status: {}", new Object[] {msg, runningJobResponse.getId(), stoppedJobResponse.getStatus()});
 		}
 	}
 
@@ -207,42 +202,43 @@ public class ItemSenseService {
 		try {
 			CoordinatorApiController coordinator = getItemsenseCoordinatorController();
 			List<Recipe> recipes = coordinator.getRecipeController().getRecipes();
-			success = (recipes==null ? false : 0 < recipes.size());
+			success = (recipes == null ? false : 0 < recipes.size());
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("Could not validate ItemSense Connection: " + this.toString());
+			logger.info("Could not validate ItemSense Connection: {}", e.getMessage());
 			success = false;
 		}
 		return success;
 	}
-        public List<String> getFacilityNames() {
-            try {
-                CoordinatorApiController coordinator = getItemsenseCoordinatorController();
-                List<Facility> facilities = coordinator.getFacilityController().getAllFacilities();
-                List<String> facilityNames = new ArrayList<>();
-                for (Facility f : facilities) {
-                    f.getName();
-                    facilityNames.add(f.getName());
-                }
-                return facilityNames;
-            } catch (Exception e) {
-                System.out.println("Unable to retrieve Facility Names");
-            }
-            return null;   // unable retrieve facilities
-        }
-        public List<String> getRecipeNames() {
-            try {
-                CoordinatorApiController coordinator = getItemsenseCoordinatorController();
-                List<Recipe> recipies = coordinator.getRecipeController().getRecipes();
-                List<String> recipeNames = new ArrayList<>();
-                for (Recipe r : recipies) {
-                    r.getName();
-                    recipeNames.add(r.getName());
-                }
-                return recipeNames;
-            } catch (Exception e) {
-                System.out.println("Unable to retrieve Recipe Names");
-            }
-            return null;   // unable retrieve facilities
-        }
+
+	public List<String> getFacilityNames() {
+		try {
+			CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+			List<Facility> facilities = coordinator.getFacilityController().getAllFacilities();
+			List<String> facilityNames = new ArrayList<>();
+			for (Facility f : facilities) {
+				f.getName();
+				facilityNames.add(f.getName());
+			}
+			return facilityNames;
+		} catch (Exception e) {
+			System.out.println("Unable to retrieve Facility Names");
+		}
+		return null;
+	}
+
+	public List<String> getRecipeNames() {
+		try {
+			CoordinatorApiController coordinator = getItemsenseCoordinatorController();
+			List<Recipe> recipies = coordinator.getRecipeController().getRecipes();
+			List<String> recipeNames = new ArrayList<>();
+			for (Recipe r : recipies) {
+				r.getName();
+				recipeNames.add(r.getName());
+			}
+			return recipeNames;
+		} catch (Exception e) {
+			System.out.println("Unable to retrieve Recipe Names");
+		}
+		return null;
+	}
 }

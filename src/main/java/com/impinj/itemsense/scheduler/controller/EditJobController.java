@@ -1,12 +1,14 @@
 
 package com.impinj.itemsense.scheduler.controller;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
-import java.util.List;
-import javafx.application.Platform;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,14 +21,9 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/* 
-    EditJobController is the control which corresponds to the EditJob.fxml
-*/
-
 public class EditJobController {
-	ItemSenseConfigJob itemSenseConfigJob;
-	EditServerController parent;
-	ItemSenseConfigJob jobData;
+	private EditServerController parent;
+	private ItemSenseConfigJob jobData;
 
 	@FXML
 	private CheckBox chkActive;
@@ -45,8 +42,8 @@ public class EditJobController {
 	@FXML
 	private CheckBox chkStopRunning;
 	@FXML
-	private Hyperlink hyperlink;
-        private Stage dialogStage;
+	private Hyperlink cronHyperlink;
+	private Stage dialogStage;
 
 	public void btnCancel_OnAction(ActionEvent event) {
 		parent.onCancelJobData();
@@ -55,11 +52,12 @@ public class EditJobController {
 	public void btnOk_OnAction(ActionEvent event) {
 		jobData.setActive(chkActive.isSelected());
 		jobData.setName(txtName.getText());
-		jobData.setFacility((String)cbFacility.getValue());
-                jobData.setRecipe((String)cbRecipe.getValue());
+		jobData.setFacility((String) cbFacility.getValue());
+		jobData.setRecipe((String) cbRecipe.getValue());
 		jobData.setSchedule(txtSchedule.getText());
 		jobData.setStartDelay(txtStartDelay.getText());
-		jobData.setDuration(Integer.parseInt(StringUtils.isNotBlank(txtDuration.getText()) ? txtDuration.getText() : "0"));
+		jobData.setDuration(
+				Integer.parseInt(StringUtils.isNotBlank(txtDuration.getText()) ? txtDuration.getText() : "0"));
 		jobData.setStopRunningJobs(chkStopRunning.isSelected());
 		parent.onUpdateJobData(jobData);
 	}
@@ -67,63 +65,74 @@ public class EditJobController {
 	@FXML // This method is called by the FXMLLoader when initialization is complete
 	void initialize() {
 	}
-        
-        @FXML
-        void PressHyperlink_OnAction(ActionEvent event) {
-            loadCronMainder();
-        }
-        
-	private void loadCronMainder() {
+
+	@FXML
+	void cronHyperlink_OnAction(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CronMaker.fxml"));
 		try {
 			Parent popup = loader.load();
-			CronMakerController controller = loader.getController();
-			controller.injectParent(this);
-                        
 			dialogStage = new Stage();
 			dialogStage.setTitle("Cron Maker");
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			dialogStage.setScene(new Scene(popup));
-                        controller.loadPage();
 			dialogStage.showAndWait();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-        void onCancelCronMaker() {
+
+	void onCancelCronMaker() {
 		dialogStage.close();
 	}
+
 	public void injectParent(EditServerController editServerController) {
 		this.parent = editServerController;
 	}
 
 	public void setData(ItemSenseConfigJob itemSenseConfig) {
-            jobData = itemSenseConfig;
-            chkActive.setSelected(itemSenseConfig.isActive());
-            txtName.setText(itemSenseConfig.getName());
-            cbFacility.setValue(itemSenseConfig.getFacility());
-            cbRecipe.setValue(itemSenseConfig.getRecipe());
-            txtSchedule.setText(itemSenseConfig.getSchedule());
-            txtStartDelay.setText(itemSenseConfig.getStartDelay());
-            if (itemSenseConfig.getDuration() != null) {
-                txtDuration.setText(itemSenseConfig.getDuration().toString());
-            }
-            chkStopRunning.setSelected(itemSenseConfig.isStopRunningJobs());
+		jobData = itemSenseConfig;
+		chkActive.setSelected(itemSenseConfig.isActive());
+		txtName.setText(itemSenseConfig.getName());
+		cbFacility.setValue(itemSenseConfig.getFacility());
+		cbRecipe.setValue(itemSenseConfig.getRecipe());
+		txtSchedule.setText(itemSenseConfig.getSchedule());
+		txtStartDelay.setText(itemSenseConfig.getStartDelay());
+		if (itemSenseConfig.getDuration() != null) {
+			txtDuration.setText(itemSenseConfig.getDuration().toString());
+		}
+		chkStopRunning.setSelected(itemSenseConfig.isStopRunningJobs());
 
-            Platform.runLater(() ->
-            {
-                    List<String> faciltiesNames = parent.getItemSenseService().getFacilityNames();
-                    if (faciltiesNames != null) {
-                        cbFacility.getItems().clear();
-                        cbFacility.getItems().addAll(faciltiesNames);
-                        cbFacility.setValue(itemSenseConfig.getFacility());
-                    }
-                    List<String> recipeNames =  parent.getItemSenseService().getRecipeNames();
-                    if (recipeNames != null) {
-                        cbRecipe.getItems().clear();
-                        cbRecipe.getItems().addAll(recipeNames);
-                        cbRecipe.setValue(itemSenseConfig.getRecipe());
-                    }
-            });
-        }
+		Task<Void> taskFacilityLookup = new Task<Void>() {
+		    @Override public Void call() {
+				List<String> faciltiesNames = parent.getItemSenseService().getFacilityNames();
+				if (faciltiesNames != null) {
+					cbFacility.getItems().clear();
+					cbFacility.getItems().addAll(faciltiesNames);
+					cbFacility.setValue(itemSenseConfig.getFacility());
+				}
+		        return null;
+		    }
+		};
+		
+		Task<Void> taskRecipeLookup = new Task<Void>() {
+		    @Override public Void call() {
+				List<String> recipeNames = parent.getItemSenseService().getRecipeNames();
+				if (recipeNames != null) {
+					cbRecipe.getItems().clear();
+					cbRecipe.getItems().addAll(recipeNames);
+					cbRecipe.setValue(itemSenseConfig.getRecipe());
+				}
+		        return null;
+		    }
+		};
+		
+		new Thread(taskFacilityLookup).start();
+		
+		new Thread(taskRecipeLookup).start();
+		
+		
+		
+		
+		
+	}
 }

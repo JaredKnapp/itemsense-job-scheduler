@@ -24,7 +24,6 @@ class AppService {
 				}
 			} catch (SchedulerException e) {
 				logger.error("Caught SchedulerException: {}.", e);
-				e.printStackTrace();
 			}
 		}
 	}
@@ -37,7 +36,6 @@ class AppService {
 			QuartzService.getService(true).queueAllJobs();
 		} catch (IOException e) {
 			logger.error("Caught IOException: {}.", e);
-			e.printStackTrace();
 		}
 	}
 

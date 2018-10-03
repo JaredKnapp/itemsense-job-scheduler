@@ -43,20 +43,14 @@ public class AppClient extends Application {
 				}
 			} catch (SchedulerException e) {
 				logger.error("Caught SchedulerException: {}.", e);
-				e.printStackTrace();
 			}
 		}
 	}
 
 	@Override
 	public void init() throws Exception {
-		try {
-			DataService.getService(true);
-			Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-		} catch (IOException e) {
-			logger.error("Caught IOException: {}.", e);
-			e.printStackTrace();
-		}
+		DataService.getService(true);
+		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 	}
 
 	@Override
@@ -82,9 +76,8 @@ public class AppClient extends Application {
 			primaryStage.getIcons().add(new Image("/images/quartz_icon.png"));
 			primaryStage.show();
 
-		} catch (Exception e) {
-			logger.error("Caught Exception: {}.", e);
-			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Caught IOException: {}.", e);
 		}
 	}
 }

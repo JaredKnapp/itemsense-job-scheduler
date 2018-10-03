@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.slf4j.LoggerFactory;
+
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.service.DataService;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
+import ch.qos.logback.classic.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,11 +30,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
-/* 
-    ConfigurationController is the control which corresponds to the Configuration.fxml
-*/
-
 public class ConfigurationController implements Initializable {
+
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConfigurationController.class);
 
 	@FXML
 	private ListView<ItemSenseConfig> lvItemSense = new ListView<>();
@@ -61,24 +62,26 @@ public class ConfigurationController implements Initializable {
 			AnchorPane.setLeftAnchor(editableForm, 0d);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Caught IOException", e);
 		}
 	}
 
 	private void populateView() {
 		try {
-			ObservableList<ItemSenseConfig> items = FXCollections.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs());
+			ObservableList<ItemSenseConfig> items = FXCollections
+					.observableArrayList(DataService.getService(true).getSystemConfig().getItemSenseConfigs());
 			lvItemSense.setItems(items);
-                        // Show first item in list when user first goes to ItemSense configuration screen
-                        if (items.size() > 0) {
-                            lvItemSense.getSelectionModel().selectFirst();
-                            ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
-                            editItemSense(configData);
-                            btnDelete.setDisable(false);
-                        }
-                                    
+			// Show first item in list when user first goes to ItemSense configuration
+			// screen
+			if (items.size() > 0) {
+				lvItemSense.getSelectionModel().selectFirst();
+				ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
+				editItemSense(configData);
+				btnDelete.setDisable(false);
+			}
+
 			lvItemSense.setCellFactory(new Callback<ListView<ItemSenseConfig>, ListCell<ItemSenseConfig>>() {
-				
+
 				@Override
 				public ListCell<ItemSenseConfig> call(ListView<ItemSenseConfig> param) {
 					ListCell<ItemSenseConfig> cell = new ListCell<ItemSenseConfig>() {
@@ -96,11 +99,9 @@ public class ConfigurationController implements Initializable {
 					return cell;
 				}
 			});
-           
-                            
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Caught IOException", e);
 		}
 	}
 
@@ -110,7 +111,7 @@ public class ConfigurationController implements Initializable {
 	}
 
 	@FXML
-	public void btnDelete_OnAction(ActionEvent event) {
+	void btnDelete_OnAction(ActionEvent event) {
 		ItemSenseConfig config = lvItemSense.getSelectionModel().getSelectedItem();
 		if (config != null) {
 			Alert alert = new Alert(AlertType.WARNING, "Delete this configuration?", ButtonType.YES, ButtonType.NO);
@@ -122,20 +123,16 @@ public class ConfigurationController implements Initializable {
 					DataService.getService(true).getSystemConfig().getItemSenseConfigs().remove(config);
 					DataService.getService(true).saveSystemConfig();
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					logger.error("Caught IOException", e1);
 				}
-				try {
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+
 				this.initialize(null, null);
 			}
 		}
 	}
 
 	@FXML
-	public void btnNew_OnAction(ActionEvent event) {
+	void btnNew_OnAction(ActionEvent event) {
 		editItemSense(new ItemSenseConfig());
 	}
 
@@ -147,26 +144,26 @@ public class ConfigurationController implements Initializable {
 	}
 
 	@FXML
-	public void lvItemSense_OnMouseClicked(MouseEvent event) {
+	void lvItemSense_OnMouseClicked(MouseEvent event) {
 		ItemSenseConfig configData = lvItemSense.getSelectionModel().getSelectedItem();
 		editItemSense(configData);
 	}
 
-	public void onCancel() {
+	void onCancel() {
 		editPane.getChildren().clear();
 		lvItemSense.refresh();
 	}
 
-	public void onDelete() {
+	void onDelete() {
 		try {
 			DataService.getService(true).saveSystemConfig();
 			lvItemSense.refresh();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Caught IOException", e);
 		}
 	}
 
-	public void onSaveData(ItemSenseConfig configData) {
+	void onSaveData(ItemSenseConfig configData) {
 		try {
 
 			if (configData.getOid() == null) {
@@ -179,8 +176,8 @@ public class ConfigurationController implements Initializable {
 
 			this.populateView();
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Caught IOException", e);
 		}
 	}
 

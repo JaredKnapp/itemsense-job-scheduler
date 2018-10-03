@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane minHeight="300.0" minWidth="300.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
+<BorderPane minHeight="300.0" minWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
    <bottom>
       <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="9.0" prefWidth="323.0" BorderPane.alignment="CENTER">
          <children>
@@ -82,7 +82,7 @@
                      <padding>
                         <Insets bottom="6.0" />
                      </padding></CheckBox>
-                  <Hyperlink fx:id="hyperlink" onAction="#PressHyperlink_OnAction" text="Schedule (cron)" GridPane.rowIndex="4" />
+                  <Hyperlink fx:id="cronHyperlink" onAction="#cronHyperlink_OnAction" text="Schedule (cron)" GridPane.rowIndex="4" />
                   <ComboBox fx:id="cbFacility" prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <ComboBox fx:id="cbRecipe" prefHeight="25.0" prefWidth="202.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>

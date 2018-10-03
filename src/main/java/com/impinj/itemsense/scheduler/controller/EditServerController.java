@@ -32,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * EditServerController is the control which corresponds to the EditServer.fxml
@@ -185,6 +186,7 @@ public class EditServerController implements Initializable {
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			dialogStage.setScene(new Scene(popup));
 			dialogStage.showAndWait();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

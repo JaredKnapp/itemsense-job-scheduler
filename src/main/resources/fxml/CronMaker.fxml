@@ -9,11 +9,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.CronMakerController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.CronMakerController">
    <bottom>
       <HBox alignment="TOP_RIGHT" prefHeight="34.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="btnOk" minWidth="75.0" mnemonicParsing="false" onAction="#btnOk_OnAction" prefWidth="88.0" text="OK" />
+            <Button fx:id="btnClose" minWidth="75.0" mnemonicParsing="false" onAction="#btnClose_OnAction" prefWidth="88.0" text="Close" />
          </children>
          <padding>
             <Insets right="5.0" top="5.0" />
@@ -23,7 +23,7 @@
    <center>
       <VBox prefHeight="366.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <WebView fx:id="CronWebView" maxHeight="-1.0" maxWidth="-1.0" minHeight="466.0" minWidth="700.0" prefHeight="366.0" prefWidth="616.0" />
+            <WebView fx:id="cronWebView" maxHeight="-1.0" maxWidth="-1.0" minHeight="466.0" minWidth="700.0" prefHeight="366.0" prefWidth="616.0" />
             <Label fx:id="connectionLbl" text="Internet Connection Required">
                <font>
                   <Font name="Bell MT Bold" size="14.0" />

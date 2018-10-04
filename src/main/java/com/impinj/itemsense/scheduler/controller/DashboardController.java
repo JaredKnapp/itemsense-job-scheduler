@@ -5,10 +5,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.slf4j.LoggerFactory;
+
 import com.impinj.itemsense.scheduler.model.TriggeredJob;
 import com.impinj.itemsense.scheduler.service.quartz.JobResult;
 import com.impinj.itemsense.scheduler.service.quartz.QuartzService;
 
+import ch.qos.logback.classic.Logger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -26,6 +29,10 @@ import javafx.util.Duration;
 
 
 public class DashboardController {
+	private static final int _TIMLINE_REPEAT_INTERVAL = 10;
+
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(DashboardController.class);
+
 	@FXML // ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
 
@@ -46,16 +53,29 @@ public class DashboardController {
 
 	private Timeline refreshTimer;
 
+	private void refreshTriggeredJobs() {
+		List<TriggeredJob> triggeredJobs = QuartzService.getService(true).getQuartzJobs();
+		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
+		tblTriggeredJobResults
+				.setItems(FXCollections.observableArrayList(QuartzService.getService(true).getJobResults()));
+	}
+
+	@FXML // This method is called by the FXMLLoader when initialization is complete
+	void initialize() {
+		assert btnStop != null : "fx:id=\"btnStop\" was not injected: check your FXML file 'Dashboard.fxml'.";
+		assert btnStart != null : "fx:id=\"btnStart\" was not injected: check your FXML file 'Dashboard.fxml'.";
+	}
+
 	@FXML
 	void btnStart_OnAction(ActionEvent event) {
 		try {
 			QuartzService.getService(true).queueAllJobs();
 			refreshTriggeredJobs();
 
-			refreshTimer = new Timeline(new KeyFrame(Duration.seconds(10), new EventHandler<ActionEvent>() {
+			refreshTimer = new Timeline(new KeyFrame(Duration.seconds(_TIMLINE_REPEAT_INTERVAL), new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println("this is called every 10 seconds on UI thread");
+					logger.debug("this is called every {} seconds on UI thread", _TIMLINE_REPEAT_INTERVAL);
 					refreshTriggeredJobs();
 				}
 			}));
@@ -63,8 +83,7 @@ public class DashboardController {
 			refreshTimer.play();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Caught IOException", e);
 		}
 		btnStart.setDisable(true);
 		btnStart.setVisible(false);
@@ -84,7 +103,6 @@ public class DashboardController {
 		}
 
 		tblTriggeredJobs.setItems(FXCollections.observableArrayList());
-		// setTableHeight(3);
 
 		btnStart.setDisable(false);
 		btnStart.setVisible(true);
@@ -92,17 +110,4 @@ public class DashboardController {
 		btnStop.setVisible(false);
 	}
 
-	@FXML // This method is called by the FXMLLoader when initialization is complete
-	void initialize() {
-		assert btnStop != null : "fx:id=\"btnStop\" was not injected: check your FXML file 'Dashboard.fxml'.";
-		assert btnStart != null : "fx:id=\"btnStart\" was not injected: check your FXML file 'Dashboard.fxml'.";
-	}
-
-	private void refreshTriggeredJobs() {
-		List<TriggeredJob> triggeredJobs = QuartzService.getService(true).getQuartzJobs();
-		tblTriggeredJobs.setItems(FXCollections.observableArrayList(triggeredJobs));
-		tblTriggeredJobResults
-				.setItems(FXCollections.observableArrayList(QuartzService.getService(true).getJobResults()));
-		// setTableHeight(1.1);
-	}
 }

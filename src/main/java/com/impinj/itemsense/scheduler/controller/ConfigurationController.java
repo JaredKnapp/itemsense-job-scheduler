@@ -149,7 +149,7 @@ public class ConfigurationController implements Initializable {
 		editItemSense(configData);
 	}
 
-	void onCancel() {
+	void server_onCancel() {
 		editPane.getChildren().clear();
 		lvItemSense.refresh();
 	}

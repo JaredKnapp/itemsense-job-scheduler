@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
@@ -14,8 +13,12 @@ import com.impinj.itemsense.scheduler.service.ItemSenseService;
 import com.impinj.itemsense.scheduler.service.quartz.ItemSenseJob;
 import com.impinj.itemsense.scheduler.util.OIDGenerator;
 
+import ch.qos.logback.classic.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -38,15 +41,16 @@ import javafx.stage.WindowEvent;
  * EditServerController is the control which corresponds to the EditServer.fxml
  */
 
-public class EditServerController implements Initializable {
-	private static final Logger logger = LoggerFactory.getLogger(ItemSenseJob.class);
+public class EditServerController {
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(EditServerController.class);
+
 	private ItemSenseConfig configData;
 	private ConfigurationController parent;
+
 	Stage dialogStage;
 
 	@FXML // ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
-
 	@FXML // URL location of the FXML file that was given to the FXMLLoader
 	private URL location;
 	@FXML // fx:id="txtName"
@@ -61,21 +65,62 @@ public class EditServerController implements Initializable {
 	private ComboBox<Comparable> cbUtcOffset; // Value injected by FXMLLoader
 	@FXML // fx:id="btnTestConnection"
 	private Button btnDel; // Value injected by FXMLLoader
-
 	@FXML // fx:id="chbIsActive"
 	private CheckBox chbIsActive; // Value injected by FXMLLoader
-
 	@FXML // fx:id="tblConfigJobs"
 	private TableView<ItemSenseConfigJob> tblConfigJobs; // Value injected by FXMLLoader
-
 	@FXML // fx:id="btnAdd"
 	private Button btnAdd; // Value injected by FXMLLoader
-
 	@FXML // fx:id="btnCancel"
 	private Button btnCancel; // Value injected by FXMLLoader
-
 	@FXML // fx:id="btnSave"
 	private Button btnSave; // Value injected by FXMLLoader
+	@FXML
+	private Button btnTestConnection;
+
+	private void loadJobEditor(ItemSenseConfigJob itemSenseConfig) {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditJob.fxml"));
+		try {
+			Parent popup = loader.load();
+
+			EditJobController controller = loader.getController();
+			controller.injectParent(this);
+			controller.setData(itemSenseConfig);
+
+			dialogStage = new Stage();
+			dialogStage.setTitle(itemSenseConfig.getOid() == null ? "Add Job" : "Edit Job");
+			dialogStage.initModality(Modality.APPLICATION_MODAL);
+			dialogStage.setScene(new Scene(popup));
+			dialogStage.setUserData(itemSenseConfig);
+
+			dialogStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+				@Override
+				public void handle(WindowEvent event) {
+					System.out.println("Exiting");
+				}
+			});
+
+			dialogStage.showAndWait();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void initialize() {
+		// Setup Event listeners to prompt "Save
+		chbIsActive.setOnMouseClicked(event -> btnSave.setDisable(false));
+		txtName.setOnKeyTyped(event -> btnSave.setDisable(false));
+		txtHostUrl.setOnKeyTyped(event -> btnSave.setDisable(false));
+		txtUserName.setOnKeyTyped(event -> btnSave.setDisable(false));
+		txtPassword.setOnKeyTyped(event -> btnSave.setDisable(false));
+		cbUtcOffset.setOnAction(event -> btnSave.setDisable(false));
+		for (int index = -11; index <= 12; index++) {
+			cbUtcOffset.getItems().add(index);
+		}
+	}
 
 	@FXML
 	void btnAdd_OnAction(ActionEvent event) {
@@ -83,15 +128,15 @@ public class EditServerController implements Initializable {
 	}
 
 	@FXML
-	void btnCancel_OnCancel(ActionEvent event) {
-		parent.onCancel();
-	}
-
-	@FXML
 	void btnDel_OnAction(ActionEvent event) {
 		ItemSenseConfigJob job = tblConfigJobs.getSelectionModel().getSelectedItem();
 		tblConfigJobs.getItems().remove(job);
 		btnSave.setDisable(false);
+	}
+	
+	@FXML
+	void btnCancel_OnCancel(ActionEvent event) {
+		parent.server_onCancel();
 	}
 
 	@FXML
@@ -101,9 +146,9 @@ public class EditServerController implements Initializable {
 		configData.setUrl(txtHostUrl.getText());
 		configData.setUsername(txtUserName.getText());
 		configData.setPassword(txtPassword.getText());
-		Object obj = cbUtcOffset.getValue();
-		if (obj != null)
-			configData.setUtcOffset(obj.toString());
+		Object offsetValue = cbUtcOffset.getValue();
+		if (offsetValue != null)
+			configData.setUtcOffset(offsetValue.toString());
 		configData.setJobList(tblConfigJobs.getItems());
 		parent.onSaveData(configData);
 		btnSave.setDisable(true);
@@ -126,88 +171,63 @@ public class EditServerController implements Initializable {
 
 		} else {
 
-			ItemSenseConfig config = new ItemSenseConfig();
-			config.setUrl(txtHostUrl.getText());
-			config.setUsername(txtUserName.getText());
-			config.setPassword(txtPassword.getText());
-
-			boolean success = getItemSenseService().testConnection();
-
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Test Connection");
 			alert.setHeaderText(null);
-			if (success)
-				alert.setContentText("Connection succeeded!");
-			else
-				alert.setContentText("Connection failed!");
 
-			alert.showAndWait();
+			Task<Void> task = new Task<Void>() {
+
+				@Override
+				protected Void call() throws Exception {
+
+					btnTestConnection.setDisable(true);
+
+					boolean status = getItemSenseService().testConnection();
+
+					Platform.runLater(new Runnable() {
+
+						@Override
+						public void run() {
+							btnTestConnection.setDisable(false);
+							if (status) {
+								alert.setAlertType(AlertType.INFORMATION);
+								alert.setContentText("Connection to " + txtHostUrl.getText() + " succeeded!");
+							} else {
+								alert.setAlertType(AlertType.ERROR);
+								alert.setContentText("Connection to " + txtHostUrl.getText() + " failed!");
+							}
+							alert.showAndWait();
+						}
+					});
+
+					return null;
+
+				}
+
+			};
+
+			new Thread(task).start();
+
 		}
 	}
 
-	public ItemSenseService getItemSenseService() {
-		ItemSenseConfig config = new ItemSenseConfig();
-		config.setUrl(txtHostUrl.getText());
-		config.setUsername(txtUserName.getText());
-		config.setPassword(txtPassword.getText());
-		return new ItemSenseService(config, null, null);
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		// Setup Event listeners to prompt "Save
-		chbIsActive.setOnMouseClicked(event -> btnSave.setDisable(false));
-		txtName.setOnKeyTyped(event -> btnSave.setDisable(false));
-		txtHostUrl.setOnKeyTyped(event -> btnSave.setDisable(false));
-		txtUserName.setOnKeyTyped(event -> btnSave.setDisable(false));
-		txtPassword.setOnKeyTyped(event -> btnSave.setDisable(false));
-		cbUtcOffset.setOnAction(event -> btnSave.setDisable(false));
-		for (int index = -11; index <= 12; index++) {
-			cbUtcOffset.getItems().add(index);
+	@FXML
+	void tblConfigJobs_OnMouseClicked(MouseEvent event) {
+		// double click
+		if (event.getClickCount() == 2) {
+			if (tblConfigJobs.getSelectionModel().getSelectedItem() != null) {
+				ItemSenseConfigJob selectedItem = tblConfigJobs.getSelectionModel().getSelectedItem();
+				loadJobEditor(selectedItem);
+			}
 		}
+		btnDel.setDisable(!(tblConfigJobs.getSelectionModel().getSelectedItem() != null));
 	}
 
-	public void injectParent(ConfigurationController configurationController) {
+	void injectParent(ConfigurationController configurationController) {
 		this.parent = configurationController;
 	}
 
-	private void loadJobEditor(ItemSenseConfigJob itemSenseConfig) {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditJob.fxml"));
-		try {
-			Parent popup = loader.load();
-
-			EditJobController controller = loader.getController();
-			controller.injectParent(this);
-			controller.setData(itemSenseConfig);
-
-			dialogStage = new Stage();
-			dialogStage.setTitle(itemSenseConfig.getOid() == null ? "Add Job" : "Edit Job");
-			dialogStage.initModality(Modality.APPLICATION_MODAL);
-			dialogStage.setScene(new Scene(popup));
-			dialogStage.showAndWait();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	void onCancelJobData() {
-		dialogStage.close();
-	}
-
-	void onUpdateJobData(ItemSenseConfigJob configJobData) {
-		if (configJobData.getOid() == null) {
-			tblConfigJobs.getItems().add(configJobData);
-			configJobData.setOid(OIDGenerator.next());
-			configJobData.setItemSenseOid(configData.getOid());
-		}
-		dialogStage.close();
-		tblConfigJobs.refresh();
-		btnSave.setDisable(false);
-	}
-
-	public void setData(ItemSenseConfig serverData) {
+	void setData(ItemSenseConfig serverData) {
 		this.configData = serverData;
 
 		if (serverData != null) {
@@ -225,17 +245,28 @@ public class EditServerController implements Initializable {
 			tblConfigJobs.setItems(FXCollections.observableArrayList(jobs));
 		}
 	}
+	
+	void job_onCancel() {
+		dialogStage.close();
+	}
 
-	@FXML
-	void tblConfigJobs_OnMouseClicked(MouseEvent event) {
-		// double click
-		if (event.getClickCount() == 2) {
-			if (tblConfigJobs.getSelectionModel().getSelectedItem() != null) {
-				ItemSenseConfigJob selectedItem = tblConfigJobs.getSelectionModel().getSelectedItem();
-				loadJobEditor(selectedItem);
-			}
+	void job_onSave(ItemSenseConfigJob configJobData) {
+		if (configJobData.getOid() == null) {
+			tblConfigJobs.getItems().add(configJobData);
+			configJobData.setOid(OIDGenerator.next());
+			configJobData.setItemSenseOid(configData.getOid());
 		}
-		btnDel.setDisable(!(tblConfigJobs.getSelectionModel().getSelectedItem() != null));
+		dialogStage.close();
+		tblConfigJobs.refresh();
+		btnSave.setDisable(false);
+	}
+
+	public ItemSenseService getItemSenseService() {
+		ItemSenseConfig config = new ItemSenseConfig();
+		config.setUrl(txtHostUrl.getText());
+		config.setUsername(txtUserName.getText());
+		config.setPassword(txtPassword.getText());
+		return new ItemSenseService(config, null, null);
 	}
 
 }

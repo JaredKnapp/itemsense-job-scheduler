@@ -8,9 +8,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.impinj.itemsense.client.coordinator.job.JobResponse;
+import com.impinj.itemsense.scheduler.AppConstants;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
-import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
 import lombok.Data;
 
@@ -62,9 +62,9 @@ public class JobResult {
     public void setFromJobDetail(JobDetail jobDetail) {
     	
         setJobKey(jobDetail.getKey().getName());
-        ItemSenseConfig itemsenseConfig = (ItemSenseConfig) jobDetail.getJobDataMap().get(ConnectorConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG);
+        ItemSenseConfig itemsenseConfig = (ItemSenseConfig) jobDetail.getJobDataMap().get(AppConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG);
         setStoreName(itemsenseConfig.getName());
-        ItemSenseConfigJob jobConfig = (ItemSenseConfigJob) jobDetail.getJobDataMap().get(ConnectorConstants.JOB_DATA_MAP_JOB_CONFIG);
+        ItemSenseConfigJob jobConfig = (ItemSenseConfigJob) jobDetail.getJobDataMap().get(AppConstants.JOB_DATA_MAP_JOB_CONFIG);
         setJobName(jobConfig.getName());
         setJobType(jobConfig.getJobType());
         setJobClassSimpleName(jobDetail.getJobClass().getSimpleName());

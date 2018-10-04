@@ -2,11 +2,11 @@
   "itemSenseConfigs" : [ {
     "active" : true,
     "name" : "Home - Build 954",
-    "url" : "http://192.168.1.108",
+    "url" : "http://10.200.35.41",
     "username" : "admin",
     "password" : "admindefault",
     "token" : null,
-    "utcOffset" : "-7",
+    "utcOffset" : "3",
     "jobList" : [ {
       "active" : true,
       "facility" : "Home",
@@ -28,6 +28,15 @@
       "duration" : 0,
       "stopRunningJobs" : false
     } ]
+  }, {
+    "active" : true,
+    "name" : "dadfgsdfsdfgs",
+    "url" : null,
+    "username" : "zxcxC",
+    "password" : null,
+    "token" : null,
+    "utcOffset" : null,
+    "jobList" : [ ]
   } ],
   "filePath" : "."
 }

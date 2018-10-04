@@ -1,13 +1,15 @@
-package com.impinj.itemsense.scheduler.util;
+package com.impinj.itemsense.scheduler;
+
+import java.util.UUID;
 
 /*
    Static Contants 
 */
 
-public final class ConnectorConstants {
-	/**
-	 * Impinj ItemSense constants.
-	 */
+public final class AppConstants {
+	public static final String APP_TITLE = "ItemSense Job Scheduler";
+	public static final String APP_ID = UUID.randomUUID().toString();
+
 	public static final String ITEMSENSE_EPC_FORMAT_PURE_ID = "PURE_ID";
 	public static final String ITEMSENSE_DEFAULT_FACILITY_NAME = "DEFAULT";
 	public static final String ITEMSENSE_JOB_STATUS_RUNNING = "RUNNING";
@@ -19,7 +21,7 @@ public final class ConnectorConstants {
 	public static final String JOB_DATA_MAP_JOB_CONFIG = "JobConfig";
 
 	// Hide the constructor
-	private ConnectorConstants() {
+	private AppConstants() {
 	}
 
 }

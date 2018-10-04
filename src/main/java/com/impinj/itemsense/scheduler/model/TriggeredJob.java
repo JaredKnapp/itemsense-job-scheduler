@@ -8,7 +8,7 @@ import org.quartz.JobDetail;
 import org.quartz.impl.triggers.CronTriggerImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.impinj.itemsense.scheduler.util.ConnectorConstants;
+import com.impinj.itemsense.scheduler.AppConstants;
 
 import lombok.Data;
 
@@ -40,9 +40,9 @@ public class TriggeredJob {
 		this.cron = trigger.getCronExpression();
 		this.jobDetail = jobDetail;
 		ItemSenseConfigJob jobConfig = (ItemSenseConfigJob) jobDetail.getJobDataMap()
-				.get(ConnectorConstants.JOB_DATA_MAP_JOB_CONFIG);
+				.get(AppConstants.JOB_DATA_MAP_JOB_CONFIG);
 		ItemSenseConfig ItemSenseConfigJob = (ItemSenseConfig) jobDetail.getJobDataMap()
-				.get(ConnectorConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG);
+				.get(AppConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG);
 		// ConnectorConfig sharedConfig =
 		// (ConnectorConfig)jobDetail.getJobDataMap().get(ConnectorConstants.JOB_DATA_MAP_SHARED_CONFIG);
 

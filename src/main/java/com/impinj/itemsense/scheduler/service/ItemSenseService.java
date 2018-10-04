@@ -17,11 +17,11 @@ import com.impinj.itemsense.client.coordinator.job.Job;
 import com.impinj.itemsense.client.coordinator.job.JobController;
 import com.impinj.itemsense.client.coordinator.job.JobResponse;
 import com.impinj.itemsense.client.coordinator.recipe.Recipe;
+import com.impinj.itemsense.scheduler.AppConstants;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.service.quartz.JobResult;
 import com.impinj.itemsense.scheduler.service.quartz.JobResult.Status;
-import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
 import ch.qos.logback.classic.Logger;
 
@@ -109,11 +109,11 @@ public class ItemSenseService {
 	}
 
 	public boolean isJobFailed(String status) {
-		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_FAIL));
+		return (status.contains(AppConstants.ITEMSENSE_JOB_STATUS_FAIL));
 	}
 
 	public boolean isJobRunning(String status) {
-		return (status.contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING) || status.equals("REGISTERED")
+		return (status.contains(AppConstants.ITEMSENSE_JOB_STATUS_RUNNING) || status.equals("REGISTERED")
 				|| status.equals("WAITING") || status.equals("INITIALIZING") || status.equals("STARTING")
 				|| status.equals("PUBLISHING_STATE") || status.equals("fPED_STOPPING")
 				|| status.equals("COMPLETE_STOPPING"));
@@ -150,7 +150,7 @@ public class ItemSenseService {
 		// the job has started, but is not yet "RUNNING"
 		// hang out while it does initialization
 		while (isJobRunning(jobResponse.getStatus())
-				&& !jobResponse.getStatus().contains(ConnectorConstants.ITEMSENSE_JOB_STATUS_RUNNING)) {
+				&& !jobResponse.getStatus().contains(AppConstants.ITEMSENSE_JOB_STATUS_RUNNING)) {
 			jobResponse = jobController.getJob(jobResponse.getId());
 			// TODO: Fix to work correctly against new Status from and stop reason code
 			// ItemSense

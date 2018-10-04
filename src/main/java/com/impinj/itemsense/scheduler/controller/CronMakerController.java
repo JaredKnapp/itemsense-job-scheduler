@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -48,12 +49,9 @@ public class CronMakerController{
         assert btnClose != null : "fx:id=\"btnClose\" was not injected: check your FXML file 'CronMaker.fxml'.";
         assert cronWebView != null : "fx:id=\"cronWebView\" was not injected: check your FXML file 'CronMaker.fxml'.";
         assert connectionLbl != null : "fx:id=\"connectionLbl\" was not injected: check your FXML file 'CronMaker.fxml'.";
-
-		Platform.runLater(() -> {
-			WebEngine webEngine = cronWebView.getEngine();
-			webEngine.load(CRON_SITE_URL);
-		});
-		
+        
+		WebEngine webEngine = cronWebView.getEngine();
+		webEngine.load(CRON_SITE_URL);
     }
 
 	public void btnClose_OnAction(ActionEvent event) {

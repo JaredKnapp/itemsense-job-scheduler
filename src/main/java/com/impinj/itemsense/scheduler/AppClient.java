@@ -3,11 +3,10 @@ package com.impinj.itemsense.scheduler;
 import java.io.IOException;
 import java.net.URL;
 
-import org.quartz.SchedulerException;
 import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.scheduler.service.DataService;
-import com.impinj.itemsense.scheduler.service.quartz.QuartzService;
+import com.impinj.itemsense.scheduler.util.ShutdownHook;
 
 import ch.qos.logback.classic.Logger;
 import javafx.application.Application;
@@ -18,7 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class AppClient extends Application {
+public final class AppClient extends Application {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(AppClient.class);
 
@@ -31,20 +30,6 @@ public class AppClient extends Application {
 
 	public static BorderPane getRoot() {
 		return root;
-	}
-
-	private static class ShutdownHook extends Thread {
-		public void run() {
-			logger.info("Shutting down {}.", App.getApplicationTitle());
-			try {
-				QuartzService service = QuartzService.getService(false);
-				if (service != null) {
-					service.shutdown();
-				}
-			} catch (SchedulerException e) {
-				logger.error("Caught SchedulerException: {}.", e);
-			}
-		}
 	}
 
 	@Override
@@ -70,14 +55,14 @@ public class AppClient extends Application {
 			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 
 			primaryStage.setScene(scene);
-			primaryStage.setTitle(App.getApplicationTitle());
+			primaryStage.setTitle(AppConstants.APP_TITLE);
 			primaryStage.setMinHeight(_MIN_APPHEIGHT);
 			primaryStage.setMinWidth(_MIN_APPWIDTH);
 			primaryStage.getIcons().add(new Image("/images/quartz_icon.png"));
 			primaryStage.show();
 
 		} catch (IOException e) {
-			logger.error("Caught IOException: {}.", e);
+			logger.error("Caught IOException", e);
 		}
 	}
 }

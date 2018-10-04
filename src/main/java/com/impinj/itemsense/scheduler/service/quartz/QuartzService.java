@@ -29,11 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.impinj.itemsense.scheduler.App;
+import com.impinj.itemsense.scheduler.AppConstants;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfig;
 import com.impinj.itemsense.scheduler.model.ItemSenseConfigJob;
 import com.impinj.itemsense.scheduler.model.TriggeredJob;
 import com.impinj.itemsense.scheduler.service.DataService;
-import com.impinj.itemsense.scheduler.util.ConnectorConstants;
 
 import java.util.ArrayList;
 
@@ -76,11 +76,11 @@ public class QuartzService {
 	}
 
 	private TriggerKey triggerKeyFromConf(ItemSenseConfigJob config) {
-		return TriggerKey.triggerKey(config.getOid(), App.getApplicationId());
+		return TriggerKey.triggerKey(config.getOid(), AppConstants.APP_ID);
 	}
 
 	private JobKey jobKeyFromConf(ItemSenseConfigJob config) {
-		return JobKey.jobKey(config.getOid(), App.getApplicationId());
+		return JobKey.jobKey(config.getOid(), AppConstants.APP_ID);
 	}
 
 	private JobKey jobKeyFromTriggerKey(TriggerKey triggerKey) {
@@ -114,21 +114,21 @@ public class QuartzService {
 		// Schedule only jobs with perspective
 		if (!hasNextValidTimeAfterNow) {
 			logger.info("Skip scheduling Quartz Job " + jobClass.getSimpleName() + " " + itemSenseConfigJob.getJobKey()
-					+ "(Group " + App.getApplicationId() + ") - has no next valid time after now");
+					+ "(Group " + AppConstants.APP_ID + ") - has no next valid time after now");
 			return;
 		}
 
 		logger.info("Scheduling Quartz Job " + jobClass.getSimpleName() + " " + itemSenseConfigJob.getJobKey() + "(Key "
-				+ itemSenseConfigJob.getOid() + ", Group " + App.getApplicationId() + ")");
+				+ itemSenseConfigJob.getOid() + ", Group " + AppConstants.APP_ID + ")");
 
 		// build the job data map and hand it to job builder, otherwise
 		// jobdata contents are restricted to Standard serializable data types
 		// (String, Long, etc)
 		// TODO: TEST TO SEE IF CHANGES TO CONFIG SHARED IN PARTICULAR, impact the job.
 		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put(ConnectorConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG,
+		jobDataMap.put(AppConstants.JOB_DATA_MAP_ITEMSENSE_CONFIG,
 				DataService.getService(true).getItemSenseConfigByOID(itemSenseConfigJob.getItemSenseOid()));
-		jobDataMap.put(ConnectorConstants.JOB_DATA_MAP_JOB_CONFIG, itemSenseConfigJob);
+		jobDataMap.put(AppConstants.JOB_DATA_MAP_JOB_CONFIG, itemSenseConfigJob);
 
 		JobDetail job = JobBuilder.newJob(jobClass).withIdentity(jobKeyFromConf(itemSenseConfigJob))
 				.usingJobData(jobDataMap).build();
@@ -199,7 +199,7 @@ public class QuartzService {
 
 	public List<TriggeredJob> getQuartzJobs() {
 		try {
-			return scheduler.getTriggerKeys(GroupMatcher.groupEquals(App.getApplicationId())).stream()
+			return scheduler.getTriggerKeys(GroupMatcher.groupEquals(AppConstants.APP_ID)).stream()
 					.map(triggerKey -> {
 						try {
 							return new TriggeredJob((CronTriggerImpl) scheduler.getTrigger(triggerKey),

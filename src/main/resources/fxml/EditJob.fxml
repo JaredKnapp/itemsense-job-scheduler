@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane minHeight="300.0" minWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
+<BorderPane fx:id="bpRoot" minHeight="300.0" minWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.impinj.itemsense.scheduler.controller.EditJobController">
    <bottom>
       <HBox alignment="TOP_RIGHT" fillHeight="false" prefHeight="9.0" prefWidth="323.0" BorderPane.alignment="CENTER">
          <children>

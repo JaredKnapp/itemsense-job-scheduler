@@ -10,21 +10,11 @@ import ch.qos.logback.classic.Logger;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
-public class App {
-	private static final String _APPTITLE = "ItemSense Job Scheduler";
-	private static final String appId = UUID.randomUUID().toString();
+public final class App {
 
 	private static final String ARG_SERVICE = "service";
 	private static final String ARG_LOGGINGLEVEL = "logginglevel";
 	private static final String ARG_HELP = "help";
-
-	public static String getApplicationTitle() {
-		return _APPTITLE;
-	}
-
-	public static String getApplicationId() {
-		return appId;
-	}
 
 	public static void main(String[] args) {
 
